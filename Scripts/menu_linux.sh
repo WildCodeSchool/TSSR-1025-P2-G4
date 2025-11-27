@@ -82,24 +82,28 @@ do
             echo "Module_1 "
             echo
             Module_1
+            break
             ;;
         
         2)
             echo "Module_2 "
             echo
             Module_2
+            break
             ;;
 
         3)
             echo "Module 3 "
             echo
             Module_3
+            break
             ;;
 
         4)
             echo "Retour Menu Serveur "
             echo
             Serveur
+            break
             ;;
 
         x|X)

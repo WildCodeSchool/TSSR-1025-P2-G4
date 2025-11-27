@@ -58,6 +58,7 @@ do
             echo
             Linux
             #./menu_linux.sh
+            break
             ;;
         
         2)
@@ -65,6 +66,7 @@ do
             echo
             Windows
             #./menu_windows.sh
+            break
             ;;
 
         x|X)
