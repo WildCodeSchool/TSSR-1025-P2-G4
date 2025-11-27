@@ -1,26 +1,32 @@
 #!/bin/bash
 
+# Varible Linux et Windows
+
+# UserLinux=172.16.40.30
+# UserWindows=172.16.40.20
+
+
 # Preparation des fonctions
 
-Linux() {
+function Linux() {
 
     # Connexion à la machine Linux
     echo "Connexion à la machine Linux... "
     echo
     echo " ---------------------------------------------- "
+    echo
     ./menu_linux.sh
-    # local ssh $USERNAME@$HOSTNAME
 
 }
 
-Windows() {
+function Windows() {
 
     # Connexion à la machine Windows
     echo "Connexion à la machine Windows... "
     echo
     echo " ---------------------------------------------- "
+    echo
     #./menu_windows.sh
-    # local ssh $USERNAME@$HOSTNAME
 
 }
 
