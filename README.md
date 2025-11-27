@@ -1,14 +1,11 @@
 # TSSR-1025-P2-G4
 
 ## Sommaire
-
-- [TSSR-1025-P2-G4](#tssr-1025-p2-g4)
-	- [Sommaire](#sommaire)
-	- [👥 Membres de l'équipe :](#-membres-de-léquipe-)
-	- [💻 Matériel :](#-matériel-)
-	- [🎯 Présentation du projet :](#-présentation-du-projet-)
-		- [🥇 Tâche principale :](#-tâche-principale-)
-		- [🥈 Tâches secondaire :](#-tâches-secondaire-)
+- [👥 Membres de l'équipe :](#-membres-de-léquipe-)
+- [💻 Matériel :](#-matériel-)
+- [🎯 Présentation du projet :](#-présentation-du-projet-)
+	- [🥇 Tâche principale :](#-tâche-principale-)
+	- [🥈 Tâches secondaire :](#-tâches-secondaire-)
 
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
