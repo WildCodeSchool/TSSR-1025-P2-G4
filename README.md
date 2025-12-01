@@ -10,12 +10,12 @@
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
 
-| Prenom  | S1   | S2  | S3  | S4  |
-| ------- | ---- | --- | --- | --- |
-| Renaud  | SM   |     |     |     |
-| Georges | PO   |     |     |     |
-| Sami    | Tech |     |     |     |
-| Romain  | Tech |     |     |     |
+| Prenom  | S1   | S2   | S3  | S4  |
+| ------- | ---- | ---  | --- | --- |
+| Renaud  | SM   | Tech |     |     |
+| Georges | PO   | Tech |     |     |
+| Sami    | Tech | PO   |     |     |
+| Romain  | Tech | SM   |     |     |
 
 ## 💻 Matériel :
 <span id=materiel></span>
