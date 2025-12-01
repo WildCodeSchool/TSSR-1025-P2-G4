@@ -57,8 +57,9 @@ do
                         echo "L'Utilisateur $user_name a été ajouté au groupe administrateur !"
                         while true
                         do
-                            read -p "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? " end_add_sudo
+                            echo "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? "
                             echo -e "1 - Retour au Menu Gestion des Utilisateurs ?\n2 - Sortir."
+                            read -p "Votre choix : " end_add_sudo
                             case "$end_add_sudo" in
                                 1)
                                     echo "Retour au Menu Gestion des Utilisateurs..."
@@ -125,8 +126,9 @@ do
                                             echo "L'Utilisateur $user_name du groupe $local_grp n'a pas été ajouté au groupe administrateur."
                                             while true
                                             do
-                                                read -p "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? " end_add_sudo_v3
+                                                echo "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? "
                                                 echo -e "1 - Retour au Menu Gestion des Utilisateurs ?\n2 - Sortir."
+                                                read -p "Votre choix : " end_add_sudo_v3
                                                 case "$end_add_sudo_v3" in
                                                     1)
                                                         echo "Retour au Menu Gestion des Utilisateurs..."
@@ -191,8 +193,9 @@ do
             echo "L'Utilisateur $user_name n'a pas été créé."
             while true
             do
-                read -p "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? " not_create_user
+                echo "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? "
                 echo -e "1 - Retour au Menu Gestion des Utilisateurs ?\n2 - Sortir."
+                read -p "Votre choix : " not_create_user
                 case "$not_create_user" in
                     1)
                         echo "Retour au Menu Gestion des Utilisateurs..."
