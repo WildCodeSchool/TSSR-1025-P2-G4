@@ -19,6 +19,7 @@ do
                 echo -e "L'utilisateur n'existe pas.\nRedirection vers l'espace Création d'Utilisateur."
                 source create_user.sh
             fi
+            continue
         ;;
         
         2)
