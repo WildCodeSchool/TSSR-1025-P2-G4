@@ -99,8 +99,9 @@ do
                                             echo "L'Utilisateur $user_name du groupe $local_grp a aussi été ajouté au groupe administrateur !"
                                             while true
                                             do
-                                                read -p "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? " end_add_sudo_v2
+                                                echo "Voulez-vous retourner au Menu Gestion des Utilisateurs ou sortir du script ? "
                                                 echo -e "1 - Retour au Menu Gestion des Utilisateurs ?\n2 - Sortir."
+                                                read -p "Votre choix : " end_add_sudo
                                                 case "$end_add_sudo_v2" in
                                                     1)
                                                         echo "Retour au Menu Gestion des Utilisateurs..."
