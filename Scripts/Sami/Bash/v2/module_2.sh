@@ -3,10 +3,11 @@
 # -------------------------------------------------------------------------------------
 # Module 2
 # -------------------------------------------------------------------------------------
-echo "Bienvenue dans le Menu Gestion des Utilisateurs."
-echo -e "1 - Pour rester dans le Menu Gestion des Utilisateurs.\n2 - Retourner dans le Menu Linux.\n3 - Sortir."
+
 while true
 do
+    echo "Bienvenue dans le Menu Gestion des Utilisateurs."
+    echo -e "1 - Pour rester dans le Menu Gestion des Utilisateurs.\n2 - Retourner dans le Menu Linux.\n3 - Sortir."
     read -p "Votre choix : " choice_menu_module_2
     case $choice_menu_module_2 in
         1)
