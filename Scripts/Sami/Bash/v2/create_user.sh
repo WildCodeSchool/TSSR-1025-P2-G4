@@ -6,9 +6,11 @@
 
 echo "Le nom d'utilisateur entré n'existe pas."
 
+
 while true
 do
-    echo -e "Voulez-vous le créer ?\n1 - Oui\n2 - Non\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir."
+    echo -e "\nBienvenue dans la Partie Création Utilisateur !\n"
+    echo -e "\nVoulez-vous le créer ?\n1 - Oui\n2 - Non\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir.\n"
     read -p "Votre choix : " create_user
     case "$create_user" in
         1)
@@ -41,7 +43,7 @@ do
                     ;;
                     
                     *)
-                        echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                        echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                         continue
                     ;;
                 esac
@@ -49,7 +51,7 @@ do
             
             while true
             do
-                echo -e "Voulez-vous l'ajouter à un groupe ?\n1 - Ajouter $user_name au groupe administrateur.\n2- Ajouter $user_name à un groupe local.\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir."
+                echo -e "Voulez-vous l'ajouter à un groupe ?\n1 - Ajouter $user_name au groupe administrateur.\n2 - Ajouter $user_name à un groupe local.\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir."
                 read -p "Votre choix : " choice_grp
                 case $choice_grp in
                     1)
@@ -72,7 +74,7 @@ do
                                 ;;
                                 
                                 *)
-                                    echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                                    echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                                     continue
                                 ;;
                             esac
@@ -81,18 +83,18 @@ do
                     
                     2)
                         echo -e "Voici la liste des groupes locaux existants :\n"
-                        cat /etc/group | awk -F":" '{print $1}'
+                        cat /etc/group | awk -F":" '{print $1}' | sort
                         
                         while true
                         do
-                            read -p "Dans quel groupe existant ci-dessus voulez-vous être ajouté ?" local_grp
+                            read -p "Dans quel groupe existant ci-dessus voulez-vous être ajouté ? " local_grp
                             if getent group "$local_grp" >/dev/null 2>&1
                             then
                                 sudo usermod -aG "$local_grp" "$user_name"
                                 echo "L'Utilisateur $user_name a été ajouté au groupe $local_grp !"
                                 while true
                                 do
-                                    echo -e "Voulez-vous accorder des droits administrateurs à l'utilisateur ?\n 1 - Oui\n2 - Non\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir."
+                                    echo -e "Voulez-vous accorder des droits administrateurs à l'utilisateur ?\n1 - Oui\n2 - Non\n3 - Retour au Menu Gestion des Utilisateurs ?\n4 - Sortir."
                                     read -p "Votre choix : " mod_sudo
                                     case $mod_sudo in
                                         1)
@@ -115,7 +117,7 @@ do
                                                     ;;
                                                     
                                                     *)
-                                                        echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                                                        echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                                                         continue
                                                     ;;
                                                 esac
@@ -141,7 +143,7 @@ do
                                                     ;;
                                                     
                                                     *)
-                                                        echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                                                        echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                                                         continue
                                                     ;;
                                                 esac
@@ -159,7 +161,7 @@ do
                                         ;;
                                         
                                         *)
-                                            echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                                            echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                                             continue
                                         ;;
                                     esac
@@ -182,7 +184,7 @@ do
                     ;;
                     
                     *)
-                        echo -e " Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+                        echo -e "Erreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
                         continue
                     ;;
                 esac

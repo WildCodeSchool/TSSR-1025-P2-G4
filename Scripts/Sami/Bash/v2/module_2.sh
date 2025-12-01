@@ -5,7 +5,16 @@
 # -------------------------------------------------------------------------------------
 while true
 do
-    echo "Bienvenue dans le Menu Gestion des Utilisateurs."
+    echo "###############################################"
+    echo "###############################################"
+    echo "####                                       ####"
+    echo "####                                       ####"
+    echo "####     Menu Gestion des Utilisateurs     ####"
+    echo "####                                       ####"
+    echo "####                                       ####"
+    echo "###############################################"
+    echo "###############################################"
+    echo -e "\nBienvenue dans le Menu Gestion des Utilisateurs.\n"
     echo -e "1 - Pour rester dans le Menu Gestion des Utilisateurs.\n2 - Retourner dans le Menu Linux.\n3 - Sortir."
     read -p "Votre choix : " choice_menu_module_2
     case $choice_menu_module_2 in
