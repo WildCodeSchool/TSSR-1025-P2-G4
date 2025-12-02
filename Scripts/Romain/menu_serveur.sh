@@ -15,7 +15,8 @@ function Linux() {
     echo
     echo " ---------------------------------------------- "
     echo
-    ./menu_linux.sh
+    sleep 1
+    ./menu_linux.sh 
 
 }
 
@@ -26,6 +27,7 @@ function Windows() {
     echo
     echo " ---------------------------------------------- "
     echo
+    sleep 1
     #./menu_windows.sh
 
 }
