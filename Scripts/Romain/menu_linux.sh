@@ -10,7 +10,7 @@ Module_1() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    ./module_1.sh
+    source module_1.sh
 
 }
 

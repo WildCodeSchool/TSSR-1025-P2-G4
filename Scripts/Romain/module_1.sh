@@ -34,7 +34,7 @@ function Redemarrer() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #./
+    ./menu_redemarrage.sh
 
 }
 

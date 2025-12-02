@@ -1,36 +1,38 @@
 #!/bin/bash
 
-# Varible Linux et Windows
-
-# UserLinux=172.16.40.30
-# UserWindows=172.16.40.20
-
-
 # Preparation des fonctions
 
-function Linux() {
+function Reboot() {
 
-    # Connexion à la machine Linux
-    echo "Connexion à la machine Linux... "
+# Rédemarrage
+    echo "Redémarrage de la machine... "
+    echo
+    echo " ---------------------------------------------- "
+    echo
+    # Connexion ssh à la machine pour reboot
+    # ssh user@IP machine cible
+    sleep 1
+    reboot
+    
+
+}
+
+function Retour() {
+
+# Retour Menu Linux
+    echo "Connexion Module 1... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_linux.sh 
-
+    source module_1.sh
+    return
 }
 
-function Windows() {
 
-    # Connexion à la machine Windows
-    echo "Connexion à la machine Windows... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    #source menu_windows.sh
 
-}
+
+
 
 # Création d'une petite interface graphique 
 clear
@@ -39,56 +41,54 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####             Menu serveur              ####"
+echo "####           Menu Redémarrage            ####"
 echo "####                                       ####"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
 
-while true
-do 
+while true 
+do
 
-    # Choix de la machine 
-    echo "Chossissez dans quel machine client vous voulez aller. "
+    # Choix de l'action a éxécuter
+    echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Linux "
-    echo "2) Windows "
-    echo "x) Sortir "
-    echo
-    read -p "Votre choix : " client
+    echo "1) Redémarrer la machine"
+    echo "2) Retour Menu Module 1"
+    echo "x) Sortir"
+    echo 
+    read -p "Votre choix : " redemarrer
     echo
 
-    case $client in
+    case $redemarrer in
 
         1)
-            echo "Machine Linux "
+            echo "Redémarrage de la machine"
             echo
-            Linux
-            #./menu_linux.sh
+            Reboot
             break
             ;;
-        
+
         2)
-            echo "Machine Windows "
+            echo "Retour Menu Module 1"
             echo
-            Windows
-            #./menu_windows.sh
-            break
+            Retour
+            return
             ;;
 
         x|X)
-            echo "Au revoir "
-            echo
+            echo "Au revoir"
+            echo 
             exit 0
             ;;
 
         *)
-            echo "Choix invalide ! "
+            echo "Choix invalide !"
             echo
             echo " ---------------------------------------------- "
             echo
             ;;
-
+        
     esac
 done
