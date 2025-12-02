@@ -10,31 +10,19 @@ function Reboot() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour reboot
-    # ssh user@IP machine cible
+    # ssh user@IP machine cible >/dev/null 2>&1
     sleep 1
     reboot
     
 
 }
 
-function Retour() {
-
-# Retour Menu Linux
-    echo "Connexion Module 1... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    source module_1.sh
-    return
-}
-
-
-
-
-
 
 # Création d'une petite interface graphique 
+
+while true 
+do
+
 clear
 echo
 echo "###############################################"
@@ -47,9 +35,6 @@ echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
-
-while true 
-do
 
     # Choix de l'action a éxécuter
     echo "Choississez quelle action effectuer. "
@@ -67,13 +52,16 @@ do
             echo "Redémarrage de la machine"
             echo
             Reboot
-            break
             ;;
 
         2)
             echo "Retour Menu Module 1"
             echo
-            Retour
+            echo "Connexion Module 1... "
+            echo
+            echo " ---------------------------------------------- "
+            echo
+            sleep 1
             return
             ;;
 

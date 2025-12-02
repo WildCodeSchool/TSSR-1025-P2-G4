@@ -2,53 +2,57 @@
 
 # Preparation des fonctions
 
-function Main() {
+function Etat() {
 
-# Connexion Prise en main à distance
-    echo "Connexion Menu prise en main à distance... "
+# Vérification de l'état du pare-feu
+    echo "Vérification de l'état du pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
+    # Connexion ssh à la machine pour vérifié le pare-feu
+    # ssh user@IP machine cible >/dev/null 2>&1
     sleep 1
-    #./
+    # Attention au sudo
+    ufw status verbose
+    sleep 5
+
 
 }
 
-function Feu() {
+function Activation() {
 
-# Connexion Pare-feu
-    echo "Connexion Menu pare-feu... "
+# Activation du pare-feu
+    echo "Activation du pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
+    # Connexion ssh à la machine pour activé le pare-feu
+    # ssh user@IP machine cible >/dev/null 2>&1
     sleep 1
-    source menu_pare-feu.sh
+    # Attention au sudo
+    ufw enable
+    sleep 5
+    
 
 }
 
-function Redemarrer() {
+function Desactivation() {
 
-# Connexion Redémarrer
-    echo "Connexion Menu Redémarrage... "
+# Activation du pare-feu
+    echo "Desactivation du pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
+    # Connexion ssh à la machine pour désactivé le pare-feu
+    # ssh user@IP machine cible >/dev/null 2>&1
     sleep 1
-    source menu_redemarrage.sh
+    # Attention au sudo
+    ufw disable
+    sleep 5
 
 }
 
-function Repertoire() {
 
-# Connexion Gestion de répertoires
-    echo "Connexion Menu gestion de répertoires... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    #./
-
-}
 
 # Création d'une petite interface graphique 
 
@@ -61,61 +65,52 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####               Module 1                ####"
-echo "####             (Provisoire)              ####"
+echo "####            Menu Pare-feu              ####"
+echo "####                                       ####"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
 
-
     # Choix de l'action a éxécuter
     echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Menu prise en main à distance"
-    echo "2) Menu pare-feu"
-    echo "3) Menu redémarrage"
-    echo "4) Menu gestion de répertoires"
-    echo "5) Retour Menu Linux"
+    echo "1) Etat du pare-feu"
+    echo "2) Activé le pare-feu"
+    echo "3) Desactivé le pare-feu"
+    echo "4) Retour Module 1"
     echo "x) Sortir"
     echo 
-    read -p "Votre choix : " action
+    read -p "Votre choix : " redemarrer
     echo
 
-    case $action in
+    case $redemarrer in
 
         1)
-            echo "Menu prise en main à distance"
+            echo "Etat du pare-feu"
             echo
-            Main 
+            Etat
             continue
             ;;
 
         2)
-            echo "Menu pare-feu"
+            echo "Activé le pare-feu"
             echo
-            Feu
+            Activation
             continue
             ;;
 
         3)
-            echo "Menu Redémarrage"
+            echo "Désactivé le pare-feu"
             echo
-            Redemarrer
-            continue
-            ;;
-        
-        4) 
-            echo "Menu gestion de répertoires"
-            echo
-            Repertoire
+            Desactivation
             continue
             ;;
 
-        5)
-            echo "Retour Menu Linux"
+        4)
+            echo "Retour Menu Module 1"
             echo
-            echo "Connexion Menu Linux... "
+            echo "Connexion Module 1... "
             echo
             echo " ---------------------------------------------- "
             echo
@@ -125,7 +120,7 @@ echo
 
         x|X)
             echo "Au revoir"
-            echo
+            echo 
             exit 0
             ;;
 
@@ -135,6 +130,6 @@ echo
             echo " ---------------------------------------------- "
             echo
             ;;
-    
+        
     esac
 done
