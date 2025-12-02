@@ -9,7 +9,8 @@ Module_1() {
     echo
     echo " ---------------------------------------------- "
     echo
-    #./
+    sleep 1
+    source module_1.sh
 
 }
 
@@ -20,6 +21,7 @@ Module_2() {
     echo
     echo " ---------------------------------------------- "
     echo
+    sleep 1
     #./
 
 }
@@ -31,6 +33,7 @@ Module_3() {
     echo
     echo " ---------------------------------------------- "
     echo
+    sleep 1
     #./
 
 }
@@ -38,11 +41,12 @@ Module_3() {
 Serveur() { 
 
     # Retour Menu Serveur
-    echo "Retour... "
+    echo "Connexion Menu Serveur... "
     echo
     echo " ---------------------------------------------- "
     echo
-    ./menu_serveur.sh
+    sleep 1
+    source ./menu_serveur.sh
 
 
 }
@@ -67,53 +71,53 @@ do
     # Choix de la machine 
     echo "Chossissez dans quel machine client vous voulez aller. "
     echo
-    echo "1) Module_1 "
-    echo "2) Module_2 "
-    echo "3) Module_3 "
-    echo "4) Retour Menu Serveur "
+    echo "1) Module_1"
+    echo "2) Module_2"
+    echo "3) Module_3"
+    echo "4) Retour Menu Serveur"
     echo "x) Sortir"
     echo
-    read -p "Votre choix : " choix
+    read -p "Votre choix : " module
     echo
 
-    case $choix in
+    case $module in
 
         1)
-            echo "Module_1 "
+            echo "Module_1"
             echo
             Module_1
             break
             ;;
         
         2)
-            echo "Module_2 "
+            echo "Module_2"
             echo
             Module_2
             break
             ;;
 
         3)
-            echo "Module 3 "
+            echo "Module 3"
             echo
             Module_3
             break
             ;;
 
         4)
-            echo "Retour Menu Serveur "
+            echo "Retour Menu Serveur"
             echo
             Serveur
             break
             ;;
 
         x|X)
-            echo "Au revoir "
+            echo "Au revoir"
             echo
             exit 0
             ;;
 
         *)
-            echo "Choix invalide ! "
+            echo "Choix invalide !"
             echo
             echo " ---------------------------------------------- "
             echo
