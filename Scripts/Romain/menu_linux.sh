@@ -2,7 +2,7 @@
 
 # Preparation des fonctions
 
-Module_1() {
+function Module_1() {
 
     # Connexion au module 1
     echo "Connexion au module 1... "
@@ -14,7 +14,7 @@ Module_1() {
 
 }
 
-Module_2() {
+function Module_2() {
 
     # Connexion au module 2
     echo "Connexion au module 2... "
@@ -26,7 +26,7 @@ Module_2() {
 
 }
 
-Module_3() { 
+function Module_3() { 
 
     # Connexion au module 3
     echo "Connexion au module 3... "
@@ -38,20 +38,12 @@ Module_3() {
 
 }
 
-Serveur() { 
-
-    # Retour Menu Serveur
-    echo "Connexion Menu Serveur... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    source ./menu_serveur.sh
-
-
-}
 
 # Création d'une petite interface graphique 
+
+while true
+do
+
 clear
 echo
 echo "###############################################"
@@ -64,9 +56,6 @@ echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
-
-while true
-do
 
     # Choix de la machine 
     echo "Chossissez dans quel machine client vous voulez aller. "
@@ -86,28 +75,32 @@ do
             echo "Module_1"
             echo
             Module_1
-            break
+            continue
             ;;
         
         2)
             echo "Module_2"
             echo
             Module_2
-            break
+            continue
             ;;
 
         3)
             echo "Module 3"
             echo
             Module_3
-            break
+            continue
             ;;
 
         4)
             echo "Retour Menu Serveur"
             echo
-            Serveur
-            break
+            echo "Connexion Menu Serveur... "
+            echo
+            echo " ---------------------------------------------- "
+            echo
+            sleep 1
+            return
             ;;
 
         x|X)

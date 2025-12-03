@@ -33,6 +33,10 @@ function Windows() {
 }
 
 # Création d'une petite interface graphique 
+
+while true
+do 
+
 clear
 echo
 echo "###############################################"
@@ -45,9 +49,6 @@ echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
-
-while true
-do 
 
     # Choix de la machine 
     echo "Chossissez dans quel machine client vous voulez aller. "
@@ -65,16 +66,14 @@ do
             echo "Machine Linux "
             echo
             Linux
-            #./menu_linux.sh
-            break
+            continue
             ;;
         
         2)
             echo "Machine Windows "
             echo
             Windows
-            #./menu_windows.sh
-            break
+            continue
             ;;
 
         x|X)
