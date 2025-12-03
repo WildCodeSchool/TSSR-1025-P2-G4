@@ -49,8 +49,7 @@ retour_menu() {
                 ;;
             3)
                 echo -e "\nSessions ouvertes par $user_name :"
-                loginctl list-sessions --no-legend --no-pager \
-                awk -v user="$user_name" '$3 == user {print "user="$3, "uid="$2, "session="$1}'
+                last "$user_name" | head -n 10
                 retour_menu
                 ;;
             4)
