@@ -14,7 +14,7 @@ function Etat() {
     sleep 1
     # Attention au sudo
     ufw status verbose
-    sleep 5
+    sleep 4
 
 
 }
@@ -31,7 +31,7 @@ function Activation() {
     sleep 1
     # Attention au sudo
     ufw enable
-    sleep 5
+    sleep 3
     
 
 }
@@ -48,7 +48,7 @@ function Desactivation() {
     sleep 1
     # Attention au sudo
     ufw disable
-    sleep 5
+    sleep 3
 
 }
 
