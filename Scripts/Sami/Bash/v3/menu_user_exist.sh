@@ -3,7 +3,7 @@
 while true
 do
     clear
-    echo "Bienvenue $user_name !"
+    echo -e "Bienvenue dans le Menu Modification de l'Utilisateur !\n"
     echo -e "Que voulez-vous faire ?\n"
     echo -e "\n1 - Apporter des modifications à l'Utilisateur $user_name.\n2 - Supprimer l'Utilisateur $user_name.\n3 - Afficher des Infos sur l'Utilisateur $user_name .\n4 - Retourner au Menu Gestion des Utilisateurs.\n5 - Sortie."
     read -p "Votre choix : " choice_menu_user_exist
