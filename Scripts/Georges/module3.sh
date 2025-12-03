@@ -1,52 +1,13 @@
 #!/bin/bash
-# ==============================================================================
-# Script de récupération d'informations système via SSH (Avec Multiplexage)
-# ==============================================================================
 
-# Fichier temporaire pour le socket de connexion SSH
-SSH_SOCKET="/tmp/ssh_mux_%h_%p_%r"
-
-# Nettoyage à la sortie du script (fermeture de la connexion maître)
-trap cleanup EXIT
-
-function cleanup() {
-    if [ -n "$REMOTE_IP" ]; then
-        echo ""
-        echo ">>> Fermeture de la connexion distante..."
-        # On demande au socket de se fermer proprement
-        ssh -S "$SSH_SOCKET" -O exit "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
-    fi
-}
 
 # ==============================================================================
-# 1. Configuration de la connexion
+# 1. Fonction SSH
 # ==============================================================================
-clear
-echo "=== CONFIGURATION DE LA CONNEXION DISTANTE ==="
-read -p "Entrez l'utilisateur distant : " REMOTE_USER
-read -p "Entrez l'adresse IP de la machine cible : " REMOTE_IP
 
-echo ">>> Établissement de la connexion persistante..."
-# -M : Mode maître
-# -S : Chemin du socket
-# -f : Go to background (arrière-plan)
-# -N : Do not execute a remote command (juste la connexion)
-# -T : Disable pseudo-terminal allocation
-ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
-
-# Vérification si la connexion a réussi (code de retour 0)
-if [ $? -ne 0 ]; then
-    echo "ERREUR : Impossible de se connecter. Vérifiez le mot de passe ou l'IP."
-    exit 1
-fi
-echo ">>> Connexion établie avec succès !"
-sleep 1
-
-
-# Fonction pour exécuter une commande via ssh en utilisant le socket existant
 function ssh_exec(){
     echo ">>> Exécution sur $REMOTE_IP..."
-    # On ajoute -S "$SSH_SOCKET" pour réutiliser la connexion ouverte
+
     ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "$1"
     echo ">>> Fin de la commande.."
     echo ""
@@ -61,7 +22,9 @@ function ssh_exec(){
 function menu_reseau(){
     while true;do
     clear
+    echo    ======================
     echo "====Information réseau===="
+    echo    ======================
     echo "1.DNS actuels"
     echo "2.listing interfaces"
     echo "3.Table ARP"
@@ -72,17 +35,23 @@ function menu_reseau(){
     read choix
 
         case $choix in
-        1) ssh_exec "cat /etc/resolv.conf" ;;
-        2) ssh_exec "ip -br a" ;; 
-        3) ssh_exec "ip neigh show" ;; 
-        4) ssh_exec "ip route show" ;;
+        1) ssh_exec "cat /etc/resolv.conf" 
+        ;;
+        2) ssh_exec "ip -br a" 
+        ;; 
+        3) ssh_exec "ip neigh show" 
+        ;; 
+        4) ssh_exec "ip route show" 
+        ;;
         5) ssh_exec "echo '--- DNS ---'; cat /etc/resolv.conf; 
                     echo '--- Interfaces ---'; ip -br a; 
                     echo '--- ARP ---'; ip neigh show; 
                     echo '--- Routage ---'; ip route show" 
-                ;;
-        6) break ;;
-        *) echo "choix invalide." ;;
+        ;;
+        6) break 
+        ;;
+        *) echo "choix invalide." 
+        ;;
             esac
         done
 }
@@ -91,7 +60,9 @@ function menu_reseau(){
 function menu_sys(){
     while true;do
     clear
+    echo    ===================================
     echo "====Information Système et matériel===="
+    echo    ===================================
     echo "1.BIOS/UEFI"
     echo "2.Adresse IP, masque"
     echo "3.Version de l'OS"
@@ -103,19 +74,26 @@ function menu_sys(){
     read choix
 
         case $choix in
-        1) ssh_exec "cat /sys/class/dmi/id/bios_version" ;; 
-        2) ssh_exec "ip -o -f inet addr show | awk '/scope global/ {print \$2, \$4}'" ;;
-        3) ssh_exec "cat /etc/os-release | grep PRETTY_NAME" ;;
-        4) ssh_exec "lspci | grep -i 'vga\|3d\|display'" ;;
-        5) ssh_exec "uptime -p" ;;
+        1) ssh_exec "cat /sys/class/dmi/id/bios_version" 
+        ;; 
+        2) ssh_exec "ip -o -f inet addr show | awk '/scope global/ {print \$2, \$4}'" 
+        ;;
+        3) ssh_exec "cat /etc/os-release | grep PRETTY_NAME" 
+        ;;
+        4) ssh_exec "lspci | grep -i 'vga\|3d\|display'" 
+        ;;
+        5) ssh_exec "uptime -p" 
+        ;;
         6)ssh_exec "echo '--- BIOS ---'; cat /sys/class/dmi/id/bios_version;
                     echo '--- IP ---'; ip -o -f inet addr show;
                     echo '--- OS ---'; cat /etc/os-release | grep PRETTY_NAME;
                     echo '--- GPU ---'; lspci | grep -i 'vga\|3d\|display';
                     echo '--- Uptime ---'; uptime -p"
-                ;;
-            7) break ;;
-            *) echo "Choix invalide." ;;
+        ;;
+        7) break 
+        ;;
+        *) echo "Choix invalide." 
+        ;;
         esac
     done
 }
@@ -123,7 +101,9 @@ function menu_sys(){
 function menu_logs(){
         while true;do
         clear
+        echo   ================================
         echo "====Information evenement logs===="
+        echo   ================================
         echo "1.10 derniers events critiques"
         echo "2.Evenements log-evt.log utilisateur"
         echo "3.Evenements log-evt.log ordinateur"
@@ -134,16 +114,22 @@ function menu_logs(){
         read choix
 
         case $choix in
-        1) ssh_exec "journalctl -p 0..3 -n 10 --no-pager" ;; 
-            2) ssh_exec "tail -n 20 /var/log/auth.log 2>/dev/null || journalctl _COMM=sshd -n 20" ;;
-            3) ssh_exec "tail -n 20 /var/log/syslog 2>/dev/null || journalctl -n 20" ;;
-            4) ssh_exec "find /var/log -name '*.evt' -o -name '*.log' | head -n 10" ;; 
-            5) ssh_exec "echo '--- CRITIQUE ---'; journalctl -p 0..3 -n 5 --no-pager;
-                        echo '--- AUTH ---'; tail -n 5 /var/log/auth.log 2>/dev/null;
-                        echo '--- SYSLOG ---'; tail -n 5 /var/log/syslog 2>/dev/null"
-                ;;
-            6) break ;;
-            *) echo "Choix invalide." ;;
+        1) ssh_exec "journalctl -p 0..3 -n 10 --no-pager" 
+        ;; 
+        2) ssh_exec "tail -n 20 /var/log/auth.log 2>/dev/null || journalctl _COMM=sshd -n 20" 
+        ;;
+        3) ssh_exec "tail -n 20 /var/log/syslog 2>/dev/null || journalctl -n 20" 
+        ;;
+        4) ssh_exec "find /var/log -name '*.evt' -o -name '*.log' | head -n 10" 
+        ;; 
+        5) ssh_exec "echo '--- CRITIQUE ---'; journalctl -p 0..3 -n 5 --no-pager;
+                     echo '--- AUTH ---'; tail -n 5 /var/log/auth.log 2>/dev/null;
+                     echo '--- SYSLOG ---'; tail -n 5 /var/log/syslog 2>/dev/null"
+        ;;
+        6) break 
+        ;;
+        *) echo "Choix invalide." 
+        ;;
         esac
     done 
 }
@@ -166,11 +152,16 @@ while true; do
     read main_choice
 
     case $main_choice in
-        1) menu_reseau ;;
-        2) menu_sys ;;
-        3) menu_logs ;;
-        4) echo "Au revoir !"; exit 0 ;;
-        *) echo "Option invalide." ;;
+        1) menu_reseau 
+        ;;
+        2) menu_sys 
+        ;;
+        3) menu_logs 
+        ;;
+        4) echo "Au revoir !"; exit 0 
+        ;;
+        *) echo "Option invalide." 
+        ;;
     esac
 done
 
