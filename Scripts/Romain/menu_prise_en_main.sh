@@ -53,6 +53,7 @@ echo
             echo "Prise en main distante en CLI"
             echo
             PriseEnMain "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         2)
@@ -77,7 +78,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
-            continue
+            sleep 1
             ;;
         
     esac

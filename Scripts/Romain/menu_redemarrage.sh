@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Création des variables
+
 NomMachine="$1"
 IpMachine="$2"
 
@@ -53,6 +55,7 @@ echo
             echo "Redémarrage de la machine"
             echo
             Redemarrage "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         2)
@@ -77,7 +80,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
-            continue
+            sleep 1
             ;;
         
     esac

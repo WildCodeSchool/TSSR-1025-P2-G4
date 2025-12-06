@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Création  des variables
+
 NomMachine="$1"
 IpMachine="$2"
 
@@ -13,7 +15,7 @@ function Main() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #./
+    source menu_prise_en_main.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -137,7 +139,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
-            continue
+            sleep 1
             ;;
     
     esac

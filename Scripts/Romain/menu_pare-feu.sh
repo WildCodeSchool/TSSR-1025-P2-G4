@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Création des variables
+
 NomMachine="$1"
 IpMachine="$2"
 
@@ -8,13 +10,10 @@ IpMachine="$2"
 function Etat() {
 
 # Etat du pare-feu
-    echo "Le pare-feu est :"
-    # ssh user@IP machine cible 
-    # Attention au sudo
+    echo "Le pare-feu est : "
+    # Cette commande donne l'état du pare feu sur la machine cible
     ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw status verbose"
     sleep 4
-
-    return
 
 }
 
@@ -26,7 +25,6 @@ function Activation() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour activé le pare-feu
-    # ssh user@IP machine cible 
     # Attention au sudo
     ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw enable"
     sleep 2
@@ -41,7 +39,6 @@ function Desactivation() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour désactivé le pare-feu
-    # ssh user@IP machine cible
     # Attention au sudo
     ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw disable"
     sleep 2
@@ -86,18 +83,21 @@ echo
             echo "Etat du pare-feu"
             echo
             Etat "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         2)
             echo "Activé le pare-feu"
             echo
             Activation "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         3)
             echo "Désactivé le pare-feu"
             echo
             Desactivation "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         4)
@@ -122,6 +122,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
+            sleep 1
             ;;
         
     esac

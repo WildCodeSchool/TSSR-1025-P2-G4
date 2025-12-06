@@ -1,9 +1,9 @@
 #!/bin/bash
 
+# Création des variables
+
 NomMachine=$1
 IpMachine=$2
-
-#getent passwd | awk -F: '$3>=1000 {print $1}'
 
 # Preparation des fonctions
 
@@ -15,6 +15,8 @@ function Module_1() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
+
+    # Sans oublié les arguments
     source module_1.sh "$NomMachine" "$IpMachine"
 
 }
@@ -27,6 +29,8 @@ function Module_2() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
+
+    # Sans oublié les arguments
     source module_2.sh "$NomMachine" "$IpMachine"
 
 }
@@ -39,6 +43,8 @@ function Module_3() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
+
+    # Sans oublié les arguments
     source module3.sh "$NomMachine" "$IpMachine"
 
 }
@@ -119,7 +125,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
-            continue
+            sleep 1
             ;;
 
     esac

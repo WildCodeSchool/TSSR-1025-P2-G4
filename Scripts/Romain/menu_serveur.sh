@@ -1,20 +1,25 @@
 #!/bin/bash
 
-# Varible Linux et Windows
-
 # Preparation des fonctions
 
 function Linux() {
 
     # Connexion à la machine Linux
 
-    cat $HOME/Scripts/ip_machine/linux/liste_ip.txt
+    # Recherche via nmap pour trouver les IP du réseau
+    nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
     echo
-    read -p "Rentrez le nom d'une machine : " NomMachine
+    # Saisie rentrdee l'IP pour la création d'une variable
+    read -p "Rentrez une adresse IP : " AdresseIp
     echo
-    read -p "Puis rentrez son adresse IP : " AdresseIp
+    # On recupere le nom des utilisateurs sur la machine cible
+    ssh -o ConnectTimeout=10 -T machine_linux "getent passwd" 2>/dev/null | awk -F: '$3>=1000 {print $1}'
+    echo
+    # Saisie du nom d'utilisateur pour la création d'une variable
+    read -p "Puis rentrez un nom d'utilisateur : " NomMachine
     echo
 
+    # Test de réponse avec la machine
     if ping -c 2 $AdresseIp >/dev/null 2>&1
     then
         echo "Ping OK"
@@ -25,6 +30,7 @@ function Linux() {
         return 1
     fi
 
+    # Connexion initié
     echo
     echo "Connexion à la machine Linux... "
     echo
@@ -38,12 +44,18 @@ function Linux() {
 function Windows() {
 
     # Connexion à la machine Windows
-    cat $HOME/Scripts/ip_machine/linux/windows_ip.txt
+
+    # Recherche via nmap pour trouver les IP du réseau
+    nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
     echo
-    read -p "Rentrez le nom d'une machine : " NomMachine
+    # Saisie rentrdee l'IP pour la création d'une variable
+    read -p "Rentrez une adresse IP : " AdresseIp
     echo
-    read -p "Puis rentrez son adresse IP : " AdresseIp
+    # On recupere le nom des utilisateurs sur la machine cible
+    ssh -o ConnectTimeout=10 -T machine_windows "getent passwd" 2>/dev/null | awk -F: '$3>=1000 {print $1}'
     echo
+    # Saisie du nom d'utilisateur pour la création d'une variable
+    read -p "Puis rentrez un nom d'utilisateur : " NomMachine
 
     if ping -c 2 $AdresseIp >/dev/null 2>&1
     then
@@ -56,7 +68,7 @@ function Windows() {
     fi
 
     echo
-    echo "Connexion à la machine Linux... "
+    echo "Connexion à la machine windows... "
     echo
     echo " ---------------------------------------------- "
     echo
@@ -95,14 +107,14 @@ echo
     case $client in
 
         1)
-            echo "Machine Linux :"
+            echo "Machines Linux :"
             echo
             Linux
             continue
             ;;
         
         2)
-            echo "Machine Windows :"
+            echo "Machines Windows :"
             echo
             Windows
             continue
@@ -119,7 +131,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
-            continue
+            sleep 1
             ;;
 
     esac
