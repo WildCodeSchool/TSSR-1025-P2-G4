@@ -5,15 +5,15 @@ IpMachine="$2"
 
 # Preparation des fonctions
 
-function Redemarrage() {
+function PriseEnMain() {
 
-# Rédemarrage
-    echo "Redémarrage de la machine... "
+# Lancement de la prise en main distante
+    echo "Lancement de la prise en main distante... "
     echo
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour reboot
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo reboot now" 
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine"
 
 
 }
@@ -30,7 +30,7 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####           Menu Redémarrage            ####"
+echo "####      Menu Prise en main distante      ####"
 printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
@@ -40,7 +40,7 @@ echo
     # Choix de l'action a éxécuter
     echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Redémarrer la machine"
+    echo "1) Prise en main distante"
     echo "2) Retour Menu Module 1"
     echo "x) Sortir"
     echo 
@@ -50,9 +50,9 @@ echo
     case $redemarrer in
 
         1)
-            echo "Redémarrage de la machine"
+            echo "Prise en main distante en CLI"
             echo
-            Redemarrage "$NomMachine" "$IpMachine"
+            PriseEnMain "$NomMachine" "$IpMachine"
             ;;
 
         2)

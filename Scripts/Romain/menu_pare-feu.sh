@@ -1,21 +1,20 @@
 #!/bin/bash
 
+NomMachine="$1"
+IpMachine="$2"
+
 # Preparation des fonctions
 
 function Etat() {
 
-# Vérification de l'état du pare-feu
-    echo "Vérification de l'état du pare-feu... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    # Connexion ssh à la machine pour vérifié le pare-feu
-    # ssh user@IP machine cible >/dev/null 2>&1
-    sleep 1
+# Etat du pare-feu
+    echo "Le pare-feu est :"
+    # ssh user@IP machine cible 
     # Attention au sudo
-    ufw status verbose
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw status verbose"
     sleep 4
 
+    return
 
 }
 
@@ -27,12 +26,10 @@ function Activation() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour activé le pare-feu
-    # ssh user@IP machine cible >/dev/null 2>&1
-    sleep 1
+    # ssh user@IP machine cible 
     # Attention au sudo
-    ufw enable
-    sleep 3
-    
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw enable"
+    sleep 2
 
 }
 
@@ -44,11 +41,10 @@ function Desactivation() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour désactivé le pare-feu
-    # ssh user@IP machine cible >/dev/null 2>&1
-    sleep 1
+    # ssh user@IP machine cible
     # Attention au sudo
-    ufw disable
-    sleep 3
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw disable"
+    sleep 2
 
 }
 
@@ -66,7 +62,7 @@ echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
 echo "####            Menu Pare-feu              ####"
-echo "####                                       ####"
+printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
@@ -89,22 +85,19 @@ echo
         1)
             echo "Etat du pare-feu"
             echo
-            Etat
-            continue
+            Etat "$NomMachine" "$IpMachine"
             ;;
 
         2)
             echo "Activé le pare-feu"
             echo
-            Activation
-            continue
+            Activation "$NomMachine" "$IpMachine"
             ;;
 
         3)
             echo "Désactivé le pare-feu"
             echo
-            Desactivation
-            continue
+            Desactivation "$NomMachine" "$IpMachine"
             ;;
 
         4)

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+NomMachine="$1"
+IpMachine="$2"
+
 # Preparation des fonctions
 
 function Main() {
@@ -22,7 +25,7 @@ function Feu() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_pare-feu.sh
+    source menu_pare-feu.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -34,7 +37,7 @@ function Redemarrer() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_redemarrage.sh
+    source menu_redemarrage.sh  "$NomMachine" "$IpMachine"
 
 }
 
@@ -62,7 +65,7 @@ echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
 echo "####               Module 1                ####"
-echo "####             (Provisoire)              ####"
+printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
@@ -87,28 +90,28 @@ echo
         1)
             echo "Menu prise en main à distance"
             echo
-            Main 
+            Main "$NomMachine" "$IpMachine"
             continue
             ;;
 
         2)
             echo "Menu pare-feu"
             echo
-            Feu
+            Feu "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
             echo "Menu Redémarrage"
             echo
-            Redemarrer
+            Redemarrer "$NomMachine" "$IpMachine"
             continue
             ;;
         
         4) 
             echo "Menu gestion de répertoires"
             echo
-            Repertoire
+            Repertoire "$NomMachine" "$IpMachine"
             continue
             ;;
 
@@ -134,6 +137,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
+            continue
             ;;
     
     esac

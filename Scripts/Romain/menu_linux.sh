@@ -1,5 +1,10 @@
 #!/bin/bash
 
+NomMachine=$1
+IpMachine=$2
+
+#getent passwd | awk -F: '$3>=1000 {print $1}'
+
 # Preparation des fonctions
 
 function Module_1() {
@@ -10,7 +15,7 @@ function Module_1() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source module_1.sh
+    source module_1.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -22,7 +27,7 @@ function Module_2() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #./
+    source module_2.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -34,7 +39,7 @@ function Module_3() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #./
+    source module3.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -51,7 +56,7 @@ echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
 echo "####             Menu Linux                ####"
-echo "####                                       ####"
+printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
@@ -74,21 +79,21 @@ echo
         1)
             echo "Module_1"
             echo
-            Module_1
+            Module_1 "$NomMachine" "$IpMachine"
             continue
             ;;
         
         2)
             echo "Module_2"
             echo
-            Module_2
+            Module_2 "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
             echo "Module 3"
             echo
-            Module_3
+            Module_3 "$NomMachine" "$IpMachine"
             continue
             ;;
 
@@ -114,6 +119,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
+            continue
             ;;
 
     esac

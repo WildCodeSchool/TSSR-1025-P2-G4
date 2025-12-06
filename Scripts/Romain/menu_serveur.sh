@@ -2,34 +2,66 @@
 
 # Varible Linux et Windows
 
-# UserLinux=172.16.40.30
-# UserWindows=172.16.40.20
-
-
 # Preparation des fonctions
 
 function Linux() {
 
     # Connexion à la machine Linux
+
+    cat $HOME/Scripts/ip_machine/linux/liste_ip.txt
+    echo
+    read -p "Rentrez le nom d'une machine : " NomMachine
+    echo
+    read -p "Puis rentrez son adresse IP : " AdresseIp
+    echo
+
+    if ping -c 2 $AdresseIp >/dev/null 2>&1
+    then
+        echo "Ping OK"
+        sleep 0.5
+    else
+        echo "Ping échoué"
+        sleep 0.5
+        return 1
+    fi
+
+    echo
     echo "Connexion à la machine Linux... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_linux.sh 
+    source menu_linux.sh $NomMachine $AdresseIp
 
 }
 
 function Windows() {
 
     # Connexion à la machine Windows
-    echo "Connexion à la machine Windows... "
+    cat $HOME/Scripts/ip_machine/linux/windows_ip.txt
+    echo
+    read -p "Rentrez le nom d'une machine : " NomMachine
+    echo
+    read -p "Puis rentrez son adresse IP : " AdresseIp
+    echo
+
+    if ping -c 2 $AdresseIp >/dev/null 2>&1
+    then
+        echo "Ping OK"
+        sleep 0.5
+    else
+        echo "Ping échoué"
+        sleep 0.5
+        return 1
+    fi
+
+    echo
+    echo "Connexion à la machine Linux... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #source menu_windows.sh
-
+    source menu_windows.sh $NomMachine $AdresseIp
 }
 
 # Création d'une petite interface graphique 
@@ -63,14 +95,14 @@ echo
     case $client in
 
         1)
-            echo "Machine Linux "
+            echo "Machine Linux :"
             echo
             Linux
             continue
             ;;
         
         2)
-            echo "Machine Windows "
+            echo "Machine Windows :"
             echo
             Windows
             continue
@@ -87,6 +119,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
+            continue
             ;;
 
     esac
