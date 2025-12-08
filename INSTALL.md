@@ -2,8 +2,8 @@
 
 ## Sommaire
 
-    - [Connexions ssh des machines du réseau](#connexion-ssh-)
-    - [Installation de nmap sur le serveur Debian](#installation-nmap-)
+* [Connexions ssh des machines du réseau](#connexion-ssh-)
+* [Installation de nmap sur le serveur Debian](#installation-nmap-)
 
 ## Connexions ssh des machines du réseau :
 <span id=connexion_ssh></span>
