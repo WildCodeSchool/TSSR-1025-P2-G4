@@ -2,16 +2,16 @@
 
 ## Sommaire
 
-	- [👥 Membres de l'équipe :](#-membres-de-léquipe-)
-	- [💻 Matériel :](#-matériel-)
-	- [🎯 Présentation du projet :](#-présentation-du-projet-)
-		- [🥇 Tâche principale :](#-tâche-principale-)
-		- [🥈 Tâches secondaire :](#-tâches-secondaire-)
-	- [🏃🏼‍♂️ Sprint :](#️-sprint-)
-		- [🏃🏼‍♂️ Sprint 1 :](#️-sprint-1-)
-		- [🏃🏼‍♂️ Sprint 2 :](#️-sprint-2-)
-		- [🏃🏼‍♂️ Sprint 3 :](#️-sprint-3-)
-		- [🏃🏼‍♂️ Sprint 4 :](#️-sprint-4-)
+- [👥 Membres de l'équipe :](#-membres-de-léquipe-)
+- [💻 Matériel :](#-matériel-)
+- [🎯 Présentation du projet :](#-présentation-du-projet-)
+	- [🥇 Tâche principale :](#-tâche-principale-)
+	- [🥈 Tâches secondaire :](#-tâches-secondaire-)
+- [🏃🏼‍♂️ Sprint :](#️-sprint-)
+	- [🏃🏼‍♂️ Sprint 1 :](#️-sprint-1-)
+	- [🏃🏼‍♂️ Sprint 2 :](#️-sprint-2-)
+	- [🏃🏼‍♂️ Sprint 3 :](#️-sprint-3-)
+	- [🏃🏼‍♂️ Sprint 4 :](#️-sprint-4-)
 
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
@@ -68,7 +68,7 @@
 ### 🏃🏼‍♂️ Sprint 1 :
 <span id=sprint_1></span>
 
-    - Compréhension du projet
+	- Compréhension du projet
 	- Distribution des tâches
 	- Création du GitHub
 	- Initialisation des connexions SSH entre les machines du réseau
