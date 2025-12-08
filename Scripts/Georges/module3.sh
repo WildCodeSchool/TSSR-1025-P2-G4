@@ -10,7 +10,7 @@
 if [ -w "/var/log" ]; then
     LOG_FILE="/var/log/log_evt.log"
 else
-    # Fallback : Si on n'est pas root, on écrit dans le dossier courant pour ne pas planter
+    
     LOG_FILE="./log_evt.log"
 fi
 
@@ -22,59 +22,89 @@ function write_log(){
     local TIME_STR=$(date +%H%M%S)
     local CURRENT_USER=$USER
     
-    # Construction de la ligne de log
+    
     local LOG_LINE="${DATE_STR}_${TIME_STR}_${CURRENT_USER}_${EVENT}"
     
-    # Écriture dans le fichier
+    
     echo "$LOG_LINE" >> "$LOG_FILE"
 }
 
-# --- C. Initialisation Connexion SSH ---
+# --- C. Initialisation des Variables ---
 
-# Si les variables ne sont pas définies, on les demande
-if [ -z "$REMOTE_IP" ]; then
+# 1. Récupération des variables du parent (menu_linux.sh)
+# Si IpMachine existe (vient du parent), on l'utilise pour REMOTE_IP
+if [ -n "$IpMachine" ]; then
+    REMOTE_IP="$IpMachine"
+fi
+# Idem pour l'utilisateur
+if [ -n "$NomMachine" ]; then
+    REMOTE_USER="$NomMachine"
+fi
+
+# 2. Si les variables sont toujours vides (ex: lancement manuel du script), on demande.
+if [ -z "$REMOTE_IP" ] || [ -z "$REMOTE_USER" ]; then
     clear
     echo "======================================="
     echo "      CONFIGURATION DE LA CIBLE        "
     echo "======================================="
-    read -p "Adresse IP de la cible : " REMOTE_IP
-    read -p "Utilisateur distant (ex: wilder) : " REMOTE_USER
+    # Si l'une manque, on demande tout pour être sûr
+    [ -z "$REMOTE_IP" ] && read -p "Adresse IP de la cible : " REMOTE_IP
+    [ -z "$REMOTE_USER" ] && read -p "Utilisateur distant (ex: wilder) : " REMOTE_USER
 fi
 
+# Définition du chemin du Socket (le fichier qui maintient la connexion ouverte)
 SSH_SOCKET="/tmp/ssh_mux_${REMOTE_IP}_${REMOTE_USER}"
 
 # --- D. Nettoyage et Fin de Script ---
 function cleanup {
-    echo ""
-    echo ">>> Fermeture de la connexion maître..."
-    ssh -S "$SSH_SOCKET" -O exit "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
+    # On ne ferme la connexion que si c'est CE script qui l'a créée
+    if [ "$CONNEXION_CREEE_ICI" == "oui" ]; then
+        echo ""
+        echo ">>> Fermeture de la connexion maître..."
+        ssh -S "$SSH_SOCKET" -O exit "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
+    else
+        echo ""
+        echo ">>> Retour au menu principal (connexion maintenue)..."
+    fi
     
     # JOURNALISATION : Fin du script
     write_log "EndScript"
 }
 trap cleanup EXIT
 
-# --- E. Lancement Connexion Maître ---
-echo ""
-echo ">>> Établissement de la connexion sécurisée..."
-echo ">>> Veuillez entrer votre mot de passe SSH (une seule fois) :"
+# --- E. Gestion de la Connexion SSH ---
 
-rm -f "$SSH_SOCKET"
-ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
+# On vérifie si une connexion est DÉJÀ active (créée par menu_linux.sh)
+if [ -S "$SSH_SOCKET" ]; then
+    # Le fichier socket existe, on teste si la connexion est vivante
+    ssh -S "$SSH_SOCKET" -O check "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo ">>> Connexion existante détectée. Utilisation du canal sécurisé..."
+        CONNEXION_HERITEE="oui"
+    else
+        echo ">>> Socket obsolète détecté. Nettoyage..."
+        rm -f "$SSH_SOCKET"
+    fi
+fi
 
-if [ $? -ne 0 ]; then
-    echo "!!! Erreur : Impossible de se connecter."
-    exit 1
+# Si pas de connexion héritée, on l'ouvre (c'est là qu'il demandera le MDP si pas de clé SSH)
+if [ "$CONNEXION_HERITEE" != "oui" ]; then
+    echo ""
+    echo ">>> Établissement de la connexion sécurisée..."
+    echo ">>> (Si vous n'avez pas de clé SSH, entrez le mot de passe)"
+    
+    ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
+    
+    if [ $? -ne 0 ]; then
+        echo "!!! Erreur : Impossible de se connecter."
+        exit 1
+    fi
+    # On marque qu'on a ouvert la connexion nous-mêmes (pour savoir si on doit la fermer à la fin)
+    CONNEXION_CREEE_ICI="oui"
 fi
 
 # JOURNALISATION : Démarrage du script réussi
 write_log "StartScript"
-
-echo ">>> Connexion établie avec succès !"
-if [ "$LOG_FILE" == "./log_evt.log" ]; then
-    echo ">>> NOTE : Logs enregistrés localement (pas de droits root pour /var/log)."
-fi
-sleep 1
 
 # ==============================================================================
 # 1. Fonction d'Exécution SSH
@@ -111,7 +141,7 @@ function menu_reseau(){
         case $choix in
         1) 
             write_log "Reseau_Consult_DNS"
-            ssh_exec "cat /etc/resolv.conf" 
+            ssh_exec "resolvectl status" 
             ;;
         2) 
             write_log "Reseau_Consult_Interfaces"
@@ -238,7 +268,7 @@ function menu_logs(){
 # ---D. Enregistrement
 function menu_save(){
     clear
-    write_log "Generation_Rapport_Audit" # Log de l'action
+    write_log "Generation_Rapport_Audit"
     
     echo "======================================="
     echo "   ENREGISTREMENT DES INFORMATIONS     "
@@ -297,7 +327,8 @@ while true; do
     echo "2. Informations sys et matériel"
     echo "3. Recherche d'événement logs"
     echo "4. Enregistrement - Les informations"
-    echo "5. Quitter"
+    echo "5. Retour menu général"  
+    echo "6. Quitter"             
     echo ""
     echo -n "Votre choix : "
     read main_choice
@@ -307,7 +338,12 @@ while true; do
         2) menu_sys ;;
         3) menu_logs ;;
         4) menu_save ;;
-        5) echo "Au revoir !"; exit 0 ;;
+        5) echo "Retour au menu principal..."
+            exit 0 
+            ;;
+        6) echo "Au revoir !"
+            exit 0 
+            ;;
         *) echo "Option invalide." ;;
     esac
 done
