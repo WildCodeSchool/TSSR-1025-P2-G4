@@ -7,11 +7,11 @@
 - [🎯 Présentation du projet :](#-présentation-du-projet-)
 	- [🥇 Tâche principale :](#-tâche-principale-)
 	- [🥈 Tâches secondaire :](#-tâches-secondaire-)
-- [🏃🏼‍♂️ Sprint :](#️-sprint-)
-	- [🏃🏼‍♂️ Sprint 1 :](#️sprint_1)
-	- [🏃🏼‍♂️ Sprint 2 :](#️sprint_2)
-	- [🏃🏼‍♂️ Sprint 3 :](#️sprint_3)
-	- [🏃🏼‍♂️ Sprint 4 :](#️sprint_4)
+- [🏃🏼‍♂️ Sprint :](#sprint)
+	- [🏃🏼‍♂️ Sprint 1 :](#sprint_1)
+	- [🏃🏼‍♂️ Sprint 2 :](#sprint_2)
+	- [🏃🏼‍♂️ Sprint 3 :](#sprint_3)
+	- [🏃🏼‍♂️ Sprint 4 :](#sprint_4)
 
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
