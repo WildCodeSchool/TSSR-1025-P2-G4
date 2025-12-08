@@ -6,6 +6,11 @@
 - [🎯 Présentation du projet :](#-présentation-du-projet-)
 	- [🥇 Tâche principale :](#-tâche-principale-)
 	- [🥈 Tâches secondaire :](#-tâches-secondaire-)
+- [🏃🏼‍♂️ Sprint :](#-sprint-)
+	- [🏃🏼‍♂️ Sprint 1 :](#-sprint_1-)
+	- [🏃🏼‍♂️ Sprint 2 :](#-sprint_2-)
+	- [🏃🏼‍♂️ Sprint 3 :](#-sprint_3-)
+	- [🏃🏼‍♂️ Sprint 4 :](#-sprint_4-)
 
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
@@ -55,3 +60,18 @@
 
 * Déploiement automatique de toutes les dépendances/configurations (WinRM, SSH, paquets, etc.) par script  
 * Version GUI des 2 scripts
+
+## 🏃🏼‍♂️ Sprint :
+<span id=sprint></span>
+
+### 🏃🏼‍♂️ Sprint 1 :
+<span id=sprint_1></span>
+
+### 🏃🏼‍♂️ Sprint 2 :
+<span id=sprint_2></span>
+
+### 🏃🏼‍♂️ Sprint 3 :
+<span id=sprint_3></span>
+
+### 🏃🏼‍♂️ Sprint 4 :
+<span id=sprint_4></span>
