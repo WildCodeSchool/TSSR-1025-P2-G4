@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# Création des variables
+
+NomMachine="$1"
+IpMachine="$2"
+
 # Preparation des fonctions
 
-function Reboot() {
+function Redemarrage() {
 
 # Rédemarrage
     echo "Redémarrage de la machine... "
@@ -10,10 +15,8 @@ function Reboot() {
     echo " ---------------------------------------------- "
     echo
     # Connexion ssh à la machine pour reboot
-    # ssh user@IP machine cible >/dev/null 2>&1
-    sleep 1
-    reboot
-    
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo reboot now" 
+
 
 }
 
@@ -30,7 +33,7 @@ echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
 echo "####           Menu Redémarrage            ####"
-echo "####                                       ####"
+printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
@@ -51,7 +54,8 @@ echo
         1)
             echo "Redémarrage de la machine"
             echo
-            Reboot
+            Redemarrage "$NomMachine" "$IpMachine"
+            continue
             ;;
 
         2)
@@ -76,6 +80,7 @@ echo
             echo
             echo " ---------------------------------------------- "
             echo
+            sleep 1
             ;;
         
     esac

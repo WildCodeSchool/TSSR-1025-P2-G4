@@ -1,50 +1,22 @@
 #!/bin/bash
 
-# Création des variables
-
 NomMachine="$1"
 IpMachine="$2"
 
 # Preparation des fonctions
 
-function Etat() {
+function PriseEnMain() {
 
-# Etat du pare-feu
-    echo "Le pare-feu est : "
-    # Cette commande donne l'état du pare feu sur la machine cible
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw status verbose"
-    sleep 4
-
-}
-
-function Activation() {
-
-# Activation du pare-feu
-    echo "Activation du pare-feu... "
+# Lancement de la prise en main distante
+    echo "Lancement de la prise en main distante... "
     echo
     echo " ---------------------------------------------- "
     echo
-    # Connexion ssh à la machine pour activé le pare-feu
-    # Attention au sudo
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw enable"
-    sleep 2
+    # Connexion ssh à la machine pour reboot
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine"
+
 
 }
-
-function Desactivation() {
-
-# Activation du pare-feu
-    echo "Desactivation du pare-feu... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    # Connexion ssh à la machine pour désactivé le pare-feu
-    # Attention au sudo
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo ufw disable"
-    sleep 2
-
-}
-
 
 
 # Création d'une petite interface graphique 
@@ -58,7 +30,7 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####            Menu Pare-feu              ####"
+echo "####      Menu Prise en main distante      ####"
 printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
@@ -68,10 +40,8 @@ echo
     # Choix de l'action a éxécuter
     echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Etat du pare-feu"
-    echo "2) Activé le pare-feu"
-    echo "3) Desactivé le pare-feu"
-    echo "4) Retour Module 1"
+    echo "1) Prise en main distante"
+    echo "2) Retour Menu Module 1"
     echo "x) Sortir"
     echo 
     read -p "Votre choix : " redemarrer
@@ -80,27 +50,13 @@ echo
     case $redemarrer in
 
         1)
-            echo "Etat du pare-feu"
+            echo "Prise en main distante en CLI"
             echo
-            Etat "$NomMachine" "$IpMachine"
+            PriseEnMain "$NomMachine" "$IpMachine"
             continue
             ;;
 
         2)
-            echo "Activé le pare-feu"
-            echo
-            Activation "$NomMachine" "$IpMachine"
-            continue
-            ;;
-
-        3)
-            echo "Désactivé le pare-feu"
-            echo
-            Desactivation "$NomMachine" "$IpMachine"
-            continue
-            ;;
-
-        4)
             echo "Retour Menu Module 1"
             echo
             echo "Connexion Module 1... "
