@@ -55,6 +55,29 @@ function Repertoire() {
 
 }
 
+# Suite de la fonction log pour suivre des utilistations du script
+
+function Log() {
+
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
+
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
+
+}
+
+
+# Suite du log
+
+Log "NewScript"
+
 # Création d'une petite interface graphique 
 
 while true 
@@ -92,6 +115,7 @@ echo
         1)
             echo "Menu prise en main à distance"
             echo
+            Log "MenuPriseEnMain"
             Main "$NomMachine" "$IpMachine"
             continue
             ;;
@@ -99,6 +123,7 @@ echo
         2)
             echo "Menu pare-feu"
             echo
+            Log "MenuPareFeu"
             Feu "$NomMachine" "$IpMachine"
             continue
             ;;
@@ -106,6 +131,7 @@ echo
         3)
             echo "Menu Redémarrage"
             echo
+            Log "MenuRedémarrage"
             Redemarrer "$NomMachine" "$IpMachine"
             continue
             ;;
@@ -113,6 +139,7 @@ echo
         4) 
             echo "Menu gestion de répertoires"
             echo
+            Log "MenuGestionDeRépertoires"
             Repertoire "$NomMachine" "$IpMachine"
             continue
             ;;
@@ -125,12 +152,14 @@ echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
+            Log "RetourMenuLinux"
             return
             ;;
 
         x|X)
             echo "Au revoir"
             echo
+            Log "EndScript"
             exit 0
             ;;
 
@@ -140,6 +169,7 @@ echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
+            Log "MauvaisChoix"
             ;;
     
     esac

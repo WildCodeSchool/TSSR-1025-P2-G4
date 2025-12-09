@@ -15,7 +15,7 @@ function Module_1() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-
+    Log "MenuActionMachine"
     # Sans oublié les arguments
     source module_1.sh "$NomMachine" "$IpMachine"
 
@@ -29,7 +29,7 @@ function Module_2() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-
+    Log "MenuGestionDesUtilisateurs"
     # Sans oublié les arguments
     source module_2.sh "$NomMachine" "$IpMachine"
 
@@ -43,11 +43,34 @@ function Module_3() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-
+    Log "MenuInformationsMachine"
     # Sans oublié les arguments
     source module3.sh "$NomMachine" "$IpMachine"
 
 }
+
+# Suite de la fonction log pour suivre des utilistations du script
+
+function Log() {
+
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
+
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
+
+}
+
+
+# Suite du log
+
+Log "NewScript"
 
 
 # Création d'une petite interface graphique 
@@ -72,7 +95,7 @@ echo
     echo "Chossissez dans quel machine client vous voulez aller. "
     echo
     echo "1) Menu action machine"
-    echo "2) Menu Gestion des Utilisateurs"
+    echo "2) Menu gestion des utilisateurs"
     echo "3) Menu information machine"
     echo "4) Retour Menu Serveur"
     echo "x) Sortir"
@@ -86,6 +109,7 @@ echo
             echo "Menu action machine"
             echo
             Module_1 "$NomMachine" "$IpMachine"
+            Log "MenuActionMachine"
             continue
             ;;
         
@@ -93,6 +117,7 @@ echo
             echo "Menu Gestion des Utilisateurs"
             echo
             Module_2 "$NomMachine" "$IpMachine"
+            Log "MenuGestionDesUtilisateurs"
             continue
             ;;
 
@@ -100,6 +125,7 @@ echo
             echo "Menu information machine"
             echo
             Module_3 "$NomMachine" "$IpMachine"
+            Log "MenuInformationMachine"
             continue
             ;;
 
@@ -111,12 +137,14 @@ echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
+            Log "RetourMenuServeur"
             return
             ;;
 
         x|X)
             echo "Au revoir"
             echo
+            Log "EndScript"
             exit 0
             ;;
 
@@ -126,6 +154,7 @@ echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
+            Log "MauvaisChoix"
             ;;
 
     esac

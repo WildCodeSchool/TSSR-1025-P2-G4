@@ -7,6 +7,7 @@ function Linux() {
     # Connexion à la machine Linux
 
     # Recherche via nmap pour trouver les IP du réseau
+    Log "RecuperationIP"
     nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
     #nmap -sn -R 172.16.40.0/24 | awk '/Nmap scan report/{print $5, $6}'
     echo
@@ -14,6 +15,7 @@ function Linux() {
     read -p "Rentrez une adresse IP : " AdresseIp
     echo
     # On recupere le nom des utilisateurs sur la machine cible
+    Log "RecuperationCompteAdmin"
     #ssh -o ConnectTimeout=10 -T clilin01 "getent passwd" 2>/dev/null | awk -F: '$3>=1000 {print $1}'
     #ssh -o ConnectTimeout=10 -T clilin01 "cat /etc/group" | grep "sudo"
     cat /etc/group | grep "sudo"
@@ -23,6 +25,7 @@ function Linux() {
     echo
 
     # Test de réponse avec la machine
+    Log "Ping"
     if ping -c 2 $AdresseIp >/dev/null 2>&1
     then
         echo "Ping OK"
@@ -39,6 +42,7 @@ function Linux() {
     echo
     echo " ---------------------------------------------- "
     echo
+    Log "ConnexionMachineLinux"
     sleep 1
     source menu_linux.sh $NomMachine $AdresseIp
 
@@ -79,6 +83,30 @@ function Windows() {
     source menu_windows.sh $NomMachine $AdresseIp
 }
 
+# Ajout d'une fonction log pour créer un suivis des utilistations du script
+
+function Log() {
+
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
+
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
+
+}
+
+
+# Début du log
+
+Log "StartScript"
+
+
 # Création d'une petite interface graphique 
 
 while true
@@ -112,6 +140,7 @@ echo
         1)
             echo "Machines Linux :"
             echo
+            Log "MenuSelectionLinux"
             Linux
             continue
             ;;
@@ -119,6 +148,7 @@ echo
         2)
             echo "Machines Windows :"
             echo
+            Log "MenuSelectionWindows"
             Windows
             continue
             ;;
@@ -126,6 +156,7 @@ echo
         x|X)
             echo "Au revoir "
             echo
+            Log "EndScript"
             exit 0
             ;;
 
@@ -135,6 +166,7 @@ echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
+            Log "MauvaisChoix"
             ;;
 
     esac
