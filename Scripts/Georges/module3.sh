@@ -4,29 +4,22 @@
 # 0. CONFIGURATION & LOGGING
 # ==============================================================================
 
-# --- A. Configuration du Fichier de LOG ---
-# Consigne : Le fichier doit être dans /var/log/log_evt.log
-# Note : Écrire dans /var/log nécessite les droits ROOT (sudo).
-if [ -w "/var/log" ]; then
-    LOG_FILE="/var/log/log_evt.log"
-else
-    
-    LOG_FILE="./log_evt.log"
-fi
+# Ajout d'une fonction log pour créer un suivis des utilistations du script
 
-# --- B. Fonction de Journalisation (Logging) ---
-# Format : <Date>_<Heure>_<Utilisateur>_<Evenement>
-function write_log(){
-    local EVENT=$1
-    local DATE_STR=$(date +%Y%m%d)
-    local TIME_STR=$(date +%H%M%S)
-    local CURRENT_USER=$USER
-    
-    
-    local LOG_LINE="${DATE_STR}_${TIME_STR}_${CURRENT_USER}_${EVENT}"
-    
-    
-    echo "$LOG_LINE" >> "$LOG_FILE"
+function Log() {
+
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
+
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
+
 }
 
 # --- C. Initialisation des Variables ---
@@ -68,7 +61,7 @@ function cleanup {
     fi
     
     # JOURNALISATION : Fin du script
-    write_log "EndScript"
+    Log "EndScript"
 }
 trap cleanup EXIT
 
@@ -104,7 +97,7 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
 fi
 
 # JOURNALISATION : Démarrage du script réussi
-write_log "StartScript"
+Log "StartScript"
 
 # ==============================================================================
 # 1. Fonction d'Exécution SSH
@@ -140,23 +133,23 @@ function menu_reseau(){
 
         case $choix in
         1) 
-            write_log "Reseau_Consult_DNS"
+            Log "ReseauConsultDNS"
             ssh_exec "resolvectl status" 
             ;;
         2) 
-            write_log "Reseau_Consult_Interfaces"
+            Log "ReseauConsultInterfaces"
             ssh_exec "ip -br a" 
             ;; 
         3) 
-            write_log "Reseau_Consult_ARP"
+            Log "ReseauConsultARP"
             ssh_exec "ip neigh show" 
             ;; 
         4) 
-            write_log "Reseau_Consult_Routes"
+            Log "ReseauConsultRoutes"
             ssh_exec "ip route show" 
             ;;
         5) 
-            write_log "Reseau_Consult_ALL"
+            Log "ReseauConsultALL"
             ssh_exec "echo '--- DNS ---'; cat /etc/resolv.conf; 
                     echo '--- Interfaces ---'; ip -br a; 
                     echo '--- ARP ---'; ip neigh show; 
@@ -187,27 +180,27 @@ function menu_sys(){
 
         case $choix in
         1) 
-            write_log "Sys_Consult_Bios"
+            Log "SysConsultBios"
             ssh_exec "cat /sys/class/dmi/id/bios_version" 
             ;; 
         2) 
-            write_log "Sys_Consult_IP"
+            Log "SysConsultIP"
             ssh_exec "ip -o -f inet addr show | awk '/scope global/ {print \$2, \$4}'" 
             ;;
         3) 
-            write_log "Sys_Consult_OS_Version"
+            Log "SysConsultOSVersion"
             ssh_exec "cat /etc/os-release | grep PRETTY_NAME" 
             ;;
         4) 
-            write_log "Sys_Consult_GPU"
+            Log "SysConsultGPU"
             ssh_exec "lspci | grep -i 'vga\|3d\|display'" 
             ;;
         5) 
-            write_log "Sys_Consult_Uptime"
+            Log "SysConsultUptime"
             ssh_exec "uptime -p" 
             ;;
         6) 
-            write_log "Sys_Consult_ALL"
+            Log "SysConsultALL"
             ssh_exec "echo '--- BIOS ---'; cat /sys/class/dmi/id/bios_version;
                     echo '--- IP ---'; ip -o -f inet addr show;
                     echo '--- OS ---'; cat /etc/os-release | grep PRETTY_NAME;
@@ -238,23 +231,23 @@ function menu_logs(){
 
         case $choix in
         1) 
-            write_log "Logs_Consult_Critiques"
+            Log "LogsConsultCritiques"
             ssh_exec "journalctl -p 0..3 -n 10 --no-pager" 
             ;; 
         2) 
-            write_log "Logs_Consult_Auth"
+            Log "LogsConsultAuth"
             ssh_exec "tail -n 20 /var/log/auth.log 2>/dev/null || journalctl _COMM=sshd -n 20" 
             ;;
         3) 
-            write_log "Logs_Consult_Syslog"
+            Log "LogsConsultSyslog"
             ssh_exec "tail -n 20 /var/log/syslog 2>/dev/null || journalctl -n 20" 
             ;;
         4) 
-            write_log "Logs_Consult_EvtFiles"
+            Log "LogsConsultEvtFiles"
             ssh_exec "find /var/log -name '*.evt' -o -name '*.log' | head -n 10" 
             ;; 
         5) 
-            write_log "Logs_Consult_ALL"
+            Log "LogsConsultALL"
             ssh_exec "echo '--- CRITIQUE ---'; journalctl -p 0..3 -n 5 --no-pager;
                      echo '--- AUTH ---'; tail -n 5 /var/log/auth.log 2>/dev/null;
                      echo '--- SYSLOG ---'; tail -n 5 /var/log/syslog 2>/dev/null" 
@@ -268,7 +261,7 @@ function menu_logs(){
 # ---D. Enregistrement
 function menu_save(){
     clear
-    write_log "Generation_Rapport_Audit"
+    Log "GenerationRapportAudit"
     
     echo "======================================="
     echo "   ENREGISTREMENT DES INFORMATIONS     "
@@ -318,6 +311,11 @@ function menu_save(){
 # ==============================================================================
 # 3. Boucle Principale 
 # ==============================================================================
+
+# Début du log
+
+Log "StartScript"
+
 while true; do
     clear
     echo  "======================================="
