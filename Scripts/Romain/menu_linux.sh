@@ -71,9 +71,9 @@ echo
     # Choix de la machine 
     echo "Chossissez dans quel machine client vous voulez aller. "
     echo
-    echo "1) Module_1"
-    echo "2) Module_2"
-    echo "3) Module_3"
+    echo "1) Menu action machine"
+    echo "2) Menu Gestion des Utilisateurs"
+    echo "3) Menu information machine"
     echo "4) Retour Menu Serveur"
     echo "x) Sortir"
     echo
@@ -83,21 +83,21 @@ echo
     case $module in
 
         1)
-            echo "Module_1"
+            echo "Menu action machine"
             echo
             Module_1 "$NomMachine" "$IpMachine"
             continue
             ;;
         
         2)
-            echo "Module_2"
+            echo "Menu Gestion des Utilisateurs"
             echo
             Module_2 "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
-            echo "Module 3"
+            echo "Menu information machine"
             echo
             Module_3 "$NomMachine" "$IpMachine"
             continue

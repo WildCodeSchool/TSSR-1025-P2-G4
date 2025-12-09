@@ -69,8 +69,8 @@ echo
     echo "Choississez quelle action effectuer. "
     echo
     echo "1) Etat du pare-feu"
-    echo "2) Activé le pare-feu"
-    echo "3) Desactivé le pare-feu"
+    echo "2) Activer le pare-feu"
+    echo "3) Desactiver le pare-feu"
     echo "4) Retour Module 1"
     echo "x) Sortir"
     echo 
@@ -87,14 +87,14 @@ echo
             ;;
 
         2)
-            echo "Activé le pare-feu"
+            echo "Activer le pare-feu"
             echo
             Activation "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
-            echo "Désactivé le pare-feu"
+            echo "Désactiver le pare-feu"
             echo
             Desactivation "$NomMachine" "$IpMachine"
             continue
