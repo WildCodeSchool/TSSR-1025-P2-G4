@@ -59,7 +59,7 @@ Le client Ubuntu doit également disposer du service SSH pour être piloté par 
 Étape 1 : Installation
 Sur la machine CLILIN01, ouvrez un terminal et exécutez :
 
-Bash
+
 
 sudo apt update && sudo apt install openssh-server -y
 
@@ -68,7 +68,7 @@ sudo apt update && sudo apt install openssh-server -y
 Étape 2 : Configuration du Pare-feu (UFW)
 Ubuntu active souvent le pare-feu par défaut. Il faut autoriser le port SSH (22).
 
-Bash
+
 
 sudo ufw allow ssh
 sudo ufw enable
@@ -80,13 +80,18 @@ Résultat attendu : La règle 22/tcp ALLOW doit apparaître.
 Étape 3 : Validation de la connectivité
 Relevez l'adresse IP du client Ubuntu :
 
-Bash
+
 
 ip a
 
 (L'IP doit correspondre à 172.16.xx.30 selon votre groupe )
 
-![Image : Capture de la commande ip a sur Ubuntu]
+![](Ressources/Images/installssh/sshl3.png)
+
+
+
+
+
 ## Installation de nmap sur le serveur Debian :
 <span id=installation_nmap></span>
 
