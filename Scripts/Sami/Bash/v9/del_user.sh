@@ -58,7 +58,7 @@ while true
 do
     sleep 2
     clear
-    echo -e "\nBienvenue dans l'Espace Suppression Utilisateur !\n"
+    echo -e "\nBienvenue dans l'Espace Suppression Utilisateur !"
     Log "WelcomeToUserDeletionArea"
     echo -e "\nSouhaitez-vous supprimer l'utilisateur $user_name ?\n1 - Oui, supprimer.\n2 - Retour à l'Espace Personnel Utilisateur ?\nX - Sortir.\n"
     read -p "Votre choix : " del_user

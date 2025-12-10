@@ -92,19 +92,13 @@ do
             do
                 echo ""
                 read -p "Entrez le chemin complet du répertoire à créer (Exemple : /home/user/monRépertoire) : " rep_name
-                if ssh -o ConnectTimeout=10 -T clilin01 "[ \"\$rep_name\" != /* ]"
+                if [[ "$rep_name" != /* || -z "$rep_name" ]]
                 then
                     clear
-                    echo -e "\nSaisie incorrecte.\nLe chemin du répertoire doit être absolu comme indiqué dans l'exemple précédemment donné.\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires...\n"
+                    echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -z \"\$rep_name\" ]"
-                then
-                    clear
-                    echo -e "\nAttention !\nVous n'avez rien saisi!\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires..."
-                    Log "InputError"
-                    continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -d \"\$rep_name\" ]"
+                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -d \"$rep_name\" ]"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_name existe déjà !"
@@ -127,19 +121,13 @@ do
                 echo ""
                 read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : /home/user/monRépertoire) : " rep_rename
                 echo ""
-                if ssh -o ConnectTimeout=10 -T clilin01 "[ \"\$rep_rename\" != /* ]"
+                if [[ "$rep_rename" != /* || -z "$rep_rename" ]]
                 then
                     clear
-                    echo -e "\nSaisie incorrecte.\nLe chemin du répertoire doit être absolu comme indiqué dans l'exemple précédemment donné.\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires...\n"
+                    echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -z \"\$rep_rename\" ]"
-                then
-                    clear
-                    echo -e "\nAttention !\nVous n'avez rien saisi!\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires..."
-                    Log "InputError"
-                    continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"\$rep_rename\" ]"
+                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"$rep_rename\" ]"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_rename n'existe pas !\n"
@@ -162,19 +150,13 @@ do
             do
                 echo ""
                 read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : /home/user/monRépertoire) : " rep_del
-                if ssh -o ConnectTimeout=10 -T clilin01 "[ \"\$rep_del\" != /* ]"
+                if [[ "$rep_del" != /* || -z "$rep_del" ]]
                 then
                     clear
-                    echo -e "\nSaisie incorrecte.\nLe chemin du répertoire doit être absolu comme indiqué dans l'exemple précédemment donné.\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires...\n"
+                    echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -z \"\$rep_del\" ]"
-                then
-                    clear
-                    echo -e "\nAttention !\nVous n'avez rien saisi!\nVeuillez recommencer SVP.\n\nRedirection vers le Menu Gestion des Répertoires..."
-                    Log "InputError"
-                    continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"\$rep_del\" ]"
+                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"$rep_del\" ]"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_del n'existe pas !\n"
@@ -186,14 +168,14 @@ do
                     do                     
                         echo ""
                         read -p "Confirmez-vous la supression du répertoire $rep_del ? (O/n) " confirm_rep_del
-                        if ssh -o ConnectTimeout=10 -T clilin01 "[[ \"$confirm_rep_del\" = "O" || \"$confirm_rep_del\" = "o" ]]"
+                        if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]
                         then
                             ssh -o ConnectTimeout=10 -T clilin01 "rm -r "$rep_del""
                             echo -e "\nLe répertoire $rep_del a bien été supprimé !"
                             Log "DirectoryDeleted"
                             end_rep_return
                             continue 3
-                        elif ssh -o ConnectTimeout=10 -T clilin01 "[[ \"$confirm_rep_del\" = "N" || \"$confirm_rep_del\" = "n" ]]"
+                        elif [[ "$confirm_rep_del" = "N" || "$confirm_rep_del" = "n" ]]
                         then
                             echo -e "\nLe répertoire $rep_del n'a pas été supprimé."
                             Log "DirectoryNotDeleted"
@@ -221,5 +203,12 @@ do
             Log "EndScript"
             exit 0 
         ;;
+
+        *)
+            clear
+            echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
+            Log "InputError"
+            continue
+        ;;  
     esac
 done
