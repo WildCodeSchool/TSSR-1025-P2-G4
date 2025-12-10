@@ -23,7 +23,6 @@ Réseau : Les machines doivent avoir une adresse IP configurée dans le sous-ré
 Étape 1 : Mise à jour du système
 Connectez-vous avec l'utilisateur wilder (ou root) et mettez à jour les dépôts.
 
-Bash
 
 sudo apt update
 
@@ -35,7 +34,6 @@ sudo apt update
 Étape 2 : Installation du paquet OpenSSH-Server
 Lancez la commande d'installation :
 
-Bash
 
 sudo apt install openssh-server -y
 L'option -y confirme automatiquement l'installation des dépendances.
@@ -47,7 +45,6 @@ L'option -y confirme automatiquement l'installation des dépendances.
 Étape 3 : Vérification du service
 Assurez-vous que le service est démarré et actif :
 
-Bash
 
 sudo systemctl status ssh
 Résultat attendu : Le statut doit indiquer active (running) en vert.
@@ -65,7 +62,8 @@ Sur la machine CLILIN01, ouvrez un terminal et exécutez :
 Bash
 
 sudo apt update && sudo apt install openssh-server -y
-![Image : Capture du terminal Ubuntu montrant l'installation des paquets SSH]
+
+![](Ressources/Images/installssh/ssl1.png)
 
 Étape 2 : Configuration du Pare-feu (UFW)
 Ubuntu active souvent le pare-feu par défaut. Il faut autoriser le port SSH (22).
@@ -77,7 +75,7 @@ sudo ufw enable
 sudo ufw status
 Résultat attendu : La règle 22/tcp ALLOW doit apparaître.
 
-![Image : Capture de la sortie de ufw status sur Ubuntu]
+![](Ressources/Images/installssh/sshl2.png)
 
 Étape 3 : Validation de la connectivité
 Relevez l'adresse IP du client Ubuntu :
