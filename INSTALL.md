@@ -26,7 +26,7 @@ Connectez-vous avec l'utilisateur wilder (ou root) et mettez à jour les dépôt
 Bash
 
 sudo apt update
-![apt update debian](Ressources/Images/installssh/sshd1.png)
+![](Ressources/Images/installssh/sshd1.png)
 
 Étape 2 : Installation du paquet OpenSSH-Server
 Lancez la commande d'installation :
