@@ -15,7 +15,7 @@ function Main() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_prise_en_main.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_prise_en_main.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -27,7 +27,7 @@ function Feu() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_pare-feu.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_pare-feu.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -39,7 +39,7 @@ function Redemarrer() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source menu_redemarrage.sh  "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_redemarrage.sh  "$NomMachine" "$IpMachine"
 
 }
 
