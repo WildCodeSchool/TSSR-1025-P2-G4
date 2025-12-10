@@ -10,8 +10,8 @@
 <span id=connexion_ssh></span>
 1. Introduction
 Le protocole SSH (Secure Shell) est la brique fondamentale de ce projet d'administration centralisée. Il permet :
-L'accès distant sécurisé au serveur d'administration Debian.
-L'exécution de commandes à distance par le script Bash sur le poste Client Ubuntu.
+L'accès distant sécurisé au poste Client Ubuntu .
+L'exécution de commandes à distance par le script Bash sur le serveur d'administration Debian.
 
 3. Prérequis techniques
 Avant de lancer l'installation, assurez-vous que les machines respectent les critères suivants définis dans l'infrastructure du projet :
