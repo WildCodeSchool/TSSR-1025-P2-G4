@@ -4,22 +4,6 @@
 # Partie Création Utilisateur
 #######################################################################################################
 
-function Log() {
-
-    local evenement="$1"
-    local fichier_log="/var/log/log_evt.log"
-    local date_actuelle=$(date +"%Y%m%d")
-    local heure_actuelle=$(date +"%H%M%S")
-    local utilisateur=$(whoami)
-
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
-
-    # Ecriture dans le fichier
-    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
-
-}
-
 function end_user_return()
 {
     while true
@@ -32,42 +16,34 @@ function end_user_return()
         case "$choice_return_end" in
             1)
                 echo -e "\nRetour au Menu Gestion des Utilisateurs..."
-                Log "ReturnUserManagementMenu"
                 break
             ;;
                                 
             x|X)
                 echo -e "\nA bientôt !\n"
-                Log "EndScript"
                 exit 0
             ;;
                                 
             *)
                 clear
                 echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
-                Log "Input_Error"
                 continue
             ;;
         esac
     done
 }
 
-
-Log "NewScript"
-
 while true
 do
     sleep 3
     clear
     echo -e "\nBienvenue dans l'Espace Création Utilisateur !"
-    Log "WelcomeToUserCreationArea"
     echo -e "\nVoulez-vous créer l'utilisateur $user_name ?\n\n1 - Oui\n2 - Non\n3 - Retour au Menu Gestion des Utilisateurs.\nX - Sortir.\n"
     read -p "Votre choix : " create_user
     case "$create_user" in
         1)
             ssh -o ConnectTimeout=10 -T clilin01 "sudo -S useradd "$user_name""
             echo -e "\nL'utilisateur $user_name a été créé avec succès !"
-            Log "NewUserCreated"
             while true
             do
                 sleep 3
@@ -78,32 +54,27 @@ do
                     1)
                         ssh -o ConnectTimeout=10 -T clilin01 "sudo -S passwd "$user_name""
                         echo -e "\nMot de passe défini pour $user_name avec succès !"
-                        Log "PasswordCreatedNewUser"
                         break
                     ;;
                     
                     2)
                         echo -e "\nMot de passe non défini pour $user_name."
-                        Log "PasswordNotCreatedNewUser"
                         break
                     ;;
                     
                     3)
                         echo -e "\nRetour au Menu Gestion des Utilisateurs..."
-                        Log "ReturnUserManagementMenu"
                         return
                     ;;
                     
                     x|X)
                         echo -e "\nA bientôt !\n"
-                        Log "EndScript"
                         exit 0
                     ;;
                     
                     *)
                         clear
                         echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
-                        Log "Input_Error"
                         continue
                     ;;
                 esac
@@ -119,7 +90,6 @@ do
                     1)
                         ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo "$user_name""
                         echo -e "\nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
-                        Log "AddSudoGrpNewUser"
                         end_user_return
                         return
                     ;;
@@ -138,7 +108,6 @@ do
                             then
                                 ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG "$local_grp" "$user_name""
                                 echo -e "\nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
-                                Log "AddLocalGrpNewUser"
                                 while true
                                 do
                                     sleep 3
@@ -149,41 +118,35 @@ do
                                         1)
                                             ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo "$user_name""
                                             echo -e "\nL'utilisateur $user_name du groupe $local_grp a aussi été ajouté au groupe administrateur avec succès !"
-                                            Log "AddSudoGrpNewUser"
                                             end_user_return
                                             return
                                         ;;
                                         
                                         2)
                                             echo -e "\nL'utilisateur $user_name du groupe $local_grp n'a pas été ajouté au groupe administrateur."
-                                            Log "NoAddSudoGroupNewUser"
                                             end_user_return
                                             return
                                         ;;
                                         
                                         3)
-                                            echo -e "\nRetour au Menu Gestion des Utilisateurs..." 
-                                            Log "ReturnUserManagementMenu"                                       
+                                            echo -e "\nRetour au Menu Gestion des Utilisateurs..."                                        
                                             return
                                         ;;
                                         
                                         x|X)
                                             echo -e "\nA bientôt !\n"
-                                            Log "EndScript"
                                             exit 0
                                         ;;
                                         
                                         *)
                                             clear
                                             echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
-                                            Log "InputError"
                                             continue
                                         ;;
                                     esac
                                 done
                             else
                                 echo -e "\nLe groupe $local_grp n'existe pas. Veuiller réessayer SVP.\n"
-                                Log "LocalGroupDoesntExist"
                                 continue
                             fi
                         done
@@ -191,20 +154,17 @@ do
                     
                     3)
                         echo -e "\nRetour au Menu Gestion des Utilisateurs..."
-                        Log "ReturnUserManagementMenu"
                         return
                     ;;
                     
                     x|X)
                         echo -e "\nA bientôt !\n"
-                        Log "EndScript"
                         exit 0
                     ;;
                     
                     *)
                         clear
                         echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
-                        Log "InputError"
                         continue
                     ;;
                 esac
@@ -213,27 +173,24 @@ do
         
         2)
             echo -e "\nL'utilisateur $user_name n'a pas été créé."
-            Log "NewUserNotCreated"
             end_user_return
             return
         ;;
         
         3)
             echo -e "\nRetour au Menu Gestion des Utilisateurs..."
-            Log "ReturnUserManagementMenu"            
+            sleep 2
             return
         ;;
         
         x|X)
             echo -e "\nA bientôt !\n"
-            Log "EndScript"
             exit 0
         ;;
         
         *)
             clear
             echo -e "\nErreur de saisie.\nVeuillez faire votre choix selon ce qui est proposé."
-            Log "InputError"
             continue
         ;;
     esac

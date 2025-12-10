@@ -39,7 +39,7 @@ function Redemarrer() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source ~/Scripts/linux/menu_redemarrage.sh  "$NomMachine" "$IpMachine"
+    source ~/Scripts/linux/menu_redemarrage.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -51,7 +51,7 @@ function Repertoire() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    #./
+    source ~/Scripts/linux/directory_management.sh "$NomMachine" "$IpMachine"
 
 }
 

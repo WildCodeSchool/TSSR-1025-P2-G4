@@ -4,8 +4,7 @@
 # 0. CONFIGURATION & LOGGING
 # ==============================================================================
 
-# Ajout d'une fonction log pour créer un suivis des utilistations du script
-
+# Fonction de log (reste locale sur le Debian)
 function Log() {
 
     local evenement="$1"
@@ -19,92 +18,82 @@ function Log() {
 
     # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
-
 }
 
 # --- C. Initialisation des Variables ---
 
-# 1. Récupération des variables du parent (menu_linux.sh)
-# Si IpMachine existe (vient du parent), on l'utilise pour REMOTE_IP
+# 1. Récupération des variables du parent
 if [ -n "$IpMachine" ]; then
     REMOTE_IP="$IpMachine"
 fi
-# Idem pour l'utilisateur
 if [ -n "$NomMachine" ]; then
     REMOTE_USER="$NomMachine"
 fi
 
-# 2. Si les variables sont toujours vides (ex: lancement manuel du script), on demande.
+# 2. Si les variables sont vides
 if [ -z "$REMOTE_IP" ] || [ -z "$REMOTE_USER" ]; then
     clear
     echo "======================================="
-    echo "      CONFIGURATION DE LA CIBLE        "
+    echo "   CONFIGURATION CIBLE (WINDOWS 10)    "
     echo "======================================="
-    # Si l'une manque, on demande tout pour être sûr
-    [ -z "$REMOTE_IP" ] && read -p "Adresse IP de la cible : " REMOTE_IP
-    [ -z "$REMOTE_USER" ] && read -p "Utilisateur distant (ex: wilder) : " REMOTE_USER
+    [ -z "$REMOTE_IP" ] && read -p "Adresse IP Windows : " REMOTE_IP
+    [ -z "$REMOTE_USER" ] && read -p "Utilisateur Windows : " REMOTE_USER
 fi
 
-# Définition du chemin du Socket (le fichier qui maintient la connexion ouverte)
-SSH_SOCKET="/tmp/ssh_mux_${REMOTE_IP}_${REMOTE_USER}"
+# Chemin du Socket SSH
+SSH_SOCKET="/tmp/ssh_mux_win_${REMOTE_IP}_${REMOTE_USER}"
 
 # --- D. Nettoyage et Fin de Script ---
 function cleanup {
-    # On ne ferme la connexion que si c'est CE script qui l'a créée
     if [ "$CONNEXION_CREEE_ICI" == "oui" ]; then
         echo ""
         echo ">>> Fermeture de la connexion maître..."
         ssh -S "$SSH_SOCKET" -O exit "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
     else
         echo ""
-        echo ">>> Retour au menu principal (connexion maintenue)..."
+        echo ">>> Retour au menu principal..."
     fi
-    
-    # JOURNALISATION : Fin du script
     Log "EndScript"
 }
 trap cleanup EXIT
 
 # --- E. Gestion de la Connexion SSH ---
 
-# On vérifie si une connexion est DÉJÀ active (créée par menu_linux.sh)
 if [ -S "$SSH_SOCKET" ]; then
-    # Le fichier socket existe, on teste si la connexion est vivante
     ssh -S "$SSH_SOCKET" -O check "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
     if [ $? -eq 0 ]; then
-        echo ">>> Connexion existante détectée. Utilisation du canal sécurisé..."
+        echo ">>> Connexion existante détectée..."
         CONNEXION_HERITEE="oui"
     else
-        echo ">>> Socket obsolète détecté. Nettoyage..."
+        echo ">>> Socket obsolète. Nettoyage..."
         rm -f "$SSH_SOCKET"
     fi
 fi
 
-# Si pas de connexion héritée, on l'ouvre (c'est là qu'il demandera le MDP si pas de clé SSH)
 if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ""
-    echo ">>> Établissement de la connexion sécurisée..."
-    echo ">>> (Si vous n'avez pas de clé SSH, entrez le mot de passe)"
+    echo ">>> Connexion SSH vers Windows ($REMOTE_IP)..."
+    echo ">>> Note : Si le shell par défaut de Windows n'est pas Bash, c'est normal."
     
+    # On force la connexion
     ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
     
     if [ $? -ne 0 ]; then
-        echo "!!! Erreur : Impossible de se connecter."
+        echo "!!! Erreur : Impossible de se connecter au Windows."
+        echo "Vérifiez que le service OpenSSH Server est lancé sur le Windows."
         exit 1
     fi
-    # On marque qu'on a ouvert la connexion nous-mêmes (pour savoir si on doit la fermer à la fin)
     CONNEXION_CREEE_ICI="oui"
 fi
 
-# JOURNALISATION : Démarrage du script réussi
 Log "StartScript"
 
 # ==============================================================================
-# 1. Fonction d'Exécution SSH
+# 1. Fonction d'Exécution SSH (Adaptée Windows)
 # ==============================================================================
 
 function ssh_exec(){
-    echo ">>> Exécution sur $REMOTE_IP..."
+    echo ">>> Exécution sur Windows ($REMOTE_IP)..."
     ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "$1"
     echo ">>> Fin de la commande.."
     echo ""
@@ -112,7 +101,7 @@ function ssh_exec(){
 }
 
 # ==============================================================================
-# 2. Fonctions des Sous-Menus
+# 2. Fonctions des Sous-Menus (Adaptés Commandes Windows)
 # ==============================================================================
 
 # ---A. Information Réseau
@@ -120,7 +109,7 @@ function menu_reseau(){
     while true;do
     clear
     echo    ======================
-    echo "====Information réseau===="
+    echo "====Information réseau (Win10)===="
     echo    ======================
     echo "1. DNS actuels"
     echo "2. Listing interfaces"
@@ -134,29 +123,28 @@ function menu_reseau(){
         case $choix in
         1) 
             Log "ReseauConsultDNS"
-            ssh_exec "resolvectl status" 
+            ssh_exec "powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object InterfaceAlias, ServerAddresses | Format-Table -AutoSize\"" 
             ;;
         2) 
             Log "ReseauConsultInterfaces"
-            ssh_exec "ip -br a" 
+            ssh_exec "ipconfig /all" 
             ;; 
         3) 
             Log "ReseauConsultARP"
-            ssh_exec "ip neigh show" 
+            ssh_exec "arp -a" 
             ;; 
         4) 
             Log "ReseauConsultRoutes"
-            ssh_exec "ip route show" 
+            ssh_exec "route print" 
             ;;
         5) 
             Log "ReseauConsultALL"
-            ssh_exec "echo '--- DNS ---'; cat /etc/resolv.conf; 
-                    echo '--- Interfaces ---'; ip -br a; 
-                    echo '--- ARP ---'; ip neigh show; 
-                    echo '--- Routage ---'; ip route show" 
+            ssh_exec "echo --- DNS --- && powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4\" && echo. && echo --- IPCONFIG --- && ipconfig /all && echo. && echo --- ARP --- && arp -a && echo. && echo --- ROUTE --- && route print" 
             ;;
-        6) break ;;
-        *) echo "choix invalide." ;;
+        6) break 
+            ;;
+        *) echo "choix invalide." 
+            ;;
         esac
     done
 }
@@ -166,7 +154,7 @@ function menu_sys(){
     while true;do
     clear
     echo    ===================================
-    echo "====Information Système et matériel===="
+    echo "====Info Système et matériel (Win10)===="
     echo    ===================================
     echo "1. BIOS/UEFI"
     echo "2. Adresse IP, masque"
@@ -181,79 +169,72 @@ function menu_sys(){
         case $choix in
         1) 
             Log "SysConsultBios"
-            ssh_exec "cat /sys/class/dmi/id/bios_version" 
+            ssh_exec "powershell -Command \"Get-CimInstance Win32_BIOS | Select-Object Manufacturer, Name, SerialNumber, Version | Format-List\"" 
             ;; 
         2) 
             Log "SysConsultIP"
-            ssh_exec "ip -o -f inet addr show | awk '/scope global/ {print \$2, \$4}'" 
+            ssh_exec "ipconfig | findstr \"IPv4 Masque\"" 
             ;;
         3) 
             Log "SysConsultOSVersion"
-            ssh_exec "cat /etc/os-release | grep PRETTY_NAME" 
+            ssh_exec "systeminfo | findstr /B /C:\"Nom du syst\" /C:\"Version du syst\" /C:\"OS Name\" /C:\"OS Version\"" 
             ;;
         4) 
             Log "SysConsultGPU"
-            ssh_exec "lspci | grep -i 'vga\|3d\|display'" 
+            ssh_exec "powershell -Command \"Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion | Format-Table\"" 
             ;;
         5) 
             Log "SysConsultUptime"
-            ssh_exec "uptime -p" 
+            ssh_exec "powershell -Command \"(Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime | Select-Object Days, Hours, Minutes\"" 
             ;;
         6) 
             Log "SysConsultALL"
-            ssh_exec "echo '--- BIOS ---'; cat /sys/class/dmi/id/bios_version;
-                    echo '--- IP ---'; ip -o -f inet addr show;
-                    echo '--- OS ---'; cat /etc/os-release | grep PRETTY_NAME;
-                    echo '--- GPU ---'; lspci | grep -i 'vga\|3d\|display';
-                    echo '--- Uptime ---'; uptime -p" 
+            ssh_exec "echo --- BIOS --- && wmic bios get name, serialnumber && echo. && echo --- OS --- && systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\" && echo. && echo --- GPU --- && wmic path win32_videocontroller get name && echo. && echo --- IP --- && ipconfig" 
             ;;
-        7) break ;;
-        *) echo "Choix invalide." ;;
+        7) break 
+            ;;
+        *) echo "Choix invalide." 
+            ;;
         esac
     done
 }
 
-# ---C. Evenements log
+# ---C. Evenements log (Event Viewer Windows)
 function menu_logs(){
         while true;do
         clear
         echo   ================================
-        echo "====Information evenement logs===="
+        echo "====Information Logs (Win10)===="
         echo   ================================
-        echo "1. 10 derniers events critiques"
-        echo "2. Evenements log-evt.log utilisateur"
-        echo "3. Evenements log-evt.log ordinateur"
-        echo "4. Evenements .evt"
-        echo "5. Toutes les informations"
-        echo "6. Retour au Menu principal"
+        echo "1. 10 dernières erreurs Système"
+        echo "2. Logs Sécurité (Auth)"
+        echo "3. Logs Application"
+        echo "4. Toutes les informations"
+        echo "5. Retour au Menu principal"
         echo -n "Votre choix : "
         read choix
 
         case $choix in
         1) 
             Log "LogsConsultCritiques"
-            ssh_exec "journalctl -p 0..3 -n 10 --no-pager" 
+            ssh_exec "powershell -Command \"Get-EventLog -LogName System -EntryType Error,Warning -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize -Wrap\"" 
             ;; 
         2) 
             Log "LogsConsultAuth"
-            ssh_exec "tail -n 20 /var/log/auth.log 2>/dev/null || journalctl _COMM=sshd -n 20" 
+            ssh_exec "powershell -Command \"Get-EventLog -LogName Security -Newest 10 | Format-Table TimeGenerated, EventID, Message -AutoSize\"" 
             ;;
         3) 
-            Log "LogsConsultSyslog"
-            ssh_exec "tail -n 20 /var/log/syslog 2>/dev/null || journalctl -n 20" 
+            Log "LogsConsultApp"
+            ssh_exec "powershell -Command \"Get-EventLog -LogName Application -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize\"" 
             ;;
         4) 
-            Log "LogsConsultEvtFiles"
-            ssh_exec "find /var/log -name '*.evt' -o -name '*.log' | head -n 10" 
-            ;; 
-        5) 
             Log "LogsConsultALL"
-            ssh_exec "echo '--- CRITIQUE ---'; journalctl -p 0..3 -n 5 --no-pager;
-                     echo '--- AUTH ---'; tail -n 5 /var/log/auth.log 2>/dev/null;
-                     echo '--- SYSLOG ---'; tail -n 5 /var/log/syslog 2>/dev/null" 
+            ssh_exec "powershell -Command \"Write-Host '--- ERREURS SYS ---'; Get-EventLog -LogName System -EntryType Error -Newest 5; Write-Host '--- SECURITE ---'; Get-EventLog -LogName Security -Newest 5\"" 
             ;;
-        6) break ;;
-        *) echo "Choix invalide." ;;
+        5) break 
+        ;;
+        *) echo "Choix invalide." 
+        ;;
         esac
     done 
 }
@@ -271,13 +252,15 @@ function menu_save(){
         mkdir -p "./info"
     fi
 
-    echo ">>> Récupération du nom de la machine cible..."
+    echo ">>> Récupération du hostname Windows..."
     REMOTE_HOSTNAME=$(ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "hostname")
     
+    REMOTE_HOSTNAME=$(echo "$REMOTE_HOSTNAME" | tr -d '\r' | xargs)
+
     if [ -z "$REMOTE_HOSTNAME" ]; then
-        CIBLE="Inconnue_$REMOTE_IP"
+        CIBLE="Win10_$REMOTE_IP"
     else
-        CIBLE=$(echo "$REMOTE_HOSTNAME" | xargs)
+        CIBLE="$REMOTE_HOSTNAME"
     fi
 
     DATE_FORMAT=$(date +%Y%m%d)
@@ -287,20 +270,20 @@ function menu_save(){
     
     {
         echo "================================================================"
-        echo " RAPPORT D'AUDIT : $CIBLE"
+        echo " RAPPORT D'AUDIT WINDOWS : $CIBLE"
         echo " Date : $(date)"
         echo " IP Cible : $REMOTE_IP"
         echo " Utilisateur : $REMOTE_USER"
         echo "================================================================"
         echo ""
-        echo "[OS Version]"
-        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "cat /etc/os-release | grep PRETTY_NAME"
+        echo "[OS Info]"
+        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "systeminfo | findstr /B /C:\"OS\""
         echo ""
-        echo "[IP Info]"
-        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "ip -br a"
+        echo "[IP Config]"
+        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "ipconfig /all"
         echo ""
-        echo "[Events Critiques]"
-        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "journalctl -p 0..3 -n 5 --no-pager"
+        echo "[Dernières Erreurs Système]"
+        ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "powershell -Command \"Get-EventLog -LogName System -EntryType Error -Newest 5 | Format-List\""
     } > "$FICHIER"
 
     echo ">>> Succès."
@@ -312,18 +295,16 @@ function menu_save(){
 # 3. Boucle Principale 
 # ==============================================================================
 
-# Début du log
-
 Log "StartScript"
 
 while true; do
     clear
     echo  "======================================="
-    echo  "   PRISE D'INFO SUR LES MACHINES       "
+    echo  "   AUDIT WINDOWS DEPUIS DEBIAN         "
     echo  "======================================="
     echo "1. Information réseau"
     echo "2. Informations sys et matériel"
-    echo "3. Recherche d'événement logs"
+    echo "3. Recherche logs (Event Viewer)"
     echo "4. Enregistrement - Les informations"
     echo "5. Retour menu général"  
     echo "6. Quitter"             
@@ -332,16 +313,21 @@ while true; do
     read main_choice
 
     case $main_choice in
-        1) menu_reseau ;;
-        2) menu_sys ;;
-        3) menu_logs ;;
-        4) menu_save ;;
+        1) menu_reseau 
+        ;;
+        2) menu_sys 
+        ;;
+        3) menu_logs 
+        ;;
+        4) menu_save 
+        ;;
         5) echo "Retour au menu principal..."
             exit 0 
-            ;;
+        ;;
         6) echo "Au revoir !"
             exit 0 
-            ;;
-        *) echo "Option invalide." ;;
+        ;;
+        *) echo "Option invalide." 
+        ;;
     esac
 done

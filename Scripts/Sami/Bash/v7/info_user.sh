@@ -8,57 +8,35 @@ function end_user_return()
         sleep 3
         clear
         echo -e "Désirez-vous d'autres informations sur l'utilisateur $user_name ou sortir du script ?\n"
-        echo "1 - Retourner au Menu de l'Espace Informations Utilisateur."
+        echo "1 - Retourner au menu de l'Espace Informations Utilisateur."
         echo "X - Sortie."
         read -p "Choisissez une option : " choiceRec
 
         case "$choiceRec" in
             1)
-                echo -e "\nRetour au Menu de l'Espace Informations de l'Utilisateur...\n"
-                Log "ReturnUserInformationArea"
+                echo -e "\nRetour au Menu des Informations de l'Utilisateur...\n"
                 break
                 ;;
 
             x|X)
                 echo -e "\nA bientôt !\n"
-                Log "EndScript"
                 exit 0
                 ;;
 
             *)
                 clear
                 echo -e "\nErreur de saisie.\nVeuillez recommencer SVP."
-                Log "InputError"
                 continue
                 ;;
         esac
     done
 }
 
-function Log() {
-
-    local evenement="$1"
-    local fichier_log="/var/log/log_evt.log"
-    local date_actuelle=$(date +"%Y%m%d")
-    local heure_actuelle=$(date +"%H%M%S")
-    local utilisateur=$(whoami)
-
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
-
-    # Ecriture dans le fichier
-    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
-
-}
-
-Log "NewScript"
-
 while true
 do
     sleep 3
     clear
     echo -e "\nBienvenue dans l'Espace Informations Utilisateur !\n"
-    Log "WelcomeToUserInformationArea"
     echo -e "Quelles informations désirez-vous connaître sur l'utilisateur $username ?\n"
     echo "1 - Date de la dernière connexion"
     echo "2 - Date de dernière modification du mot de passe"
@@ -70,44 +48,39 @@ do
     case "$choice" in
         1)
             echo -e "\nDernière connexion de $user_name :"
-            ssh -o ConnectTimeout=10 -T clilin01 "last -n 1 "$user_name""
-            Log "LastConnexion"
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo last -n 1 "$user_name""
             end_user_return
             continue
         ;;
 
         2)
             echo -e "\nDate de dernière modification du mot de passe :"
-            ssh -o ConnectTimeout=10 -T clilin01 "chage -l "$user_name" | grep -i "last password change""
-            Log "DateLastPasswordChange"
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo chage -l "$user_name" | grep -i "last password change""
             end_user_return
             continue
             ;;
 
         3)
             echo -e "\nSessions ouvertes par $user_name :"
-            ssh -o ConnectTimeout=10 -T clilin01 "loginctl list-sessions --no-legend --no-pager | awk -v user="wilder" '$3 == user {print "user="$3, "uid="$2, "session="$1}'"
-            Log "ListOpenUserSessions"
+            ssh -o ConnectTimeout=10 -T clilin01 "loginctl list-sessions --no-legend --no-pager"
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo awk -v user="$user_name" '$3 == user {print "user="$3, "uid="$2, "session="$1}'"
             end_user_return
             continue
             ;;
 
         4)
             echo -e "\nRetour dans l'Espace Personnel Utilisateur..."
-            Log "ReturnUserPersonnalArea"
             return
             ;;
 
         x|X)
             echo -e "\nA bientôt !\n"
-            Log "EndScript"
             exit 0
             ;;
 
         *)
             clear
             echo -e "\nErreur de saisie.\nVeuillez faire selon ce qui est proposé"
-            Log "InputError"
             continue
             ;;
     esac

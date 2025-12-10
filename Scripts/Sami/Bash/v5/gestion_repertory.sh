@@ -82,7 +82,7 @@ do
             echo ""
             read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : /home/wilder/monRépertoire) : " rep_rename
             echo ""
-            if [ ! -d "$rep_rename" ]
+            if ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d "$rep_rename" ]"
             then
                 clear
                 echo -e "Attention ! Le répertoire $rep_rename n'existe pas !\n"
@@ -90,7 +90,7 @@ do
                 continue
             else
                 read -p "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/wilder/monRépertoire) : " new_rep_name
-                mv $rep_rename $new_rep_name
+                ssh -o ConnectTimeout=10 -T clilin01 "mv $rep_rename $new_rep_name"
                 echo -e "\nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !\n"
                 end_rep_return
                 continue
@@ -102,7 +102,7 @@ do
             echo ""
             read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : /home/wilder/monRépertoire) : " rep_del
             echo ""
-            if [ ! -d "$rep_del" ]
+            if ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d "$rep_del" ]"
             then
                 clear
                 echo -e "Attention ! Le répertoire $rep_del n'existe pas !\n"
@@ -112,9 +112,9 @@ do
                 while true
                 do
                     read -p "Confirmez la supression du répertoire $rep_del ? (O/n) " confirm_rep_del
-                    if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]
+                    if ssh -o ConnectTimeout=10 -T clilin01 "[[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]"
                     then
-                        rm -r $rep_del
+                        ssh -o ConnectTimeout=10 -T clilin01 "rm -r $rep_del"
                         echo -e "\nLe répertoire $rep_del a bien été supprimé !\n"
                         end_rep_return
                         continue 2
