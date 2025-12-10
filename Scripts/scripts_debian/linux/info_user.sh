@@ -1,68 +1,114 @@
 #!/bin/bash
 
 # au lieu de la recopier 4 fois je propose une fonction pour revenir au menu apres avoir eu sa premiere info sur l'utilisateur choisi
-retour_menu() {
+function end_user_return()
+{
     while true
     do
-        echo "Menu: désirez-vous d'autres informations sur l'utilisateur $user_name ?"
-        echo "1 - Retourner au menu Informations sur l'utilisateur $user_name"
-        echo "2 - Quitter le script"
+        sleep 3
+        clear
+        echo -e "Désirez-vous d'autres informations sur l'utilisateur $user_name ou sortir du script ?\n"
+        echo "1 - Retourner au Menu de l'Espace Informations Utilisateur."
+        echo "X - Sortie."
         read -p "Choisissez une option : " choiceRec
 
         case "$choiceRec" in
             1)
-                echo -e "\nRetour au Menu des Informations de l'Utilisateur\n"
-                continue 2
+                echo -e "\nRetour au Menu de l'Espace Informations de l'Utilisateur...\n"
+                Log "ReturnUserInformationArea"
+                break
                 ;;
-            2)
-                echo -e "\nSortie du script."
+
+            x|X)
+                echo -e "\nA bientôt !\n"
+                Log "EndScript"
                 exit 0
                 ;;
+
             *)
-                echo -e "\nChoix invalide."
+                clear
+                echo -e "\nErreur de saisie.\nVeuillez recommencer SVP."
+                Log "InputError"
+                continue
                 ;;
         esac
     done
 }
 
-    while true
-    do
-        clear
-        echo -e "Bienvenue dans le Menu des Informations de l'Utilisateur $user_name !\n"
-        echo "1 - Date de la dernière connexion"
-        echo "2 - Date de dernière modification du mot de passe"
-        echo "3 - Liste des sessions ouvertes par l’utilisateur"
-        echo "4 - Retour au Menu Modification de l'Utilisateur"
-        echo -e "5 - Quitter le script\n"
-        read -p "Choisissez une option : " choice
+function Log() {
 
-        case "$choice" in
-            1)
-                echo -e "\nDernière connexion de $user_name :"
-                last -n 1 "$user_name"
-                retour_menu
-                ;;
-            2)
-                echo -e "\nDate de dernière modification du mot de passe :"
-                chage -l "$user_name" | grep -i "last password change"
-                retour_menu
-                ;;
-            3)
-                echo -e "\nSessions ouvertes par $user_name :"
-                last "$user_name" | head -n 10
-                retour_menu
-                ;;
-            4)
-                echo -e "\nRetour au Menu Modification de l'Utilisateur"
-                return
-                ;;
-            5)
-                echo -e "\nSortie du script."
-                exit 0
-                ;;
-            *)
-                echo -e "\nChoix invalide."
-                continue
-                ;;
-        esac
-    done
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
+
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
+
+}
+
+Log "NewScript"
+
+while true
+do
+    sleep 3
+    clear
+    echo -e "\nBienvenue dans l'Espace Informations Utilisateur !\n"
+    Log "WelcomeToUserInformationArea"
+    echo -e "Quelles informations désirez-vous connaître sur l'utilisateur $username ?\n"
+    echo "1 - Date de la dernière connexion"
+    echo "2 - Date de dernière modification du mot de passe"
+    echo "3 - Liste des sessions ouvertes par l’utilisateur"
+    echo "4 - Retour au Menu Modification de l'Utilisateur"
+    echo -e "X - Quitter le script\n"
+    read -p "Votre choix : " choice
+
+    case "$choice" in
+        1)
+            echo -e "\nDernière connexion de $user_name :"
+            ssh -o ConnectTimeout=10 -T clilin01 "last -n 1 "$user_name""
+            Log "LastConnexion"
+            end_user_return
+            continue
+        ;;
+
+        2)
+            echo -e "\nDate de dernière modification du mot de passe :"
+            ssh -o ConnectTimeout=10 -T clilin01 "chage -l "$user_name" | grep -i "last password change""
+            Log "DateLastPasswordChange"
+            end_user_return
+            continue
+            ;;
+
+        3)
+            echo -e "\nSessions ouvertes par $user_name :"
+            ssh -o ConnectTimeout=10 -T clilin01 "loginctl list-sessions --no-legend --no-pager | awk -v user="wilder" '$3 == user {print "user="$3, "uid="$2, "session="$1}'"
+            Log "ListOpenUserSessions"
+            end_user_return
+            continue
+            ;;
+
+        4)
+            echo -e "\nRetour dans l'Espace Personnel Utilisateur..."
+            Log "ReturnUserPersonnalArea"
+            return
+            ;;
+
+        x|X)
+            echo -e "\nA bientôt !\n"
+            Log "EndScript"
+            exit 0
+            ;;
+
+        *)
+            clear
+            echo -e "\nErreur de saisie.\nVeuillez faire selon ce qui est proposé"
+            Log "InputError"
+            continue
+            ;;
+    esac
+done
