@@ -8,8 +8,11 @@ function Linux() {
 
     # Recherche via nmap pour trouver les IP du réseau
     Log "RecuperationIP"
-    nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
-    #nmap -sn -R 172.16.40.0/24 | awk '/Nmap scan report/{print $5, $6}'
+
+    #commande machine test
+    #nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
+
+    nmap -sn -R 172.16.40.0/24 | awk '/Nmap scan report/{print $5, $6}'
     echo
     # Saisie rentrdee l'IP pour la création d'une variable
     read -p "Rentrez une adresse IP : " AdresseIp
@@ -17,10 +20,13 @@ function Linux() {
     # On recupere le nom des utilisateurs sur la machine cible
     Log "RecuperationCompteAdmin"
     #ssh -o ConnectTimeout=10 -T clilin01 "getent passwd" 2>/dev/null | awk -F: '$3>=1000 {print $1}'
-    #ssh -o ConnectTimeout=10 -T clilin01 "cat /etc/group" | grep "sudo"
-    cat /etc/group | grep "sudo"
-    echo
+    ssh -o ConnectTimeout=10 -T clilin01 "cat /etc/group" | grep "sudo"
+    
+    #commande machine test
+    #cat /etc/group | grep "sudo"
+
     # Saisie du nom d'utilisateur pour la création d'une variable
+    echo
     read -p "Puis rentrez un nom d'utilisateur : " NomMachine
     echo
 
@@ -44,7 +50,7 @@ function Linux() {
     echo
     Log "ConnexionMachineLinux"
     sleep 1
-    source ~/Scripts/linux/menu_linux.sh $NomMachine $AdresseIp
+    source ~/scripts_debian/linux/menu_linux.sh $NomMachine $AdresseIp
 
 }
 
@@ -54,17 +60,18 @@ function Windows() {
 
     # Recherche via nmap pour trouver les IP du réseau
     Log "RecuperationIP"
-    nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
-    #nmap -sn -R 172.16.40.0/24 | awk '/Nmap scan report/{print $5, $6}'
+
+    #commande machine test
+    #nmap -sn -R 192.10.10.0/24 | awk '/Nmap scan report/{print $5, $6}'
+
+    nmap -sn -R 172.16.40.0/24 | awk '/Nmap scan report/{print $5, $6}'
     echo
     # Saisie rentrdee l'IP pour la création d'une variable
     read -p "Rentrez une adresse IP : " AdresseIp
     echo
     # On recupere le nom des utilisateurs sur la machine cible
     Log "RecuperationCompteAdmin"
-    #ssh -o ConnectTimeout=10 -T clilin01 "getent passwd" 2>/dev/null | awk -F: '$3>=1000 {print $1}'
-    #ssh -o ConnectTimeout=10 -T clilin01 "cat /etc/group" | grep "sudo"
-    cat /etc/group | grep "sudo"
+    ssh -o ConnectTimeout=10 -T cliwin01 "(Get-LocalGroupMenber -Name "Administrateurs")"
     echo
     # Saisie du nom d'utilisateur pour la création d'une variable
     read -p "Puis rentrez un nom d'utilisateur : " NomMachine
@@ -88,7 +95,7 @@ function Windows() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source ~/Scripts/linux/menu_windows.sh $NomMachine $AdresseIp 
+    source ~/scripts_debian/windows/menu_windows.sh $NomMachine $AdresseIp 
 }
 
 # Ajout d'une fonction log pour créer un suivis des utilistations du script

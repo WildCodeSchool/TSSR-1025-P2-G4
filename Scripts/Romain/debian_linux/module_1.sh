@@ -1,51 +1,57 @@
 #!/bin/bash
 
-# Création des variables
+# Création  des variables
 
-NomMachine=$1
-IpMachine=$2
+NomMachine="$1"
+IpMachine="$2"
 
 # Preparation des fonctions
 
-function Module_1() {
+function Main() {
 
-    # Connexion au module 1
-    echo "Connexion au module 1... "
+# Connexion Prise en main à distance
+    echo "Connexion Menu prise en main à distance... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    Log "MenuActionMachine"
-    # Sans oublié les arguments
-    source module_1.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_prise_en_main.sh "$NomMachine" "$IpMachine"
 
 }
 
-function Module_2() {
+function Feu() {
 
-    # Connexion au module 2
-    echo "Connexion au module 2... "
+# Connexion Pare-feu
+    echo "Connexion Menu pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    Log "MenuGestionDesUtilisateurs"
-    # Sans oublié les arguments
-    source module_2.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_pare-feu.sh "$NomMachine" "$IpMachine"
 
 }
 
-function Module_3() { 
+function Redemarrer() {
 
-    # Connexion au module 3
-    echo "Connexion au module 3... "
+# Connexion Redémarrer
+    echo "Connexion Menu Redémarrage... "
     echo
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    Log "MenuInformationsMachine"
-    # Sans oublié les arguments
-    source module3.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/menu_redemarrage.sh  "$NomMachine" "$IpMachine"
+
+}
+
+function Repertoire() {
+
+# Connexion Gestion de répertoires
+    echo "Connexion Menu gestion de répertoires... "
+    echo
+    echo " ---------------------------------------------- "
+    echo
+    sleep 1
+    source ~/scripts_debian/linux/directory_management.sh
 
 }
 
@@ -72,10 +78,9 @@ function Log() {
 
 Log "NewScript"
 
-
 # Création d'une petite interface graphique 
 
-while true
+while true 
 do
 
 clear
@@ -84,60 +89,70 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####             Menu Linux                ####"
+echo "####          Menu Action Machine          ####"
 printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
 
-    # Choix de la machine 
-    echo "Chossissez dans quel machine client vous voulez aller. "
+
+    # Choix de l'action a éxécuter
+    echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Menu action machine"
-    echo "2) Menu gestion des utilisateurs"
-    echo "3) Menu information machine"
-    echo "4) Retour Menu Serveur"
+    echo "1) Menu prise en main à distance"
+    echo "2) Menu pare-feu"
+    echo "3) Menu redémarrage"
+    echo "4) Menu gestion de répertoires"
+    echo "5) Retour Menu Linux"
     echo "x) Sortir"
-    echo
-    read -p "Votre choix : " module
+    echo 
+    read -p "Votre choix : " action
     echo
 
-    case $module in
+    case $action in
 
         1)
-            echo "Menu action machine"
+            echo "Menu prise en main à distance"
             echo
-            Module_1 "$NomMachine" "$IpMachine"
-            Log "MenuActionMachine"
+            Log "MenuPriseEnMain"
+            Main "$NomMachine" "$IpMachine"
             continue
             ;;
-        
+
         2)
-            echo "Menu Gestion des Utilisateurs"
+            echo "Menu pare-feu"
             echo
-            Module_2 "$NomMachine" "$IpMachine"
-            Log "MenuGestionDesUtilisateurs"
+            Log "MenuPareFeu"
+            Feu "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
-            echo "Menu information machine"
+            echo "Menu Redémarrage"
             echo
-            Module_3 "$NomMachine" "$IpMachine"
-            Log "MenuInformationMachine"
+            Log "MenuRedémarrage"
+            Redemarrer "$NomMachine" "$IpMachine"
+            continue
+            ;;
+        
+        4) 
+            echo "Menu gestion de répertoires"
+            echo
+            Log "MenuGestionDeRépertoires"
+            Repertoire "$NomMachine" "$IpMachine"
             continue
             ;;
 
-        4)
-            echo "Retour Menu Serveur"
+        5)
+            echo "Retour Menu Linux"
             echo
-            echo "Connexion Menu Serveur... "
+            echo "Connexion Menu Linux... "
             echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
-            Log "RetourMenuServeur"
+            Log "RetourMenuLinux"
             return
             ;;
 
@@ -156,6 +171,6 @@ echo
             sleep 1
             Log "MauvaisChoix"
             ;;
-
+    
     esac
 done

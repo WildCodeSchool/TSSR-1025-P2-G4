@@ -1,57 +1,49 @@
 #!/bin/bash
 
-# Création  des variables
+# Création des variables
 
 NomMachine="$1"
 IpMachine="$2"
 
 # Preparation des fonctions
 
-function Main() {
+function Etat() {
 
-# Connexion Prise en main à distance
-    echo "Connexion Menu prise en main à distance... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    source menu_prise_en_main.sh "$NomMachine" "$IpMachine"
-
-}
-
-function Feu() {
-
-# Connexion Pare-feu
-    echo "Connexion Menu pare-feu... "
-    echo
-    echo " ---------------------------------------------- "
-    echo
-    sleep 1
-    source menu_pare-feu.sh "$NomMachine" "$IpMachine"
+# Etat du pare-feu
+    echo "Le pare-feu est : "
+    # Cette commande donne l'état du pare feu sur la machine cible
+    Log "EtatPareFeu_${NomMachine}_${IpMachine}"
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine"
+    sleep 4
 
 }
 
-function Redemarrer() {
+function Activation() {
 
-# Connexion Redémarrer
-    echo "Connexion Menu Redémarrage... "
+# Activation du pare-feu
+    echo "Activation du pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
-    sleep 1
-    source menu_redemarrage.sh  "$NomMachine" "$IpMachine"
+    # Connexion ssh à la machine pour activé le pare-feu
+    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" 
+    sleep 2
 
 }
 
-function Repertoire() {
+function Desactivation() {
 
-# Connexion Gestion de répertoires
-    echo "Connexion Menu gestion de répertoires... "
+# Activation du pare-feu
+    echo "Desactivation du pare-feu... "
     echo
     echo " ---------------------------------------------- "
     echo
-    sleep 1
-    #./
+    # Connexion ssh à la machine pour désactivé le pare-feu
+    # Attention au sudo
+    Log "DesactivationPareFeu_${NomMachine}_${IpMachine}"
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" 
+    sleep 2
 
 }
 
@@ -78,6 +70,8 @@ function Log() {
 
 Log "NewScript"
 
+
+
 # Création d'une petite interface graphique 
 
 while true 
@@ -89,76 +83,66 @@ echo "###############################################"
 echo "###############################################"
 echo "####                                       ####"
 echo "####                                       ####"
-echo "####          Menu Action Machine          ####"
+echo "####            Menu Pare-feu              ####"
 printf "####  %-35s  ####\n" "$NomMachine" "$IpMachine"
 echo "####                                       ####"
 echo "###############################################"
 echo "###############################################"
 echo 
 
-
     # Choix de l'action a éxécuter
     echo "Choississez quelle action effectuer. "
     echo
-    echo "1) Menu prise en main à distance"
-    echo "2) Menu pare-feu"
-    echo "3) Menu redémarrage"
-    echo "4) Menu gestion de répertoires"
-    echo "5) Retour Menu Linux"
+    echo "1) Etat du pare-feu"
+    echo "2) Activer le pare-feu"
+    echo "3) Desactiver le pare-feu"
+    echo "4) Retour Module 1"
     echo "x) Sortir"
     echo 
-    read -p "Votre choix : " action
+    read -p "Votre choix : " redemarrer
     echo
 
-    case $action in
+    case $redemarrer in
 
         1)
-            echo "Menu prise en main à distance"
+            echo "Etat du pare-feu"
             echo
-            Log "MenuPriseEnMain"
-            Main "$NomMachine" "$IpMachine"
+            Log "EtatPareFeu"
+            Etat "$NomMachine" "$IpMachine"
             continue
             ;;
 
         2)
-            echo "Menu pare-feu"
+            echo "Activer le pare-feu"
             echo
-            Log "MenuPareFeu"
-            Feu "$NomMachine" "$IpMachine"
+            Log "ActiverPareFeu"
+            Activation "$NomMachine" "$IpMachine"
             continue
             ;;
 
         3)
-            echo "Menu Redémarrage"
+            echo "Désactiver le pare-feu"
             echo
-            Log "MenuRedémarrage"
-            Redemarrer "$NomMachine" "$IpMachine"
-            continue
-            ;;
-        
-        4) 
-            echo "Menu gestion de répertoires"
-            echo
-            Log "MenuGestionDeRépertoires"
-            Repertoire "$NomMachine" "$IpMachine"
+            Log "DesactiverPareFeu"
+            Desactivation "$NomMachine" "$IpMachine"
             continue
             ;;
 
-        5)
-            echo "Retour Menu Linux"
+        4)
+            echo "Retour Menu Module 1"
             echo
-            echo "Connexion Menu Linux... "
+            echo "Connexion Module 1... "
             echo
             echo " ---------------------------------------------- "
             echo
             sleep 1
-            Log "RetourMenuLinux"
+            Log "RetourMenuActionMachine"
             return
             ;;
 
         x|X)
             echo "Au revoir"
-            echo
+            echo 
             Log "EndScript"
             exit 0
             ;;
@@ -171,6 +155,6 @@ echo
             sleep 1
             Log "MauvaisChoix"
             ;;
-    
+        
     esac
 done
