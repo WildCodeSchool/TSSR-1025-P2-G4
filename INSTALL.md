@@ -40,7 +40,9 @@ Bash
 sudo apt install openssh-server -y
 L'option -y confirme automatiquement l'installation des dépendances.
 
-![Image : Capture du terminal Debian durant l'installation de openssh-server]
+
+![](Ressources/Images/installssh/sshd2.png)
+
 
 Étape 3 : Vérification du service
 Assurez-vous que le service est démarré et actif :
@@ -50,7 +52,9 @@ Bash
 sudo systemctl status ssh
 Résultat attendu : Le statut doit indiquer active (running) en vert.
 
-![Image : Capture de la commande systemctl status ssh montrant le service actif sur SRVLX01]
+
+![](Ressources/Images/installssh/sshd3.png)
+
 
 4. Installation sur le Client Ubuntu (CLILIN01)
 Le client Ubuntu doit également disposer du service SSH pour être piloté par le script d'administration.
