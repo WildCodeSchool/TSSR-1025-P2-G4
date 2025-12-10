@@ -25,7 +25,6 @@ function Log() {
 # --- C. Initialisation des Variables ---
 
 # 1. Récupération des variables du parent (menu_linux.sh)
-# Si IpMachine existe (vient du parent), on l'utilise pour REMOTE_IP
 if [ -n "$IpMachine" ]; then
     REMOTE_IP="$IpMachine"
 fi
@@ -50,7 +49,6 @@ SSH_SOCKET="/tmp/ssh_mux_${REMOTE_IP}_${REMOTE_USER}"
 
 # --- D. Nettoyage et Fin de Script ---
 function cleanup {
-    # On ne ferme la connexion que si c'est CE script qui l'a créée
     if [ "$CONNEXION_CREEE_ICI" == "oui" ]; then
         echo ""
         echo ">>> Fermeture de la connexion maître..."
@@ -69,7 +67,6 @@ trap cleanup EXIT
 
 # On vérifie si une connexion est DÉJÀ active (créée par menu_linux.sh)
 if [ -S "$SSH_SOCKET" ]; then
-    # Le fichier socket existe, on teste si la connexion est vivante
     ssh -S "$SSH_SOCKET" -O check "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
     if [ $? -eq 0 ]; then
         echo ">>> Connexion existante détectée. Utilisation du canal sécurisé..."
@@ -80,7 +77,7 @@ if [ -S "$SSH_SOCKET" ]; then
     fi
 fi
 
-# Si pas de connexion héritée, on l'ouvre (c'est là qu'il demandera le MDP si pas de clé SSH)
+# Si pas de connexion héritée, on l'ouvre 
 if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ""
     echo ">>> Établissement de la connexion sécurisée..."
@@ -92,7 +89,7 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
         echo "!!! Erreur : Impossible de se connecter."
         exit 1
     fi
-    # On marque qu'on a ouvert la connexion nous-mêmes (pour savoir si on doit la fermer à la fin)
+    # On marque qu'on a ouvert la connexion nous-mêmes 
     CONNEXION_CREEE_ICI="oui"
 fi
 
