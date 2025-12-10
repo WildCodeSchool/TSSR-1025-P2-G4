@@ -7,7 +7,9 @@
 * [Installation de putty sur le serveur windows ](#installation-putty-)
 
 ## Connexions ssh des machines du réseau :
+
 <span id=connexion_ssh></span>
+
 ### 1. Introduction
 Le protocole SSH (Secure Shell) est la brique fondamentale de ce projet d'administration centralisée. Il permet :
 L'accès distant sécurisé au poste Client Ubuntu .
