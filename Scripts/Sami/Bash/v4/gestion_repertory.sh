@@ -62,7 +62,7 @@ do
     case $choice_menu_gestion_rep in
         1)
             echo ""
-            read -p "Entrez le chemin complet du répertoire à créer (Exemple : $HOME/monRépertoire) : " rep_name
+            read -p "Entrez le chemin complet du répertoire à créer (Exemple : /home/wilder/monRépertoire) : " rep_name
             if [ -d "$rep_name" ]
             then
                 clear
@@ -80,7 +80,7 @@ do
 
         2)
             echo ""
-            read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : $HOME/monRépertoire) : " rep_rename
+            read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : /home/wilder/monRépertoire) : " rep_rename
             echo ""
             if [ ! -d "$rep_rename" ]
             then
@@ -89,7 +89,7 @@ do
                 end_rep_return
                 continue
             else
-                read -p "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : $HOME/monRépertoire) : " new_rep_name
+                read -p "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/wilder/monRépertoire) : " new_rep_name
                 mv $rep_rename $new_rep_name
                 echo -e "\nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !\n"
                 end_rep_return
@@ -100,7 +100,7 @@ do
 
         3)
             echo ""
-            read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : $HOME/monRépertoire) : " rep_del
+            read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : /home/wilder/monRépertoire) : " rep_del
             echo ""
             if [ ! -d "$rep_del" ]
             then
@@ -112,13 +112,13 @@ do
                 while true
                 do
                     read -p "Confirmez la supression du répertoire $rep_del ? (O/n) " confirm_rep_del
-                    if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o"]]
+                    if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]
                     then
                         rm -r $rep_del
                         echo -e "\nLe répertoire $rep_del a bien été supprimé !\n"
                         end_rep_return
                         continue 2
-                    elif [[ "$confirm_rep_del" = "N" || "$confirm_rep_del" = "n"]]
+                    elif [[ "$confirm_rep_del" = "N" || "$confirm_rep_del" = "n" ]]
                     then
                         echo -e "\nLe répertoire $rep_del n'a pas été supprimé.\n"
                         end_rep_return

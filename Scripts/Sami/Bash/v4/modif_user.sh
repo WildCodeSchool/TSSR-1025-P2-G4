@@ -112,7 +112,7 @@ do
             done
         ;;
 
-        3)  
+        4)  
             echo -e "\nRetour dans l'Espace Personnel Utilisateur..."
             return
         ;;
