@@ -126,7 +126,10 @@ Exécutez la commande suivante :
 *sudo apt update*
 Note : Si vous êtes connecté en root, la commande sudo n'est pas nécessaire.
 
-Résultat attendu : Le système télécharge les listes de paquets. ![Image montrant le terminal Debian exécutant apt update avec succès]
+Résultat attendu : Le système télécharge les listes de paquets. 
+
+![](Ressources/Images/installssh/sshd1.png)
+
 
 #### Étape 2 : Installation du paquet Nmap
 Une fois les dépôts à jour, lancez l'installation de Nmap.
@@ -138,7 +141,10 @@ Exécutez la commande suivante :
 sudo apt install nmap -y
 L'option -y valide automatiquement la demande de confirmation d'espace disque.
 
-Résultat attendu : Le gestionnaire de paquets apt télécharge et installe Nmap ainsi que ses dépendances. ![Image montrant le défilement de l'installation de nmap dans le terminal]
+Résultat attendu : Le gestionnaire de paquets apt télécharge et installe Nmap ainsi que ses dépendances. 
+
+![](Ressources/Images/nmap/nmapd1.png)
+
 
 #### Étape 3 : Vérification de l'installation
 Pour valider que l'installation s'est déroulée correctement et que l'outil est fonctionnel.
@@ -150,7 +156,7 @@ Vérifiez la version installée avec la commande :
 nmap --version
 Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exemple : Nmap version 7.93).
 
-![Image montrant la sortie de la commande nmap --version]
+![](Ressources/Images/nmap/nmapd2.png)
 
 
 ## Installation de putty sur le serveur Windows :
