@@ -5,12 +5,11 @@ function end_user_return()
 {
     while true
     do
-        sleep 3
-        clear
+        sleep 2
         echo -e "Désirez-vous d'autres informations sur l'utilisateur $user_name ou sortir du script ?\n"
         echo "1 - Retourner au Menu de l'Espace Informations Utilisateur."
-        echo "X - Sortie."
-        read -p "Choisissez une option : " choiceRec
+        echo -e "X - Sortie.\n"
+        read -p "Votre choix : " choiceRec
 
         case "$choiceRec" in
             1)
@@ -55,7 +54,7 @@ Log "NewScript"
 
 while true
 do
-    sleep 3
+    sleep 2
     clear
     echo -e "\nBienvenue dans l'Espace Informations Utilisateur !\n"
     Log "WelcomeToUserInformationArea"

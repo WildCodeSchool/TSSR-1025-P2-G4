@@ -21,7 +21,7 @@ Log "NewScript"
 
 while true
 do
-    sleep 3
+    sleep 2
     clear
     echo -e "Bienvenue dans l'Espace Personnel Utilisateur !\n"
     Log "WelcomeToUserPersonnalArea"

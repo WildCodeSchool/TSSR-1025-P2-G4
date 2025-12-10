@@ -10,7 +10,7 @@ function end_user_return()
 {
     while true
     do
-        sleep 3
+        sleep 2
         clear
         echo -e "Voulez-vous retourner au au Menu Gestion des Utilisateurs ou sortir du script ?\n"
         echo -e "1 - Retour au Menu Gestion des Utilisateurs.\nX - Sortir.\n"
@@ -56,16 +56,16 @@ Log "NewScript"
 
 while true
 do
-    sleep 3
+    sleep 2
     clear
-    echo -e "\nBienvenue dans l'Espace Suppression Utilisateur !\n"
+    echo -e "\nBienvenue dans l'Espace Suppression Utilisateur !"
     Log "WelcomeToUserDeletionArea"
     echo -e "\nSouhaitez-vous supprimer l'utilisateur $user_name ?\n1 - Oui, supprimer.\n2 - Retour à l'Espace Personnel Utilisateur ?\nX - Sortir.\n"
     read -p "Votre choix : " del_user
     case "$del_user" in        
         1)  
-            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S userdel -r "$user_name" >/dev/null 2>&1"
-            echo -e "\nL'utilisateur $user_name ainsi que son répertoire personnel à été suprimé !\n"
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S userdel -r -- \"$user_name\""
+            echo -e "\nL'utilisateur $user_name ainsi que son répertoire personnel a été suprimé !\n"
             Log "UserDeletion"
             end_user_return
             return

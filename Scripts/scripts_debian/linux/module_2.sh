@@ -27,7 +27,7 @@ Log "NewScript"
 
 while true
 do
-    sleep 3
+    sleep 2
     clear
     echo ""
     echo "###############################################"
