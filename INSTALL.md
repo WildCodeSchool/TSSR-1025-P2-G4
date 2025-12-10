@@ -156,7 +156,7 @@ Vérifiez la version installée avec la commande :
 nmap --version
 Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exemple : Nmap version 7.93).
 
-![](Ressources/Images/nmap/nmapd2.png)
+![](Ressources/Images/nmap/nmapd3.png)
 
 
 ## Installation de putty sur le serveur Windows :
