@@ -8,7 +8,7 @@
 
 ## Connexions ssh des machines du réseau :
 
-<span id=connexion_ssh></span>
+<span id=connexion-ssh-></span>
 
 ### 1. Introduction
 Le protocole SSH (Secure Shell) est la brique fondamentale de ce projet d'administration centralisée. Il permet :
@@ -94,7 +94,7 @@ Relevez l'adresse IP du client Ubuntu :
 
 
 ## Installation de nmap sur le serveur Debian :
-<span id=installation_nmap></span>
+<span id=installation-nmap-></span>
 
 ### 1. Introduction
 Ce document détaille la procédure technique pour installer l'outil Nmap (Network Mapper) sur le serveur Debian de l'infrastructure. Nmap est une dépendance requise pour permettre au script d'administration d'effectuer des opérations de découverte réseau et d'audit de sécurité.
@@ -162,7 +162,7 @@ Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exe
 
 
 ## Installation de putty sur le serveur Windows :
-<span id=installation_putty-></span>
+<span id=installation-putty-></span>
 
 ### 1. Introduction
 Ce document détaille la procédure technique pour installer le client SSH PuTTY sur le serveur Windows de l'infrastructure (SRVWIN01). Cet outil est nécessaire pour permettre l'administration à distance du serveur Debian (SRVLX01) depuis l'environnement Windows, facilitant ainsi les tests de connectivité et la gestion inter-plateforme.
