@@ -51,7 +51,7 @@ function Repertoire() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    source ~/scripts_debian/linux/directory_management.sh
+    source ~/scripts_debian/linux/directory_management.sh "$NomMachine" "$IpMachine"
 
 }
 
