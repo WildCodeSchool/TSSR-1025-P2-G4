@@ -63,7 +63,10 @@ function cleanup {
     # JOURNALISATION : Fin du script
     Log "EndScript"
 }
-trap cleanup EXIT
+# N'active le nettoyage automatique que si ce script est le script principal
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    trap cleanup EXIT
+fi
 
 # --- E. Gestion de la Connexion SSH ---
 
