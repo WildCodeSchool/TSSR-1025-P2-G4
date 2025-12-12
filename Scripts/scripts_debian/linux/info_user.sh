@@ -5,12 +5,11 @@ function end_user_return()
 {
     while true
     do
-        sleep 3
-        clear
+        sleep 2
         echo -e "Désirez-vous d'autres informations sur l'utilisateur $user_name ou sortir du script ?\n"
         echo "1 - Retourner au Menu de l'Espace Informations Utilisateur."
-        echo "X - Sortie."
-        read -p "Choisissez une option : " choiceRec
+        echo -e "X - Sortie.\n"
+        read -p "Votre choix : " choiceRec
 
         case "$choiceRec" in
             1)
@@ -44,7 +43,7 @@ function Log() {
     local utilisateur=$(whoami)
 
     # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
     # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
@@ -55,7 +54,7 @@ Log "NewScript"
 
 while true
 do
-    sleep 3
+    sleep 2
     clear
     echo -e "\nBienvenue dans l'Espace Informations Utilisateur !\n"
     Log "WelcomeToUserInformationArea"

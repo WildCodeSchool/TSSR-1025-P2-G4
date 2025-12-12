@@ -14,7 +14,7 @@ function Log() {
     local utilisateur=$(whoami)
 
     # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
     # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
@@ -55,7 +55,11 @@ function cleanup {
     fi
     Log "EndScript"
 }
-trap cleanup EXIT
+
+# N'active le nettoyage automatique que si ce script est le script principal
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    trap cleanup EXIT
+fi
 
 # --- E. Gestion de la Connexion SSH ---
 
@@ -322,7 +326,7 @@ while true; do
         4) menu_save 
         ;;
         5) echo "Retour au menu principal..."
-            exit 0 
+            return 
         ;;
         6) echo "Au revoir !"
             exit 0 

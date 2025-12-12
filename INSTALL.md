@@ -7,7 +7,9 @@
 * [Installation de putty sur le serveur windows ](#installation-putty-)
 
 ## Connexions ssh des machines du réseau :
-<span id=connexion_ssh></span>
+
+<span id=connexion-ssh-></span>
+
 ### 1. Introduction
 Le protocole SSH (Secure Shell) est la brique fondamentale de ce projet d'administration centralisée. Il permet :
 L'accès distant sécurisé au poste Client Ubuntu .
@@ -92,7 +94,7 @@ Relevez l'adresse IP du client Ubuntu :
 
 
 ## Installation de nmap sur le serveur Debian :
-<span id=installation_nmap></span>
+<span id=installation-nmap-></span>
 
 ### 1. Introduction
 Ce document détaille la procédure technique pour installer l'outil Nmap (Network Mapper) sur le serveur Debian de l'infrastructure. Nmap est une dépendance requise pour permettre au script d'administration d'effectuer des opérations de découverte réseau et d'audit de sécurité.
@@ -160,7 +162,7 @@ Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exe
 
 
 ## Installation de putty sur le serveur Windows :
-<span id=installation_putty-></span>
+<span id=installation-putty-></span>
 
 ### 1. Introduction
 Ce document détaille la procédure technique pour installer le client SSH PuTTY sur le serveur Windows de l'infrastructure (SRVWIN01). Cet outil est nécessaire pour permettre l'administration à distance du serveur Debian (SRVLX01) depuis l'environnement Windows, facilitant ainsi les tests de connectivité et la gestion inter-plateforme.
@@ -194,7 +196,11 @@ Dans la section Package files (MSI), choisissez la version 64-bit x86 (fichier .
 
 Note importante : Sur Windows Server, il est possible que la "Configuration de sécurité renforcée d'Internet Explorer" bloque le téléchargement. Vous devrez peut-être ajouter le site aux sites de confiance ou désactiver temporairement cette sécurité dans le Gestionnaire de serveur.
 
-Résultat attendu : Le fichier putty-64bit-x.xx-installer.msi est présent dans le dossier Téléchargements. ![Image montrant la page de téléchargement de PuTTY avec le fichier MSI sélectionné]
+Résultat attendu : Le fichier putty-64bit-x.xx-installer.msi est présent dans le dossier Téléchargements. 
+
+![](Ressources/Images/installputty/puttyw1.png)
+
+
 
 #### Étape 2 : Exécution de l'assistant d'installation
 Faites un clic droit sur le fichier téléchargé et sélectionnez "Installez" (ou double-cliquez dessus).
@@ -207,13 +213,19 @@ Product Features : Laissez les options par défaut (installation de PuTTY, Pagea
 
 Si la fenêtre du "Contrôle de compte d'utilisateur" (UAC) apparaît, cliquez sur Oui pour autoriser l'installation.
 
-Résultat attendu : Une barre de progression s'affiche, puis l'assistant confirme la fin de l'installation. ![Image montrant l'assistant d'installation PuTTY prêt à installer]
+Résultat attendu : Une barre de progression s'affiche, puis l'assistant confirme la fin de l'installation. 
+
+![](Ressources/Images/installputty/puttyw2.png)
+
 
 #### Étape 3 : Finalisation et Vérification
 À la fin de l'installation, décochez "View README.txt" si vous le souhaitez, puis cliquez sur Finish.
 
 Appuyez sur la touche Windows, tapez "PuTTY" et lancez l'application.
 
-Dans le champ "Host Name (or IP address)", entrez l'adresse IP de votre serveur Debian (ex: 172.16.xx.10 selon votre groupe ) pour tester l'ouverture de l'interface.
+Dans le champ "Host Name (or IP address)", entrez l'adresse IP de votre cible (ex: 172.16.xx.10 selon votre groupe ) pour tester l'ouverture de l'interface.
 
-Résultat attendu : L'interface de configuration de PuTTY s'ouvre sans erreur. ![Image montrant l'interface principale de PuTTY ouverte sur le bureau Windows Server]
+Résultat attendu : L'interface de configuration de PuTTY s'ouvre sans erreur. 
+
+![](Ressources/Images/installputty/puttyw3.png)
+

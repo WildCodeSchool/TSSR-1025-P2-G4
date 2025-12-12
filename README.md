@@ -79,7 +79,7 @@
 
 * Structuration du script en différents modules connectés
 * Compréhension des connexions SSH pour activer les commandes à distance
-* Déboge des scripts
+* Débogage des scripts
 * Premiers tests sur l'environnement Proxmox
 
 ### 🏃🏼‍♂️ Sprint 3 :

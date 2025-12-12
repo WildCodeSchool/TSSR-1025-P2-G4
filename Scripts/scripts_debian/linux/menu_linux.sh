@@ -17,7 +17,7 @@ function Module_1() {
     sleep 1
     Log "MenuActionMachine"
     # Sans oublié les arguments
-    source ~/Scripts/linux/module_1.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/module_1.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -31,7 +31,7 @@ function Module_2() {
     sleep 1
     Log "MenuGestionDesUtilisateurs"
     # Sans oublié les arguments
-    source ~/Scripts/linux/module_2.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/module_2.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -45,7 +45,7 @@ function Module_3() {
     sleep 1
     Log "MenuInformationsMachine"
     # Sans oublié les arguments
-    source ~/Scripts/linux/module3.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/linux/module3.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -60,7 +60,7 @@ function Log() {
     local utilisateur=$(whoami)
 
     # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
     # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
