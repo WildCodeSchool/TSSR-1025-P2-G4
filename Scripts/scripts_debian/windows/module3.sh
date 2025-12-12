@@ -326,7 +326,7 @@ while true; do
         4) menu_save 
         ;;
         5) echo "Retour au menu principal..."
-            exit 0 
+            return 
         ;;
         6) echo "Au revoir !"
             exit 0 
