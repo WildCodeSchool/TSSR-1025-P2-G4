@@ -23,6 +23,8 @@ function Linux() {
     ssh -o ConnectTimeout=10 -T clilin01 "cat /etc/group" | grep "sudo"
     
     #commande machine test
+    #ssh -o ConnectTimeout=10 -T romii@192.10.10.20 "cat /etc/group" | grep "sudo"
+    #commande machine test
     #cat /etc/group | grep "sudo"
 
     # Saisie du nom d'utilisateur pour la création d'une variable
@@ -71,8 +73,18 @@ function Windows() {
     echo
     # On recupere le nom des utilisateurs sur la machine cible
     Log "RecuperationCompteAdmin"
-    ssh -o ConnectTimeout=10 -T cliwin01 "(Get-LocalGroupMenber -Name "Administrateurs")"
+    ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalGroupMember -Group Administrateurs | Select-Object Name"
     echo
+
+    if [$? -ne 0 ]
+    then    
+        ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalGroupMember -Group Administrators | Select-Object Name"
+    fi
+    echo
+
+    #commande machine test
+    #ssh -o ConnectTimeout=10 -T romain@192.10.10.10 "(Get-LocalGroupMenber -Name "Administrateurs")"
+
     # Saisie du nom d'utilisateur pour la création d'une variable
     read -p "Puis rentrez un nom d'utilisateur : " NomMachine
     echo
@@ -88,8 +100,8 @@ function Windows() {
         sleep 0.5
         return 1
     fi
-
     echo
+    
     echo "Connexion à la machine windows... "
     echo
     echo " ---------------------------------------------- "
