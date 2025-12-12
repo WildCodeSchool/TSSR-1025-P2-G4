@@ -13,7 +13,7 @@ function Etat() {
     echo "Le pare-feu est : "
     # Cette commande donne l'état du pare feu sur la machine cible
     Log "EtatPareFeu_${NomMachine}_${IpMachine}"
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine"
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "Get-NetFirewallProfile | Select-Object Name, Enabled"
     sleep 4
 
 }
@@ -27,7 +27,7 @@ function Activation() {
     echo
     # Connexion ssh à la machine pour activé le pare-feu
     Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" 
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True"
     sleep 2
 
 }
@@ -42,7 +42,7 @@ function Desactivation() {
     # Connexion ssh à la machine pour désactivé le pare-feu
     # Attention au sudo
     Log "DesactivationPareFeu_${NomMachine}_${IpMachine}"
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" 
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
     sleep 2
 
 }
@@ -58,7 +58,7 @@ function Log() {
     local utilisateur=$(whoami)
 
     # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
+    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
     # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
