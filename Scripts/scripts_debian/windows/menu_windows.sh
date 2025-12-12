@@ -17,7 +17,7 @@ function Module_1() {
     sleep 1
     Log "MenuActionMachine"
     # Sans oublié les arguments
-    ~/scripts_debian/windows/module_1.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/windows/module_1.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -31,7 +31,7 @@ function Module_2() {
     sleep 1
     Log "MenuGestionDesUtilisateurs"
     # Sans oublié les arguments
-    ~/scripts_debian/windows/module_2.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/windows/module_2.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -45,7 +45,7 @@ function Module_3() {
     sleep 1
     Log "MenuInformationsMachine"
     # Sans oublié les arguments
-    ~/scripts_debian/windows/module3.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/windows/module3.sh "$NomMachine" "$IpMachine"
 
 }
 

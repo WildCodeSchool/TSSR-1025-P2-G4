@@ -27,7 +27,7 @@ function Feu() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    ~/scripts_debian/windows/menu_pare-feu.sh "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/windows/menu_pare-feu.sh "$NomMachine" "$IpMachine"
 
 }
 
@@ -39,7 +39,7 @@ function Redemarrer() {
     echo " ---------------------------------------------- "
     echo
     sleep 1
-    ~/scripts_debian/windows/menu_redemarrage.sh  "$NomMachine" "$IpMachine"
+    source ~/scripts_debian/windows/menu_redemarrage.sh  "$NomMachine" "$IpMachine"
 
 }
 
