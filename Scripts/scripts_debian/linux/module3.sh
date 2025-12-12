@@ -339,7 +339,7 @@ while true; do
         3) menu_logs ;;
         4) menu_save ;;
         5) echo "Retour au menu principal..."
-            exit 0 
+            return
             ;;
         6) echo "Au revoir !"
             exit 0 
