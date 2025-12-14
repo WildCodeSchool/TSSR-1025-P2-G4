@@ -66,7 +66,7 @@ do
         ;;
         
         2)
-            echo -e "Retour au Menu Linux..."
+            echo -e "\nRetour au Menu Linux..."
             Log "ReturnLinuxMenu"
             return
         ;;
