@@ -83,6 +83,11 @@
 * Premiers tests sur l'environnement Proxmox
 
 ### 🏃🏼‍♂️ Sprint 3 :
+
+
+- Finalisation du script Bash
+- Débogage des scripts Bash avec commandes PowerShell
+- 
 <span id=sprint_3></span>
 
 ### 🏃🏼‍♂️ Sprint 4 :
