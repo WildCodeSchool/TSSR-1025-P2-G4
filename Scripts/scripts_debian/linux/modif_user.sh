@@ -60,7 +60,7 @@ do
     read -p "Votre choix : " choice_modif_user
     case $choice_modif_user in
         1)
-            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S passwd "$user_name""
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S passwd \"$user_name\""
             echo -e "\nMot de passe modifié pour $user_name avec succès !\n"
             Log "PasswordChangedUser"
             end_user_return
@@ -68,7 +68,7 @@ do
         ;;
         
         2)
-            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo "$user_name""
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo \"$user_name\""
             echo -e "\nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !\n"
             Log "AddSudoGrpUser"
             end_user_return
@@ -85,9 +85,9 @@ do
             while true
             do
                 read -p "Dans quel groupe existant ci-dessus souhaitez-vous être ajouté ? " local_grp
-                if ssh -o ConnectTimeout=10 -T clilin01 "getent group "$local_grp" >/dev/null 2>&1"
+                if ssh -o ConnectTimeout=10 -T clilin01 "getent group \"$local_grp\" >/dev/null 2>&1"
                 then
-                    ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG "$local_grp" "$user_name""
+                    ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG \"$local_grp\" \"$user_name\""
                     echo -e "\nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
                     Log "AddLocalGrpUser"
                     while true
@@ -98,7 +98,7 @@ do
                         read -p "Votre choix : " mod_sudo
                         case $mod_sudo in
                             1)
-                                ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo "$user_name""
+                                ssh -o ConnectTimeout=10 -T clilin01 "sudo -S usermod -aG sudo \"$user_name\""
                                 echo -e "\nL'utilisateur $user_name du groupe $local_grp a aussi été ajouté au groupe administrateur avec succès !"
                                 Log "AddSudoGrpUser"
                                 end_user_return

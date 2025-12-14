@@ -106,7 +106,7 @@ do
                     end_rep_return
                     continue 2
                 else
-                    ssh -o ConnectTimeout=10 -T clilin01 "mkdir -p "$rep_name""
+                    ssh -o ConnectTimeout=10 -T clilin01 "mkdir -p \"$rep_name\""
                     echo -e "\nRépertoire $rep_name créé avec succès !\n"
                     Log "DirectoryCreated"
                     end_rep_return
@@ -136,7 +136,7 @@ do
                     continue 2
                 else
                     read -p "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/user/monRépertoire) : " new_rep_name
-                    ssh -o ConnectTimeout=10 -T clilin01 "mv "$rep_rename" "$new_rep_name""
+                    ssh -o ConnectTimeout=10 -T clilin01 "mv \"$rep_rename\" \"$new_rep_name\""
                     echo -e "\nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !\n"
                     Log "DirectoryRenamed"
                     end_rep_return
@@ -170,7 +170,7 @@ do
                         read -p "Confirmez-vous la supression du répertoire $rep_del ? (O/n) " confirm_rep_del
                         if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]
                         then
-                            ssh -o ConnectTimeout=10 -T clilin01 "rm -r "$rep_del""
+                            ssh -o ConnectTimeout=10 -T clilin01 "rm -r \"$rep_del\""
                             echo -e "\nLe répertoire $rep_del a bien été supprimé !"
                             Log "DirectoryDeleted"
                             end_rep_return

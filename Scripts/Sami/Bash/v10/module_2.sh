@@ -48,7 +48,7 @@ do
         1)
             echo ""
             read -p "Entrez un Nom d'Utilisateur : " user_name
-            if ssh -o ConnectTimeout=10 -T clilin01 "id "$user_name" &>/dev/null"
+            if ssh -o ConnectTimeout=10 -T clilin01 "id \"$user_name\" &>/dev/null"
             then
                 clear
                 echo -e "\nBon retour $user_name !\n\nRedirection vers l'Espace Personnel Utilisateur... "

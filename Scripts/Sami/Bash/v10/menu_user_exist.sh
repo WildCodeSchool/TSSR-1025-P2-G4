@@ -40,7 +40,7 @@ do
             echo -e "\nRedirection vers l'Espace Supression Utilisateur...\n"
             Log "UserDeletionAreaRedirection"
             source ~/scripts_debian/linux/del_user.sh
-            if ssh -o ConnectTimeout=10 -T clilin01 "id "$user_name" &>/dev/null"
+            if ssh -o ConnectTimeout=10 -T clilin01 "id \"$user_name\" &>/dev/null"
             then
                 continue
             else

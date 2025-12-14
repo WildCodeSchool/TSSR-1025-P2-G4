@@ -91,14 +91,14 @@ do
             while true
             do
                 echo ""
-                read -p "Entrez le chemin complet du répertoire à créer (Exemple : /home/user/monRépertoire) : " rep_name
-                if [[ "$rep_name" != /* || -z "$rep_name" ]]
+                read -p "Entrez le chemin complet du répertoire à créer (Exemple : C:\User\monRépertoire) : " rep_name
+                if [[ "$rep_name" != C:\\* || -z "$rep_name" ]]
                 then
                     clear
                     echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ -d \"$rep_name\" ]"
+                elif ssh -o ConnectTimeout=10 -T cliwin01 "Test-Path -Path \"$rep_name\" -PathType Container"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_name existe déjà !"
@@ -106,7 +106,7 @@ do
                     end_rep_return
                     continue 2
                 else
-                    ssh -o ConnectTimeout=10 -T clilin01 "mkdir -p \"$rep_name\""
+                    ssh -o ConnectTimeout=10 -T cliwin01 "New-Item -Path \"$rep_name\" -ItemType Directory -Force"
                     echo -e "\nRépertoire $rep_name créé avec succès !\n"
                     Log "DirectoryCreated"
                     end_rep_return
@@ -119,15 +119,15 @@ do
             while true
             do
                 echo ""
-                read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : /home/user/monRépertoire) : " rep_rename
+                read -p "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : C:\User\monRépertoire) : " rep_rename
                 echo ""
-                if [[ "$rep_rename" != /* || -z "$rep_rename" ]]
+                if [[ "$rep_rename" != C:\\* || -z "$rep_rename" ]]
                 then
                     clear
                     echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"$rep_rename\" ]"
+                elif ! ssh -o ConnectTimeout=10 -T cliwin01 "Test-Path -Path \"$rep_name\" -PathType Container"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_rename n'existe pas !\n"
@@ -136,7 +136,7 @@ do
                     continue 2
                 else
                     read -p "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/user/monRépertoire) : " new_rep_name
-                    ssh -o ConnectTimeout=10 -T clilin01 "mv \"$rep_rename\" \"$new_rep_name\""
+                    ssh -o ConnectTimeout=10 -T cliwin01 "Move-Item -Path \"$rep_rename\" -Destination \"$new_rep_name\" -Force"
                     echo -e "\nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !\n"
                     Log "DirectoryRenamed"
                     end_rep_return
@@ -149,14 +149,14 @@ do
             while true
             do
                 echo ""
-                read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : /home/user/monRépertoire) : " rep_del
-                if [[ "$rep_del" != /* || -z "$rep_del" ]]
+                read -p "Entrez le chemin complet du répertoire à supprimer (Exemple : C:\User\monRépertoire) : " rep_del
+                if [[ "$rep_del" != C:\\* || -z "$rep_del" ]]
                 then
                     clear
                     echo -e "\nAttention !\nVous n'avez rien saisi ou la saisie est incorrecte !\n\nVeuillez recommencer SVP."
                     Log "InputError"
                     continue
-                elif ssh -o ConnectTimeout=10 -T clilin01 "[ ! -d \"$rep_del\" ]"
+                elif ! ssh -o ConnectTimeout=10 -T cliwin01 "Test-Path -Path \"$rep_del\" -PathType Container"
                 then
                     clear
                     echo -e "\nAttention ! Le répertoire $rep_del n'existe pas !\n"
@@ -170,7 +170,7 @@ do
                         read -p "Confirmez-vous la supression du répertoire $rep_del ? (O/n) " confirm_rep_del
                         if [[ "$confirm_rep_del" = "O" || "$confirm_rep_del" = "o" ]]
                         then
-                            ssh -o ConnectTimeout=10 -T clilin01 "rm -r \"$rep_del\""
+                            ssh -o ConnectTimeout=10 -T cliwin01 "Remove-Item -Path \"$rep_del\" -Recurse -Force"
                             echo -e "\nLe répertoire $rep_del a bien été supprimé !"
                             Log "DirectoryDeleted"
                             end_rep_return

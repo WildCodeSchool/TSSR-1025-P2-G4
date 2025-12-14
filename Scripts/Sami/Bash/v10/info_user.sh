@@ -58,7 +58,7 @@ do
     clear
     echo -e "\nBienvenue dans l'Espace Informations Utilisateur !\n"
     Log "WelcomeToUserInformationArea"
-    echo -e "Quelles informations désirez-vous connaître sur l'utilisateur $username ?\n"
+    echo -e "Quelles informations désirez-vous connaître sur l'utilisateur $user_name ?\n"
     echo "1 - Date de la dernière connexion"
     echo "2 - Date de dernière modification du mot de passe"
     echo "3 - Liste des sessions ouvertes par l’utilisateur"
@@ -69,7 +69,12 @@ do
     case "$choice" in
         1)
             echo -e "\nDernière connexion de $user_name :"
-            ssh -o ConnectTimeout=10 -T clilin01 "last -n 1 "$user_name""
+            if ssh -o ConnectTimeout=10 -T clilin01 "last \"$user_name\" | grep -qv '^wtmp commence'"
+            then
+                ssh -o ConnectTimeout=10 -T clilin01 "last -n 1 \"$user_name\""
+            else
+                echo -e "\nIl n'y a eu aucune connexion de l'utilisateur $user_name.\n"
+            fi
             Log "LastConnexion"
             end_user_return
             continue
@@ -77,7 +82,7 @@ do
 
         2)
             echo -e "\nDate de dernière modification du mot de passe :"
-            ssh -o ConnectTimeout=10 -T clilin01 "chage -l "$user_name" | grep -i "last password change""
+            ssh -o ConnectTimeout=10 -T clilin01 "chage -l \"$user_name\" | grep -iE \"last password change|dernière modification du mot de passe\""
             Log "DateLastPasswordChange"
             end_user_return
             continue
@@ -85,7 +90,7 @@ do
 
         3)
             echo -e "\nSessions ouvertes par $user_name :"
-            ssh -o ConnectTimeout=10 -T clilin01 "loginctl list-sessions --no-legend --no-pager | awk -v user="wilder" '$3 == user {print "user="$3, "uid="$2, "session="$1}'"
+            ssh -o ConnectTimeout=10 -T clilin01 "who | awk '\$1==\"$user_name\"'"
             Log "ListOpenUserSessions"
             end_user_return
             continue
