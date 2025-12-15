@@ -13,10 +13,8 @@ function Log() {
     local heure_actuelle=$(date +"%H%M%S")
     local utilisateur=$(whoami)
 
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
     local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
 
-    # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
 }
 
@@ -75,7 +73,6 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ">>> Connexion SSH vers Windows ($REMOTE_IP)..."
     echo ">>> Note : Si le shell par défaut de Windows n'est pas Bash, c'est normal."
     
-    # On force la connexion
     ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
     
     if [ $? -ne 0 ]; then
@@ -94,8 +91,6 @@ Log "StartScript"
 
 function ssh_exec(){
     echo ">>> Exécution sur Windows ($REMOTE_IP)..."
-    # On force souvent l'usage de powershell pour avoir des sorties propres
-    # Mais certaines commandes CMD simples (ipconfig) passent directement
     ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "$1"
     echo ">>> Fin de la commande.."
     echo ""
@@ -125,12 +120,10 @@ function menu_reseau(){
         case $choix in
         1) 
             Log "ReseauConsultDNS"
-            # PowerShell pour avoir les serveurs DNS
             ssh_exec "powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object InterfaceAlias, ServerAddresses | Format-Table -AutoSize\"" 
             ;;
         2) 
             Log "ReseauConsultInterfaces"
-            # ipconfig est plus lisible que les commandes PS parfois
             ssh_exec "ipconfig /all" 
             ;; 
         3) 
@@ -143,7 +136,6 @@ function menu_reseau(){
             ;;
         5) 
             Log "ReseauConsultALL"
-            # Combinaison de commandes Windows
             ssh_exec "echo --- DNS --- && powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4\" && echo. && echo --- IPCONFIG --- && ipconfig /all && echo. && echo --- ARP --- && arp -a && echo. && echo --- ROUTE --- && route print" 
             ;;
         6) break 
@@ -261,7 +253,6 @@ function menu_save(){
     echo ">>> Récupération du hostname Windows..."
     REMOTE_HOSTNAME=$(ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "hostname")
     
-    # Nettoyage des caractères de fin de ligne Windows (\r)
     REMOTE_HOSTNAME=$(echo "$REMOTE_HOSTNAME" | tr -d '\r' | xargs)
 
     if [ -z "$REMOTE_HOSTNAME" ]; then
@@ -293,7 +284,6 @@ function menu_save(){
         ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "powershell -Command \"Get-EventLog -LogName System -EntryType Error -Newest 5 | Format-List\""
     } > "$FICHIER"
 
-    # Conversion propre si besoin (dos2unix optionnel si installé, sinon cat suffit)
     echo ">>> Succès."
     echo ""
     read -p "Appuyez sur Entrée pour revenir au menu..."

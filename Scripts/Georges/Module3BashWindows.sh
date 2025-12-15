@@ -13,10 +13,8 @@ function Log() {
     local heure_actuelle=$(date +"%H%M%S")
     local utilisateur=$(whoami)
 
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
     local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
 
-    # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
 }
 
@@ -55,10 +53,7 @@ function cleanup {
     fi
     Log "EndScript"
 }
-# N'active le nettoyage automatique que si ce script est le script principal
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    trap cleanup EXIT
-fi
+trap cleanup EXIT
 
 # --- E. Gestion de la Connexion SSH ---
 
@@ -78,7 +73,6 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ">>> Connexion SSH vers Windows ($REMOTE_IP)..."
     echo ">>> Note : Si le shell par défaut de Windows n'est pas Bash, c'est normal."
     
-    # On force la connexion
     ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
     
     if [ $? -ne 0 ]; then
@@ -97,8 +91,6 @@ Log "StartScript"
 
 function ssh_exec(){
     echo ">>> Exécution sur Windows ($REMOTE_IP)..."
-    # On force souvent l'usage de powershell pour avoir des sorties propres
-    # Mais certaines commandes CMD simples (ipconfig) passent directement
     ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "$1"
     echo ">>> Fin de la commande.."
     echo ""
@@ -128,12 +120,10 @@ function menu_reseau(){
         case $choix in
         1) 
             Log "ReseauConsultDNS"
-            # PowerShell pour avoir les serveurs DNS
             ssh_exec "powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object InterfaceAlias, ServerAddresses | Format-Table -AutoSize\"" 
             ;;
         2) 
             Log "ReseauConsultInterfaces"
-            # ipconfig est plus lisible que les commandes PS parfois
             ssh_exec "ipconfig /all" 
             ;; 
         3) 
@@ -146,7 +136,6 @@ function menu_reseau(){
             ;;
         5) 
             Log "ReseauConsultALL"
-            # Combinaison de commandes Windows
             ssh_exec "echo --- DNS --- && powershell -Command \"Get-DnsClientServerAddress -AddressFamily IPv4\" && echo. && echo --- IPCONFIG --- && ipconfig /all && echo. && echo --- ARP --- && arp -a && echo. && echo --- ROUTE --- && route print" 
             ;;
         6) break 
@@ -177,7 +166,6 @@ function menu_sys(){
         case $choix in
         1) 
             Log "SysConsultBios"
-            # Utilisation de WMIC ou PowerShell
             ssh_exec "powershell -Command \"Get-CimInstance Win32_BIOS | Select-Object Manufacturer, Name, SerialNumber, Version | Format-List\"" 
             ;; 
         2) 
@@ -186,7 +174,6 @@ function menu_sys(){
             ;;
         3) 
             Log "SysConsultOSVersion"
-            # Récupère le nom et la version
             ssh_exec "systeminfo | findstr /B /C:\"Nom du syst\" /C:\"Version du syst\" /C:\"OS Name\" /C:\"OS Version\"" 
             ;;
         4) 
@@ -195,12 +182,11 @@ function menu_sys(){
             ;;
         5) 
             Log "SysConsultUptime"
-            # Calcul de l'uptime via PowerShell
             ssh_exec "powershell -Command \"(Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime | Select-Object Days, Hours, Minutes\"" 
             ;;
         6) 
             Log "SysConsultALL"
-            ssh_exec "echo --- BIOS --- && wmic bios get name, serialnumber && echo. && echo --- OS --- && systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\" && echo. && echo --- GPU --- && wmic path win32_videocontroller get name && echo. && echo --- IP --- && ipconfig" 
+            ssh_exec "powershell -Command \"Write-Host '--- BIOS ---'; Get-CimInstance Win32_BIOS | Select-Object Name, SerialNumber | Format-List; Write-Host '--- OS ---'; Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version | Format-List; Write-Host '--- UPTIME ---'; (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime | Select-Object Days, Hours, Minutes | Format-List; Write-Host '--- GPU ---'; Get-CimInstance Win32_VideoController | Select-Object Name | Format-Table -HideTableHeaders; Write-Host '--- IP ---'; ipconfig\""
             ;;
         7) break 
             ;;
@@ -228,23 +214,21 @@ function menu_logs(){
         case $choix in
         1) 
             Log "LogsConsultCritiques"
-            # Equivalent journalctl -p 0..3 : On cherche les erreurs dans System
             ssh_exec "powershell -Command \"Get-EventLog -LogName System -EntryType Error,Warning -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize -Wrap\"" 
             ;; 
         2) 
             Log "LogsConsultAuth"
-            # Equivalent auth.log : Security Log
             ssh_exec "powershell -Command \"Get-EventLog -LogName Security -Newest 10 | Format-Table TimeGenerated, EventID, Message -AutoSize\"" 
             ;;
         3) 
             Log "LogsConsultApp"
-            # Equivalent syslog general
             ssh_exec "powershell -Command \"Get-EventLog -LogName Application -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize\"" 
             ;;
-        4) 
+        4)  
             Log "LogsConsultALL"
-            ssh_exec "powershell -Command \"Write-Host '--- ERREURS SYS ---'; Get-EventLog -LogName System -EntryType Error -Newest 5; Write-Host '--- SECURITE ---'; Get-EventLog -LogName Security -Newest 5\"" 
+            ssh_exec "powershell -Command \"Write-Host '--- 1. ERREURS SYSTEME ---'; Get-EventLog -LogName System -EntryType Error,Warning -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize -Wrap; Write-Host '--- 2. SECURITE ---'; Get-EventLog -LogName Security -Newest 10 | Format-Table TimeGenerated, EventID, Message -AutoSize; Write-Host '--- 3. APPLICATION ---'; Get-EventLog -LogName Application -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize\"" 
             ;;
+            
         5) break 
         ;;
         *) echo "Choix invalide." 
@@ -269,7 +253,6 @@ function menu_save(){
     echo ">>> Récupération du hostname Windows..."
     REMOTE_HOSTNAME=$(ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "hostname")
     
-    # Nettoyage des caractères de fin de ligne Windows (\r)
     REMOTE_HOSTNAME=$(echo "$REMOTE_HOSTNAME" | tr -d '\r' | xargs)
 
     if [ -z "$REMOTE_HOSTNAME" ]; then
@@ -301,7 +284,6 @@ function menu_save(){
         ssh -S "$SSH_SOCKET" "$REMOTE_USER@$REMOTE_IP" "powershell -Command \"Get-EventLog -LogName System -EntryType Error -Newest 5 | Format-List\""
     } > "$FICHIER"
 
-    # Conversion propre si besoin (dos2unix optionnel si installé, sinon cat suffit)
     echo ">>> Succès."
     echo ""
     read -p "Appuyez sur Entrée pour revenir au menu..."
