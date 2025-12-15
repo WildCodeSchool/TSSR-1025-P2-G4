@@ -7,17 +7,22 @@ param (
 
 function Log {
     param (
-        [string]$Evenement
+        [string]$evenement
     )
 
-    $fichierLog = "C:\Logs\log_evt.log"
-    $dateActuelle = Get-Date -Format "yyyyMMdd"
-    $heureActuelle = Get-Date -Format "HHmmss"
+    #Créer le dossier si nécessaire
+    if (-not (Test-Path "C:\Windows\System32\LogFiles")) {
+        New-Item -ItemType Directory -Path "C:\Windows\System32\LogFiles" -Force | Out-Null
+    }
+
+    $fichier_log = "C:\Windows\System32\LogFiles\log_evt.log"
+    $date_actuelle = Get-Date -Format "yyyyMMdd"
+    $heure_actuelle = Get-Date -Format "HHmmss"
     $utilisateur = $env:USERNAME
 
-    $ligneLog = "${dateActuelle}_${heureActuelle}_${utilisateur}_${Evenement}"
+    $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
-    Add-Content -Path $fichierLog -Value $ligneLog
+    Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
 Log "NewScript"
