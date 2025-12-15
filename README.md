@@ -101,12 +101,13 @@
 * Premiers tests sur l'environnement Proxmox
 
 ### 🏃🏼‍♂️ Sprint 3 :
-
+<span id=sprint_3></span>
 
 - Finalisation du script Bash
 - Débogage des scripts Bash avec commandes PowerShell
-- 
-<span id=sprint_3></span>
+- Journalisation
+- Initialisation des scripts en PowerShell
+- Documentation GitHub
 
 ### 🏃🏼‍♂️ Sprint 4 :
 <span id=sprint_4></span>
