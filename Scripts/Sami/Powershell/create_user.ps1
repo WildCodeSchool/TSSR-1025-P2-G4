@@ -1,3 +1,5 @@
+# Partie Création de l'Utilisateur
+
 function end_user_return {
     while ($true) { 
         Start-Sleep 2
@@ -9,7 +11,7 @@ function end_user_return {
             "1" {
                 Write-Host "`nRetour au Menu Gestion des Utilisateurs..."
                 Log "ReturnUserManagementMenu"
-                break
+                return
             }
                                 
             {$_ -match '^[xX]$' }{
@@ -25,11 +27,56 @@ function end_user_return {
                 continue
             }
         }
-        break
     }
 }
 
+function password { 
+    param(
+        [string]$user_name
+    )
 
+    while ($true) {
+        Start-Sleep 2
+        Clear-Host
+        Write-Host "`nVoulez-vous créer un mot de passe pour l'utilisateur $user_name ?`n`n1 - Oui`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
+        $choice_password = Read-Host "Votre choix"
+        switch ($choice_password) {
+            "1" {
+                Write-Host ""
+                $password = Read-Host "Entrez le mot de passe" -AsSecureString
+                #ssh cliwin01 "Set-LocalUser -Name \"$user_name\" -Password (ConvertTo-SecureString \"$password\" -AsPlainText -Force)"
+                Set-LocalUser -Name $user_name -Password $password
+                Write-Host "`nMot de passe défini pour $user_name avec succès !"
+                Log "PasswordCreatedNewUser"
+                return "Continue"
+            }
+
+            "2" {
+                Write-Host "`nMot de passe non défini pour $user_name."
+                Log "PasswordNotCreatedNewUser"
+                return "Continue"
+            }
+
+            "3" {
+                Write-Host "`nRetour au Menu Gestion des Utilisateurs..."
+                Log "ReturnUserManagementMenu"
+                return "Return"
+            }
+
+            {$_ -match '^[xX]$' }{
+                Write-Host "`nA bientôt !`n"
+                Log "EndScript"
+                throw
+            }
+
+            Default {        
+                Clear-Host
+                Write-Host "`nErreur de saisie.`nVeuillez faire votre choix selon ce qui est proposé."
+                Log "Input_Error"                   
+            }
+        }
+    }
+}
 function Log {
     param (
         [string]$evenement
@@ -63,50 +110,16 @@ while ($true) {
         "1" {  
             #ssh cliwin01 "New-LocalUser -Name \"$user_name\" -NoPassword"
             New-LocalUser -Name $user_name -NoPassword -ErrorAction SilentlyContinue
-            Write-Host "`nL'utilisateur $user_name a été créé avec succès !"
+            Write-Host "L'utilisateur $user_name a été créé avec succès !"
             Log "NewUserCreated"
-            while ($true) {
-                Start-Sleep 2
-                Clear-Host
-                Write-Host "`nVoulez-vous créer un mot de passe pour l'utilisateur $user_name ?`n`n1 - Oui`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
-                $choice_password = Read-Host "Votre choix"
-                switch ($choice_password) {
-                    "1" {
-                        Write-Host ""
-                        $password = Read-Host "Entrez le mot de passe" -AsSecureString
-                        #ssh cliwin01 "Set-LocalUser -Name \"$user_name\" -Password (ConvertTo-SecureString \"$password\" -AsPlainText -Force)"
-                        Set-LocalUser -Name $user_name -Password $password
-                        Write-Host "`nMot de passe défini pour $user_name avec succès !"
-                        Log "PasswordCreatedNewUser"
-                        break
-                    }
-
-                    "2" {
-                        Write-Host "`nMot de passe non défini pour $user_name."
-                        Log "PasswordNotCreatedNewUser"
-                        break
-                    }
-
-                    "3" {
-                        Write-Host "`nRetour au Menu Gestion des Utilisateurs..."
-                        Log "ReturnUserManagementMenu"
-                        exit
-                    }
-
-                    {$_ -match '^[xX]$' }{
-                        Write-Host "`nA bientôt !`n"
-                        Log "EndScript"
-                        throw
-                    }
-
-                    Default {
-                        Clear-Host
-                        Write-Host "`nErreur de saisie.`nVeuillez faire votre choix selon ce qui est proposé."
-                        Log "Input_Error"
-                        continue
-                    }
+            $result_password = password $user_name
+            switch ($result_password) {
+                "Continue" {
+                    break
                 }
-                break
+                "Return" {
+                    return
+                }
             }
 
             while ($true) {
@@ -131,7 +144,7 @@ while ($true) {
                         Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                         Log "AddSudoGrpNewUser"
                         end_user_return
-                        break
+                        return
                     }
 
                     "2" {
@@ -174,20 +187,20 @@ while ($true) {
                                             Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                                             Log "AddSudoGrpNewUser"
                                             end_user_return
-                                            break
+                                            return                                          
                                         }
 
                                         "2" {
                                             Write-Host "`nL'utilisateur $user_name du groupe $local_grp n'a pas été ajouté au groupe administrateur."
                                             Log "NoAddSudoGroupNewUser"
                                             end_user_return
-                                            break
+                                            return                                         
                                         }
 
                                         "3" {
                                             Write-Host "`nRetour au Menu Gestion des Utilisateurs..." 
                                             Log "ReturnUserManagementMenu"                                       
-                                            break
+                                            return
                                         }
 
                                         {$_ -match '^[xX]$' }{
@@ -202,8 +215,7 @@ while ($true) {
                                             Log "InputError"
                                             continue
                                         }
-                                    }
-                                    break 
+                                    } 
                                 }
                             }
                             else {
@@ -211,15 +223,15 @@ while ($true) {
                                 Log "LocalGroupDoesntExist"
                                 continue
                             }
-                            break
+                            
                         }
-                        break                       
+                                               
                     }
 
                     "3" {
                         Write-Host "`nRetour au Menu Gestion des Utilisateurs..."
                         Log "ReturnUserManagementMenu"
-                        break
+                        return
                     }
 
                     {$_ -match '^[xX]$' }{
@@ -235,9 +247,9 @@ while ($true) {
                         continue
                     }
                 }
-                break
+                
             }
-            break      
+                 
         }
         
 
@@ -245,13 +257,13 @@ while ($true) {
             Write-Host "`nL'utilisateur $user_name n'a pas été créé."
             Log "NewUserNotCreated"
             end_user_return
-            break
+            return
         }
 
         "3" {
             Write-Host "`nRetour au Menu Gestion des Utilisateurs..."
             Log "ReturnUserManagementMenu"            
-            break
+            return
         }
 
         {$_ -match '^[xX]$' }{
@@ -264,9 +276,8 @@ while ($true) {
             Clear-Host
             Write-Host "`nErreur de saisie.`nVeuillez faire votre choix selon ce qui est proposé."
             Log "InputError"
-            
+            continue
         }
     }
-    break
 }
 return

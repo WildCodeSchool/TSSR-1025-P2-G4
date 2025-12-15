@@ -127,7 +127,7 @@ do
                     2)
                         clear                        
                         echo -e "\nVoici la liste des groupes locaux existants :\n"
-                        sleep 3
+                        sleep 1
                         ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalGroup | Where-Object { \$_.Name -notmatch '^(Administrators|Users|Guests)$' } | Sort-Object Name"
                         echo ""
                         

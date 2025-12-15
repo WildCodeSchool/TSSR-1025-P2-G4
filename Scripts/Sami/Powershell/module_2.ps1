@@ -1,4 +1,4 @@
-# Script Module 2
+# Script Module 2 : Menu Gestion des Utilisateurs
 
 param (
     [string]$NomMachine,
@@ -49,8 +49,7 @@ while ($true) {
     Write-Host "X - Sortir."
     Write-Host ""
     $choice_menu_module_2 = Read-Host "Votre choix" 
-    switch ($choice_menu_module_2) 
-    {
+    switch ($choice_menu_module_2) {
         "1" {
             Write-Host ""
             $user_name = Read-Host "Entrez un Nom d'Utilisateur"
@@ -61,7 +60,7 @@ while ($true) {
                 Write-Host "`nBon retour $user_name !`n`nRedirection vers l'Espace Personnel Utilisateur..."
                 Log "UserEntryExists"
                 Log "UserPersonnalAreaRedirection"
-                . "$HOME\scripts_windows_server\menu_user_exist.ps1"
+                . "$HOME\scripts_windows_server\windows\menu_user_exist.ps1"
             }
             else {
                 Clear-Host
@@ -76,10 +75,10 @@ while ($true) {
         "2" {
             Write-Host "`nRetour au Menu Linux..."
             Log "ReturnLinuxMenu"
-            break
+            return
         }
         
-        {$_ -match '^[xX]$' }{
+        {$_ -match '^[xX]$' } {
             Write-Host "`nA bientôt !`n"
             Log "EndScript"
             throw

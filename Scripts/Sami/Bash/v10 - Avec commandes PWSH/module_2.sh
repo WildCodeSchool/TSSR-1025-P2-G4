@@ -54,19 +54,19 @@ do
                 echo -e "\nBon retour $user_name !\n\nRedirection vers l'Espace Personnel Utilisateur... "
                 Log "UserEntryExists"
                 Log "UserPersonnalAreaRedirection"
-                source ~/scripts_debian/linux/menu_user_exist.sh
+                source ~/scripts_debian/windows/menu_user_exist.sh
             else
                 clear
                 echo -e "\nL'utilisateur $user_name n'existe pas.\n\nRedirection vers l'Espace Création Utilisateur..."
                 Log "UserEntryDoesntExist"
                 Log "UserCreationAreaRedirection"                
-                source ~/scripts_debian/linux/create_user.sh
+                source ~/scripts_debian/windows/create_user.sh
             fi
             continue
         ;;
         
         2)
-            echo -e "\nRetour au Menu Linux..."
+            echo -e "Retour au Menu Linux..."
             Log "ReturnLinuxMenu"
             return
         ;;
