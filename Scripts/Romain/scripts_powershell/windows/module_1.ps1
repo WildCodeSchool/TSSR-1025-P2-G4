@@ -65,7 +65,7 @@ function Redemarrage {
     & "$PSScriptRoot\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
-
+# Log au démarrage du script
 Log "NewScript"
 
 # Boucle principale du menu
