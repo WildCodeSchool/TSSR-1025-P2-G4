@@ -1,8 +1,15 @@
+# Menu Redémarrage (PowerShell)
+
+# Initialisation des arguments
+
 param(
     [string]$NomMachine,
     [string]$IpMachine
 )
 
+# Initialisation des fonctions 
+
+# Journalisation
 function Log {
     param (
         [string]$evenement
@@ -23,73 +30,36 @@ function Log {
     Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
-# Fonction de l'état du pare-feu
-function Etat {
-    Write-Host "Le pare-feu est : "
-    Log "EtatPareFeu_${NomMachine}_${IpMachine}"
-    
-    try {
-        # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Get-NetFirewallProfile | Select-Object Name, Enabled"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
-        
-        Write-Host ""
-    }
-    catch {
-        Write-Host ""
-        Write-Host "Erreur lors de la récupération de l'état : $_"
-        Write-Host ""
-    }
-    
-    Start-Sleep -Seconds 4
-}
-
-function Activation {
-    Write-Host "Activation du pare-feu"
-    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
+# Fonction de redémarrage
+function Redemarrage {
+    Write-Host "Redemarrage de la machine..."
     Write-Host ""
     Write-Host " ---------------------------------------------- "
     Write-Host ""
+    Log "RedemarrageMachine_${NomMachine}_${IpMachine}"
     
     try {
-        # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True"
+        Write-Host "Envoi de la commande de redemarrage..."
+        
+        # Méthode 1 : Via Invoke-Command (WinRM)
+        # Invoke-Command -ComputerName $IpMachine -ScriptBlock { Restart-Computer -Force }
+        
+        # Méthode 2 : Via SSH (si OpenSSH est installé sur la cible Windows)
+        $sshCommand = "shutdown /r /t 0 /f"
         ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
         
+        Write-Host ""
+        Write-Host "Commande de redemarrage envoyee avec succes !"
+        Write-Host "La machine $NomMachine ($IpMachine) est en cours de redemarrage..."
         Write-Host ""
     }
     catch {
         Write-Host ""
-        Write-Host "Erreur lors de l'activation : $_"
+        Write-Host "Erreur lors du redemarrage : $_"
         Write-Host ""
     }
     
-    Start-Sleep -Seconds 2
-    
-}
-
-function Desactivation {
-    Write-Host "Desactivation du pare-feu"
-    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
-    
-    try {
-        # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
-        
-        Write-Host ""
-    }
-    catch {
-        Write-Host ""
-        Write-Host "Erreur lors de la désactivation : $_"
-        Write-Host ""
-    }
-    
-    Start-Sleep -Seconds 2
-    
+    Start-Sleep -Seconds 1
 }
 
 # Log au démarrage du script
@@ -103,7 +73,7 @@ while ($true) {
     Write-Host "###############################################"
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
-    Write-Host "####             Menu Pare-feu             ####"
+    Write-Host "####           Menu Redemarrage            ####"
     Write-Host ("####  {0,-37}  ####" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
@@ -112,10 +82,8 @@ while ($true) {
 
     Write-Host "Choisissez quelle action effectuer."
     Write-Host ""
-    Write-Host "1) Etat du pare-feu"
-    Write-Host "2) Activation du pare-feu"
-    Write-Host "3) Désactivation du pare-feu"
-    Write-Host "4) Retour menu action machine"
+    Write-Host "1) Redemarrer la machine"
+    Write-Host "2) Retour Menu Module 1"
     Write-Host "x) Sortir"
     Write-Host ""
     $choix = Read-Host "Votre choix"
@@ -123,33 +91,28 @@ while ($true) {
 
     switch ($choix) {
         "1" {
-            Write-Host "Etat du pare-feu"
+            Write-Host "Redemarrage de la machine"
             Write-Host ""
-            Etat
+            
+            # Demande de confirmation
+            $confirmation = Read-Host "Etes-vous sur de vouloir redemarrer $NomMachine ? (O/N)"
+            if ($confirmation -ieq "O" -or $confirmation -ieq "Oui") {
+                Redemarrage
+            }
+            else {
+                Write-Host "Redemarrage annule."
+                Start-Sleep -Seconds 1
+            }
         }
         
         "2" {
-            Write-Host "Activation du pare-feu"
-            Write-Host ""
-            Start-Sleep -Seconds 1
-            Activation
-        }
-
-        "3" {
-            Write-Host "Désactivation du pare-feu"
-            Write-Host ""
-            Start-Sleep -Seconds 1
-            Desactivation
-        }
-        
-        "4" {
-            Write-Host "Retour Menu Action Machine"
+            Write-Host "Retour Menu Module 1"
             Write-Host ""
             Start-Sleep -Seconds 1
             Log "RetourMenuActionMachine"
             return
         }
-
+        
         { $_ -ieq "x" } {
             Write-Host "Au revoir"
             Write-Host ""
