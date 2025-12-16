@@ -39,7 +39,7 @@ function Module_1 {
     Log "MenuActionMachine"
     
     # Appel du script module_1.ps1
-    & "$PSScriptRoot\linux\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 2 : Gestion des Utilisateurs
@@ -52,7 +52,7 @@ function Module_2 {
     Log "MenuGestionDesUtilisateurs"
     
     # Appel du script module_2.ps1
-    & "$PSScriptRoot\linux\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 3 : Informations Machine
@@ -65,7 +65,7 @@ function Module_3 {
     Log "MenuInformationsMachine"
     
     # Appel du script module_3.ps1
-    & "$PSScriptRoot\linux\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 
@@ -145,3 +145,4 @@ while ($true) {
     }
 
 }
+
