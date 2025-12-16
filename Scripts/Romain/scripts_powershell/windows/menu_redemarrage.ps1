@@ -3,6 +3,26 @@ param(
     [string]$IpMachine
 )
 
+function Log {
+    param (
+        [string]$evenement
+    )
+
+    #Créer le dossier si nécessaire
+    if (-not (Test-Path "C:\Windows\System32\LogFiles")) {
+        New-Item -ItemType Directory -Path "C:\Windows\System32\LogFiles" -Force | Out-Null
+    }
+
+    $fichier_log = "C:\Windows\System32\LogFiles\log_evt.log"
+    $date_actuelle = Get-Date -Format "yyyyMMdd"
+    $heure_actuelle = Get-Date -Format "HHmmss"
+    $utilisateur = $env:USERNAME
+
+    $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
+
+    Add-Content -Path $fichier_log -Value $ligne_log  
+}
+
 # Fonction de redémarrage
 function Redemarrage {
     Write-Host "Redemarrage de la machine..."
