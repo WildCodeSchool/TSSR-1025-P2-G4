@@ -69,7 +69,7 @@ function Module_3 {
     & "$PSScriptRoot\windows\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
-
+# Log au démarrage du script
 Log "NewScript"
 
 # Boucle principale du menu
