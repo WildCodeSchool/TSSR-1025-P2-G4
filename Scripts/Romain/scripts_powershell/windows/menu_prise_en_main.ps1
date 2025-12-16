@@ -73,7 +73,7 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####      Menu Prise en main distante      ####"
-    Write-Host ("####  {0,-35}  ####" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0, -20} {1,-14}  ####`n" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"

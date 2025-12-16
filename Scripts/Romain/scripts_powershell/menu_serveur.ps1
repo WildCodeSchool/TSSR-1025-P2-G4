@@ -1,3 +1,6 @@
+# Menu Serveur (PowerShell)
+
+
 # Initialisation des fonctions 
 
 function Log {
@@ -18,7 +21,6 @@ function Log {
     $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
     Add-Content -Path $fichier_log -Value $ligne_log  
-}
 
 function Linux {
 
@@ -154,7 +156,7 @@ while ($true) {
     Write-Host "2) Windows "
     Write-Host "x) Sortir "
     Write-Host ""
-    $client = Read-Host "Votre choix"
+    $client = Read-Host "Votre choix : "
     Write-Host ""
 
     switch ($client) {
@@ -185,5 +187,4 @@ while ($true) {
             Log "MauvaisChoix"
         }
     }
-
 }

@@ -9,6 +9,7 @@ param(
 
 # Initialisation des fonctions 
 
+# Journalisation
 function Log {
     param (
         [string]$evenement
@@ -29,46 +30,75 @@ function Log {
     Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
-# Module 1 : Actions Machine
-function Module_1 {
-    Write-Host "Connexion au module 1..."
+# Fonction de l'état du pare-feu
+function Etat {
+    Write-Host "Le pare-feu est : "
+    Log "EtatPareFeu_${NomMachine}_${IpMachine}"
+    
+    try {
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "sudo ufw status verbose"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+        
+    }
+    catch {
+        Write-Host ""
+        Write-Host "Erreur lors de la récupération de l'état : $_"
+        Write-Host ""
+    }
+    
+    Start-Sleep -Seconds 4
+}
+
+# Fonction Activation du pare-feu
+function Activation {
+    Write-Host "Activation du pare-feu"
+    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
     Write-Host ""
     Write-Host " ---------------------------------------------- "
     Write-Host ""
-    Start-Sleep -Seconds 1
-    Log "MenuActionMachine"
     
-    # Appel du script module_1.ps1
-    & "$PSScriptRoot\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    try {
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "sudo ufw enable"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+
+    }
+    catch {
+        Write-Host ""
+        Write-Host "Erreur lors de l'activation : $_"
+        Write-Host ""
+    }
+    
+    Start-Sleep -Seconds 2
+    
 }
 
-# Module 2 : Gestion des Utilisateurs
-function Module_2 {
-    Write-Host "Connexion au module 2..."
+# Fonction Désactivation du pare-feu
+function Desactivation {
+    Write-Host "Desactivation du pare-feu"
+    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
     Write-Host ""
     Write-Host " ---------------------------------------------- "
     Write-Host ""
-    Start-Sleep -Seconds 1
-    Log "MenuGestionDesUtilisateurs"
     
-    # Appel du script module_2.ps1
-    & "$PSScriptRoot\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    try {
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "sudo ufw disable"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+
+    }
+    catch {
+        Write-Host ""
+        Write-Host "Erreur lors de la désactivation : $_"
+        Write-Host ""
+    }
+    
+    Start-Sleep -Seconds 2
+    
 }
 
-# Module 3 : Informations Machine
-function Module_3 {
-    Write-Host "Connexion au module 3..."
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
-    Start-Sleep -Seconds 1
-    Log "MenuInformationsMachine"
-    
-    # Appel du script module_3.ps1
-    & "$PSScriptRoot\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
-}
-
-
+# Log au démarrage du script
 Log "NewScript"
 
 # Boucle principale du menu
@@ -79,70 +109,65 @@ while ($true) {
     Write-Host "###############################################"
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
-    Write-Host "####             Menu Linux                ####"
-    Write-Host ("####  {0,-37}  ####" -f "$NomMachine $IpMachine")
+    Write-Host "####             Menu Pare-feu             ####"
+    Write-Host ("####  {0, -20} {1,-14}  ####`n" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
     Write-Host ""
 
-    # Choix du module
-    Write-Host "Choisissez dans quel module vous voulez aller."
+    Write-Host "Choisissez quelle action effectuer."
     Write-Host ""
-    Write-Host "1) Menu action machine"
-    Write-Host "2) Menu gestion des utilisateurs"
-    Write-Host "3) Menu information machine"
-    Write-Host "4) Retour Menu Serveur"
+    Write-Host "1) Etat du pare-feu"
+    Write-Host "2) Activation du pare-feu"
+    Write-Host "3) Désactivation du pare-feu"
+    Write-Host "4) Retour menu action machine"
     Write-Host "x) Sortir"
     Write-Host ""
-    $module = Read-Host "Votre choix"
+    $choix = Read-Host "Votre choix"
     Write-Host ""
 
-    switch ($module) {
+    switch ($choix) {
         "1" {
-            Write-Host "Menu action machine"
+            Write-Host "Etat du pare-feu"
             Write-Host ""
-            Module_1
-            Log "MenuActionMachine"
+            Etat
         }
+        
         "2" {
-            Write-Host "Menu Gestion des Utilisateurs"
-            Write-Host ""
-            Module_2
-            Log "MenuGestionDesUtilisateurs"
-        }
-        "3" {
-            Write-Host "Menu information machine"
-            Write-Host ""
-            Module_3
-            Log "MenuInformationsMachine"
-        }
-        "4" {
-            Write-Host "Retour Menu Serveur"
-            Write-Host ""
-            Write-Host "Connexion Menu Serveur..."
-            Write-Host ""
-            Write-Host " ---------------------------------------------- "
+            Write-Host "Activation du pare-feu"
             Write-Host ""
             Start-Sleep -Seconds 1
-            Log "RetourMenuServeur"
+            Activation
+        }
+
+        "3" {
+            Write-Host "Désactivation du pare-feu"
+            Write-Host ""
+            Start-Sleep -Seconds 1
+            Desactivation
+        }
+        
+        "4" {
+            Write-Host "Retour Menu Action Machine"
+            Write-Host ""
+            Start-Sleep -Seconds 1
+            Log "RetourMenuActionMachine"
             return
         }
+
         { $_ -ieq "x" } {
             Write-Host "Au revoir"
             Write-Host ""
             Log "EndScript"
-            exit 0
+            throw
         }
+        
         default {
             Write-Host "Choix invalide !"
-            Write-Host ""
-            Write-Host " ---------------------------------------------- "
             Write-Host ""
             Start-Sleep -Seconds 1
             Log "MauvaisChoix"
         }
     }
-
 }
-
