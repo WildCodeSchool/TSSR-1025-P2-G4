@@ -38,7 +38,7 @@ function Etat {
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
         $sshCommand = "Get-NetFirewallProfile | Select-Object Name, Enabled"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
         
     }
     catch {
@@ -61,7 +61,7 @@ function Activation {
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
         $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
 
     }
     catch {
@@ -85,7 +85,7 @@ function Desactivation {
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
         $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
 
     }
     catch {
@@ -110,7 +110,7 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####             Menu Pare-feu             ####"
-    Write-Host ("####  {0,-35}  ####" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0, -20} {1,-14}  ####`n" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
