@@ -77,7 +77,7 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####          Menu Action Machine          ####"
-    Write-Host ("####  {0,-35}  ####" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0, -20} {1,-14}  ####`n" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
@@ -129,7 +129,7 @@ while ($true) {
             Write-Host "Au revoir"
             Write-Host ""
             Log "EndScript"
-            throw 
+            throw
         }
         default {
             Write-Host "Choix invalide !"
