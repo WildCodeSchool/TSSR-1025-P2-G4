@@ -95,8 +95,8 @@ echo
         x|X)
             echo "Au revoir"
             echo 
-            exit 0
             Log "EndScript"
+            exit 0
             ;;
 
         *)

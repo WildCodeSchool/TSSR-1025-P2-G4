@@ -64,7 +64,7 @@ do
     read -p "Votre choix : " del_user
     case "$del_user" in        
         1)  
-            ssh -o ConnectTimeout=10 -T cliwin01 "Remove-LocalUser -Name \"$user_name\"; Remove-Item \"C:\Users\$user_name\" -Recurse -Force"
+            ssh -o ConnectTimeout=10 -T clilin01 "sudo -S userdel -r -- \"$user_name\""
             echo -e "\nL'utilisateur $user_name ainsi que son répertoire personnel a été suprimé !\n"
             Log "UserDeletion"
             end_user_return
