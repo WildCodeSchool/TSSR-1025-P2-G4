@@ -57,24 +57,20 @@ function Repertoire() {
 
 # Suite de la fonction log pour suivre des utilistations du script
 
-function Log {
-    param (
-        [string]$evenement
-    )
+function Log() {
 
-    #Créer le dossier si nécessaire
-    if (-not (Test-Path "C:\Windows\System32\LogFiles")) {
-        New-Item -ItemType Directory -Path "C:\Windows\System32\LogFiles" -Force | Out-Null
-    }
+    local evenement="$1"
+    local fichier_log="/var/log/log_evt.log"
+    local date_actuelle=$(date +"%Y%m%d")
+    local heure_actuelle=$(date +"%H%M%S")
+    local utilisateur=$(whoami)
 
-    $fichier_log = "C:\Windows\System32\LogFiles\log_evt.log"
-    $date_actuelle = Get-Date -Format "yyyyMMdd"
-    $heure_actuelle = Get-Date -Format "HHmmss"
-    $utilisateur = $env:USERNAME
+    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
+    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 
-    $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
+    # Ecriture dans le fichier
+    echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
 
-    Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
 # Suite du log
