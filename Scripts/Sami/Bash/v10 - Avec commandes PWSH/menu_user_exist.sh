@@ -32,14 +32,14 @@ do
         1)
             echo -e "\nRedirection vers l'Espace Modification Utilisateur...\n"
             Log "UserModificationAreaRedirection"
-            source ~/scripts_debian/linux/modif_user.sh
+            source ~/scripts_debian/windows/modif_user.sh
             continue
         ;;
         
         2)
             echo -e "\nRedirection vers l'Espace Supression Utilisateur...\n"
             Log "UserDeletionAreaRedirection"
-            source ~/scripts_debian/linux/del_user.sh
+            source ~/scripts_debian/windows/del_user.sh
             if ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalUser -Name \"$user_name\" *>\$null"
             then
                 continue
@@ -53,7 +53,7 @@ do
         3)
             echo -e "\nRedirection vers l'Espace Informations Utilisateur...\n"
             Log "UserInformationAreaRedirection"
-            source ~/scripts_debian/linux/info_user.sh
+            source ~/scripts_debian/windows/info_user.sh
             continue
         ;;
         

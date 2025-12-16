@@ -13,10 +13,8 @@ function Log() {
     local heure_actuelle=$(date +"%H%M%S")
     local utilisateur=$(whoami)
 
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
-    local ligne_log="${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
+    local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
 
-    # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
 }
 
@@ -55,11 +53,7 @@ function cleanup {
     fi
     Log "EndScript"
 }
-
-# N'active le nettoyage automatique que si ce script est le script principal
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    trap cleanup EXIT
-fi
+trap cleanup EXIT
 
 # --- E. Gestion de la Connexion SSH ---
 
@@ -79,7 +73,6 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ">>> Connexion SSH vers Windows ($REMOTE_IP)..."
     echo ">>> Note : Si le shell par défaut de Windows n'est pas Bash, c'est normal."
     
-    # On force la connexion
     ssh -M -S "$SSH_SOCKET" -fN "$REMOTE_USER@$REMOTE_IP"
     
     if [ $? -ne 0 ]; then
@@ -193,7 +186,7 @@ function menu_sys(){
             ;;
         6) 
             Log "SysConsultALL"
-            ssh_exec "echo --- BIOS --- && wmic bios get name, serialnumber && echo. && echo --- OS --- && systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\" && echo. && echo --- GPU --- && wmic path win32_videocontroller get name && echo. && echo --- IP --- && ipconfig" 
+            ssh_exec "powershell -Command \"Write-Host '--- BIOS ---'; Get-CimInstance Win32_BIOS | Select-Object Name, SerialNumber | Format-List; Write-Host '--- OS ---'; Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version | Format-List; Write-Host '--- UPTIME ---'; (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime | Select-Object Days, Hours, Minutes | Format-List; Write-Host '--- GPU ---'; Get-CimInstance Win32_VideoController | Select-Object Name | Format-Table -HideTableHeaders; Write-Host '--- IP ---'; ipconfig\""
             ;;
         7) break 
             ;;
@@ -231,10 +224,11 @@ function menu_logs(){
             Log "LogsConsultApp"
             ssh_exec "powershell -Command \"Get-EventLog -LogName Application -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize\"" 
             ;;
-        4) 
+        4)  
             Log "LogsConsultALL"
-            ssh_exec "powershell -Command \"Write-Host '--- ERREURS SYS ---'; Get-EventLog -LogName System -EntryType Error -Newest 5; Write-Host '--- SECURITE ---'; Get-EventLog -LogName Security -Newest 5\"" 
+            ssh_exec "powershell -Command \"Write-Host '--- 1. ERREURS SYSTEME ---'; Get-EventLog -LogName System -EntryType Error,Warning -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize -Wrap; Write-Host '--- 2. SECURITE ---'; Get-EventLog -LogName Security -Newest 10 | Format-Table TimeGenerated, EventID, Message -AutoSize; Write-Host '--- 3. APPLICATION ---'; Get-EventLog -LogName Application -Newest 10 | Format-Table TimeGenerated, Source, Message -AutoSize\"" 
             ;;
+            
         5) break 
         ;;
         *) echo "Choix invalide." 
@@ -326,7 +320,7 @@ while true; do
         4) menu_save 
         ;;
         5) echo "Retour au menu principal..."
-            return 
+            exit 0 
         ;;
         6) echo "Au revoir !"
             exit 0 

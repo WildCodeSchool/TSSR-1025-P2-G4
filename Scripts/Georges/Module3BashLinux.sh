@@ -4,7 +4,6 @@
 # 0. CONFIGURATION & LOGGING
 # ==============================================================================
 
-# Ajout d'une fonction log pour créer un suivis des utilistations du script
 
 function Log() {
 
@@ -14,43 +13,34 @@ function Log() {
     local heure_actuelle=$(date +"%H%M%S")
     local utilisateur=$(whoami)
 
-    # Format demandé <Date>_<Heure>_<Utilisateur>_<Evenement>
     local ligne_log="${date_actuelle}"_${heure_actuelle}_${utilisateur}_${evenement}
 
-    # Ecriture dans le fichier
     echo "$ligne_log" | sudo tee -a "$fichier_log" > /dev/null 2>&1
 
 }
 
 # --- C. Initialisation des Variables ---
 
-# 1. Récupération des variables du parent (menu_linux.sh)
-# Si IpMachine existe (vient du parent), on l'utilise pour REMOTE_IP
 if [ -n "$IpMachine" ]; then
     REMOTE_IP="$IpMachine"
 fi
-# Idem pour l'utilisateur
 if [ -n "$NomMachine" ]; then
     REMOTE_USER="$NomMachine"
 fi
 
-# 2. Si les variables sont toujours vides (ex: lancement manuel du script), on demande.
 if [ -z "$REMOTE_IP" ] || [ -z "$REMOTE_USER" ]; then
     clear
     echo "======================================="
     echo "      CONFIGURATION DE LA CIBLE        "
     echo "======================================="
-    # Si l'une manque, on demande tout pour être sûr
     [ -z "$REMOTE_IP" ] && read -p "Adresse IP de la cible : " REMOTE_IP
     [ -z "$REMOTE_USER" ] && read -p "Utilisateur distant (ex: wilder) : " REMOTE_USER
 fi
 
-# Définition du chemin du Socket (le fichier qui maintient la connexion ouverte)
 SSH_SOCKET="/tmp/ssh_mux_${REMOTE_IP}_${REMOTE_USER}"
 
 # --- D. Nettoyage et Fin de Script ---
 function cleanup {
-    # On ne ferme la connexion que si c'est CE script qui l'a créée
     if [ "$CONNEXION_CREEE_ICI" == "oui" ]; then
         echo ""
         echo ">>> Fermeture de la connexion maître..."
@@ -63,16 +53,11 @@ function cleanup {
     # JOURNALISATION : Fin du script
     Log "EndScript"
 }
-# N'active le nettoyage automatique que si ce script est le script principal
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    trap cleanup EXIT
-fi
+trap cleanup EXIT
 
 # --- E. Gestion de la Connexion SSH ---
 
-# On vérifie si une connexion est DÉJÀ active (créée par menu_linux.sh)
 if [ -S "$SSH_SOCKET" ]; then
-    # Le fichier socket existe, on teste si la connexion est vivante
     ssh -S "$SSH_SOCKET" -O check "$REMOTE_USER@$REMOTE_IP" 2>/dev/null
     if [ $? -eq 0 ]; then
         echo ">>> Connexion existante détectée. Utilisation du canal sécurisé..."
@@ -83,7 +68,6 @@ if [ -S "$SSH_SOCKET" ]; then
     fi
 fi
 
-# Si pas de connexion héritée, on l'ouvre (c'est là qu'il demandera le MDP si pas de clé SSH)
 if [ "$CONNEXION_HERITEE" != "oui" ]; then
     echo ""
     echo ">>> Établissement de la connexion sécurisée..."
@@ -95,7 +79,6 @@ if [ "$CONNEXION_HERITEE" != "oui" ]; then
         echo "!!! Erreur : Impossible de se connecter."
         exit 1
     fi
-    # On marque qu'on a ouvert la connexion nous-mêmes (pour savoir si on doit la fermer à la fin)
     CONNEXION_CREEE_ICI="oui"
 fi
 

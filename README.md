@@ -16,12 +16,30 @@
 ## 👥 Membres de l'équipe :
 <span id=equipe></span>
 
-| Prenom  | S1   | S2   | S3   | S4  |
-| ------- | ---- | ---  | ---- | --- |
-| Renaud  | SM   | Tech | PO   |     |
-| Georges | PO   | Tech | SM   |     |
-| Sami    | Tech | PO   | Tech |     |
-| Romain  | Tech | SM   | Tech |     |
+### S1 :
+
+| **Prénoms :** | Georges | Sami | Romain | Renaud |
+| --------- | ------- | ---- | ------ | ------ |
+| **Rôles :**   | PO      | Tech | Tech   | SM     |
+
+### S2 :
+
+| **Prénoms :** | Georges | Sami | Romain | Renaud |
+| --------- | ------- | ---- | ------ | ------ |
+| **Rôles :**   | Tech    | PO   | SM     | Tech   |
+
+### S3 :
+
+| **Prénoms :** | Georges | Sami | Romain | 
+| --------- | ------- | ---- | ------ |
+| **Rôles :**   | SM      | Tech | Tech   |
+
+### S4 :
+
+| **Prénoms :** | Georges | Sami | Romain | 
+| --------- | ------- | ---- | ------ |
+| **Rôles :**   | Tech    | SM   | PO     |
+
 
 ## 💻 Matériel :
 <span id=materiel></span>
@@ -84,6 +102,12 @@
 
 ### 🏃🏼‍♂️ Sprint 3 :
 <span id=sprint_3></span>
+
+- Finalisation du script Bash
+- Débogage des scripts Bash avec commandes PowerShell
+- Journalisation
+- Initialisation des scripts en PowerShell
+- Documentation GitHub
 
 ### 🏃🏼‍♂️ Sprint 4 :
 <span id=sprint_4></span>
