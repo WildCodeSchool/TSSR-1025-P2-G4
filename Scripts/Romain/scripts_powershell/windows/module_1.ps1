@@ -38,7 +38,7 @@ function PriseEnMain {
     Start-Sleep -Seconds 1
     
     # Appel du script menu_prise_en_main.ps1
-    & "$PSScriptRoot\linux\menu_prise_en_main.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\menu_prise_en_main.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Menu pare-feu
@@ -50,7 +50,7 @@ function PareFeu {
     Start-Sleep -Seconds 1
     
     # Appel du script menu_pare-feu.ps1
-    & "$PSScriptRoot\linux\menu_pare-feu.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\menu_pare-feu.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Menu redémarrage
@@ -62,7 +62,7 @@ function Redemarrage {
     Start-Sleep -Seconds 1
     
     # Appel du script menu_redemarrage.ps1
-    & "$PSScriptRoot\linux\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 
@@ -269,3 +269,4 @@ while ($true) {
     }
 
 }
+
