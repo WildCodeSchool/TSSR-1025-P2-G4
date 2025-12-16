@@ -1,4 +1,4 @@
-# Menu Windows (PowerShell)
+# Menu Pare-Feu (PowerShell)
 
 # Initialisation des arguments
 
