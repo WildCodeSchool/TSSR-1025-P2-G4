@@ -40,7 +40,7 @@ function Module_1 {
     Log "MenuActionMachine"
     
     # Appel du script module_1.ps1
-    & "$PSScriptRoot\windows\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 2 : Gestion des Utilisateurs
@@ -53,7 +53,7 @@ function Module_2 {
     Log "MenuGestionDesUtilisateurs"
     
     # Appel du script module_2.ps1
-    & "$PSScriptRoot\windows\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 3 : Informations Machine
@@ -66,7 +66,7 @@ function Module_3 {
     Log "MenuInformationsMachine"
     
     # Appel du script module_3.ps1
-    & "$PSScriptRoot\windows\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Log au démarrage du script
@@ -81,7 +81,7 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####             Menu Linux                ####"
-    Write-Host ("####  {0,-37}  ####" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0,-35}  ####" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
@@ -133,7 +133,7 @@ while ($true) {
             Write-Host "Au revoir"
             Write-Host ""
             Log "EndScript"
-            exit 0
+            throw
         }
         default {
             Write-Host "Choix invalide !"

@@ -73,7 +73,7 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####      Menu Prise en main distante      ####"
-    Write-Host ("####  {0,-37}  ####" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0,-35}  ####" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
@@ -95,7 +95,7 @@ while ($true) {
             PriseEnMain
         }
         "2" {
-            Write-Host "Retour Menu Module 1"
+            Write-Host "Retour Menu Action Machine"
             Write-Host ""
             Start-Sleep -Seconds 1
             Log "RetourMenuActionMachine"
@@ -105,7 +105,7 @@ while ($true) {
             Write-Host "Au revoir"
             Write-Host ""
             Log "EndScript"
-            exit 0
+            throw
         }
         default {
             Write-Host "Choix invalide !"
