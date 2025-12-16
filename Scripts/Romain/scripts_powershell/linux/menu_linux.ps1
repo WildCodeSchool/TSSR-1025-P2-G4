@@ -10,8 +10,23 @@ param(
 # Initialisation des fonctions 
 
 function Log {
+    param (
+        [string]$evenement
+    )
 
+    #Créer le dossier si nécessaire
+    if (-not (Test-Path "C:\Windows\System32\LogFiles")) {
+        New-Item -ItemType Directory -Path "C:\Windows\System32\LogFiles" -Force | Out-Null
+    }
 
+    $fichier_log = "C:\Windows\System32\LogFiles\log_evt.log"
+    $date_actuelle = Get-Date -Format "yyyyMMdd"
+    $heure_actuelle = Get-Date -Format "HHmmss"
+    $utilisateur = $env:USERNAME
+
+    $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
+
+    Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
 # Module 1 : Actions Machine
@@ -24,7 +39,7 @@ function Module_1 {
     Log "MenuActionMachine"
     
     # Appel du script module_1.ps1
-    & "$PSScriptRoot\linux\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 2 : Gestion des Utilisateurs
@@ -37,7 +52,7 @@ function Module_2 {
     Log "MenuGestionDesUtilisateurs"
     
     # Appel du script module_2.ps1
-    & "$PSScriptRoot\linux\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 3 : Informations Machine
@@ -50,7 +65,7 @@ function Module_3 {
     Log "MenuInformationsMachine"
     
     # Appel du script module_3.ps1
-    & "$PSScriptRoot\linux\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    & "$PSScriptRoot\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 
@@ -128,4 +143,6 @@ while ($true) {
             Log "MauvaisChoix"
         }
     }
+
 }
+
