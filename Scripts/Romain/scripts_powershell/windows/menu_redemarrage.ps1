@@ -1,10 +1,5 @@
-# ===============================================================================
-# MENU PRISE EN MAIN DISTANTE - Machines Windows
-# ===============================================================================
-
 param(
     [string]$NomMachine,
-    
     [string]$IpMachine
 )
 
@@ -28,35 +23,73 @@ function Log {
     Add-Content -Path $fichier_log -Value $ligne_log  
 }
 
-# Fonction de prise en main
-function PriseEnMain {
-    Write-Host "Lancement de la prise en main distante..."
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
-    Log "PriseEnMainDistanteEnCLI_${NomMachine}_${IpMachine}"
+# Fonction de l'état du pare-feu
+function Etat {
+    Write-Host "Le pare-feu est : "
+    Log "EtatPareFeu_${NomMachine}_${IpMachine}"
     
-    Write-Host "Connexion SSH vers $NomMachine@$IpMachine..."
-    Write-Host "Tapez 'exit' pour revenir au menu."
+    try {
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "Get-NetFirewallProfile | Select-Object Name, Enabled"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        
+        Write-Host ""
+    }
+    catch {
+        Write-Host ""
+        Write-Host "Erreur lors de la récupération de l'état : $_"
+        Write-Host ""
+    }
+    
+    Start-Sleep -Seconds 4
+}
+
+function Activation {
+    Write-Host "Activation du pare-feu"
+    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
     Write-Host ""
     Write-Host " ---------------------------------------------- "
     Write-Host ""
     
     try {
-        # Connexion SSH interactive vers la machine Windows
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine"
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
         
-        Write-Host ""
-        Write-Host "Deconnexion de la prise en main distante."
         Write-Host ""
     }
     catch {
         Write-Host ""
-        Write-Host "Erreur lors de la connexion SSH : $_"
+        Write-Host "Erreur lors de l'activation : $_"
         Write-Host ""
     }
     
     Start-Sleep -Seconds 2
+    
+}
+
+function Desactivation {
+    Write-Host "Desactivation du pare-feu"
+    Log "ActivationPareFeu_${NomMachine}_${IpMachine}"
+    Write-Host ""
+    Write-Host " ---------------------------------------------- "
+    Write-Host ""
+    
+    try {
+        # Cette commande donne l'état du pare feu sur la machine cible
+        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        
+        Write-Host ""
+    }
+    catch {
+        Write-Host ""
+        Write-Host "Erreur lors de la désactivation : $_"
+        Write-Host ""
+    }
+    
+    Start-Sleep -Seconds 2
+    
 }
 
 # Log au démarrage du script
@@ -70,7 +103,7 @@ while ($true) {
     Write-Host "###############################################"
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
-    Write-Host "####      Menu Prise en main distante      ####"
+    Write-Host "####             Menu Pare-feu             ####"
     Write-Host ("####  {0,-37}  ####" -f "$NomMachine $IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
@@ -79,8 +112,10 @@ while ($true) {
 
     Write-Host "Choisissez quelle action effectuer."
     Write-Host ""
-    Write-Host "1) Prise en main distante"
-    Write-Host "2) Retour Menu Module 1"
+    Write-Host "1) Etat du pare-feu"
+    Write-Host "2) Activation du pare-feu"
+    Write-Host "3) Désactivation du pare-feu"
+    Write-Host "4) Retour menu action machine"
     Write-Host "x) Sortir"
     Write-Host ""
     $choix = Read-Host "Votre choix"
@@ -88,23 +123,40 @@ while ($true) {
 
     switch ($choix) {
         "1" {
-            Write-Host "Prise en main distante en CLI"
+            Write-Host "Etat du pare-feu"
             Write-Host ""
-            PriseEnMain
+            Etat
         }
+        
         "2" {
-            Write-Host "Retour Menu Module 1"
+            Write-Host "Activation du pare-feu"
+            Write-Host ""
+            Start-Sleep -Seconds 1
+            Activation
+        }
+
+        "3" {
+            Write-Host "Désactivation du pare-feu"
+            Write-Host ""
+            Start-Sleep -Seconds 1
+            Desactivation
+        }
+        
+        "4" {
+            Write-Host "Retour Menu Action Machine"
             Write-Host ""
             Start-Sleep -Seconds 1
             Log "RetourMenuActionMachine"
             return
         }
+
         { $_ -ieq "x" } {
             Write-Host "Au revoir"
             Write-Host ""
             Log "EndScript"
             exit 0
         }
+        
         default {
             Write-Host "Choix invalide !"
             Write-Host ""
