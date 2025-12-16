@@ -22,7 +22,7 @@ function Redemarrage {
 
         # Commande de redémarrage en Bash
         $sshCommand = "sudo reboot now"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1 | Out-Null
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
         
         Write-Host ""
         Write-Host "Commande de redemarrage envoyee avec succes !"
@@ -50,7 +50,8 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####           Menu Redemarrage            ####"
-    Write-Host ("####  {0, -20} {1,-14}  ####`n" -f "$NomMachine $IpMachine")
+    Write-Host ("####  {0,-35}  ####" -f "$NomMachine")
+    Write-Host ("####  {0,-35}  ####" -f "$IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
