@@ -154,7 +154,7 @@ while ($true) {
     Write-Host "2) Windows "
     Write-Host "x) Sortir "
     Write-Host ""
-    $client = Read-Host "Votre choix : "
+    $client = Read-Host "Votre choix"
     Write-Host ""
 
     switch ($client) {
