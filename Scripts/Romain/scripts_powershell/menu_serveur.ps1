@@ -38,14 +38,10 @@ function Linux {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
-    nmap -sn 172.16.40.0/24 -oG - | Select-String 'Host: ' | ForEach-Object {
-        if ($_ -match 'Host: (\S+) \((.*)\)'){
-            [PSCustomObject]@{
-                IP       = $matches[1]
-                Hostname = if ($matches[2]) { $matches[2] } else { "Inconnu" }
-            }
-        }
-    } | Format-Table -AutoSize
+    # Je n'arrive pas à afficher comme sur Bash les noms de machine associer aux adresses IP
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+        $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
+    }
     Write-Host ""
     $AdresseIp = Read-Host "Rentrez une adresse IP"
     Write-Host ""
@@ -104,6 +100,7 @@ function Windows {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
+    # Je n'arrive pas à afficher comme sur Bash les noms de machine associer aux adresses IP
     nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
         $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
     }
@@ -211,6 +208,7 @@ while ($true) {
         }
     }
 }
+
 
 
 
