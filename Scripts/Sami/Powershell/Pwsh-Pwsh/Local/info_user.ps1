@@ -15,7 +15,7 @@ function end_user_return() {
                 return
             }
 
-           {$_ -match '^[xX]$' } {
+            { $_ -match '^[xX]$' } {
                 Write-Host "`nA bientôt !`n"
                 Log "EndScript"
                 throw
@@ -103,7 +103,7 @@ while ($true) {
         "3" {
             Write-Host "`nSessions ouvertes par $user_name :"
             #= ssh -o ConnectTimeOut=10 -T cliwin01 "ssh cliwin01 "Get-WinEvent -FilterHashtable @{LogName='Security';Id=4624} | Where-Object { \$_.Properties[5].Value -eq "$user_name" } | Select-Object -First 1 TimeCreated"
-            $session = Get-WinEvent -FilterHashtable @{LogName='Security';Id=4624} | Where-Object { $_.Properties[5].Value -eq "$user_name" } | Select-Object -First 1 TimeCreated
+            $session = Get-WinEvent -FilterHashtable @{LogName = 'Security'; Id = 4624 } | Where-Object { $_.Properties[5].Value -eq "$user_name" } | Select-Object -First 1 TimeCreated
             
             if ([string]::IsNullOrWhiteSpace($session) -or $null -eq $session) {
                 Write-Host "`nIl n'y a pas session ouverte par l'utilisateur $user_name.`n"
@@ -122,7 +122,7 @@ while ($true) {
             return
         }
 
-        {$_ -match '^[xX]$' } {
+        { $_ -match '^[xX]$' } {
             Write-Host "`nA bientôt !`n"
             Log "EndScript"
             throw
