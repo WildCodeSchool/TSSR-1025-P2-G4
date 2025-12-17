@@ -113,6 +113,7 @@ function Windows {
     Write-Host "Liste des utilisateurs disponible sur la cible..."
     Write-Host ""
     # Connexion ssh sans personalisation pour trouver un compte administrateur
+    # Je n'ai pas pu faire plus propre
     ssh -o ConnectTimeout=10 wilder@$AdresseIp "net localgroup Administrateurs"
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
@@ -205,6 +206,7 @@ while ($true) {
         }
     }
 }
+
 
 
 
