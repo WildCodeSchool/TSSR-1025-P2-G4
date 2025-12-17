@@ -38,7 +38,7 @@ function Linux {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
-    nmap -sn 192.168.1.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
         $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
     }
     Write-Host ""
@@ -99,7 +99,7 @@ function Windows {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
-    nmap -sn 192.168.1.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
         $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
     }
     Write-Host ""
@@ -205,3 +205,4 @@ while ($true) {
         }
     }
 }
+
