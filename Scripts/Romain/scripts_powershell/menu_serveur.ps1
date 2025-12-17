@@ -113,7 +113,7 @@ function Windows {
     Write-Host "Liste des utilisateurs disponible sur la cible..."
     Write-Host ""
     # Connexion ssh sans personalisation pour trouver un compte administrateur
-    ssh -o ConnectTimeout=10 wilder@172.16.40.20 "Get-LocalGroupMember -Group Administrators | Select-Object Name"
+    ssh -o ConnectTimeout=10 wilder@172.16.40.20 "powershell -Command \"Get-LocalGroupMember -Group Administrators | Select-Object Name\""
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
     Write-Host ""
@@ -205,4 +205,5 @@ while ($true) {
         }
     }
 }
+
 
