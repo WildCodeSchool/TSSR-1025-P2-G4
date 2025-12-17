@@ -38,7 +38,7 @@ function Linux {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
-    nmap -sn 192.168.1.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
         $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
     }
     Write-Host ""
@@ -99,7 +99,7 @@ function Windows {
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
     # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
-    nmap -sn 192.168.1.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
         $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
     }
     Write-Host ""
@@ -113,7 +113,7 @@ function Windows {
     Write-Host "Liste des utilisateurs disponible sur la cible..."
     Write-Host ""
     # Connexion ssh sans personalisation pour trouver un compte administrateur
-    ssh -o ConnectTimeout=10 wilder@172.16.40.20 "Get-LocalGroupMember -Group Administrators | Select-Object Name"
+    ssh -o ConnectTimeout=10 wilder@$AdresseIp "net localgroup Administrateurs"
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
     Write-Host ""
@@ -205,3 +205,6 @@ while ($true) {
         }
     }
 }
+
+
+

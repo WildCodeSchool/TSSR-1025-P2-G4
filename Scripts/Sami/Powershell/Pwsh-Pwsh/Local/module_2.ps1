@@ -36,11 +36,12 @@ while ($true) {
     Write-Host "####                                       ####"
     Write-Host "####                                       ####"
     Write-Host "####     Menu Gestion des Utilisateurs     ####"
-    Write-Host ("####  {0,-20} {1,-14}  ####`n" -f $NomMachine, $IpMachine)
-    Write-Host "####                                       ####"
+    Write-Host ("####  {0,-35}  ####" -f "$NomMachine")
+    Write-Host ("####  {0,-35}  ####" -f "$IpMachine")
     Write-Host "####                                       ####"
     Write-Host "###############################################"
     Write-Host "###############################################"
+    Write-Host ""
     Write-Host "Bienvenue dans le Menu Gestion des Utilisateurs."
     Write-Host ""
     Log "WelcomeToUserManagementMenu"
@@ -60,14 +61,14 @@ while ($true) {
                 Write-Host "`nBon retour $user_name !`n`nRedirection vers l'Espace Personnel Utilisateur..."
                 Log "UserEntryExists"
                 Log "UserPersonnalAreaRedirection"
-                . "$HOME\scripts_windows_server\windows\menu_user_exist.ps1"
+                . "$HOME\scripts_windows_server\windows\menu_user_exists.ps1"
             }
             else {
                 Clear-Host
                 Write-Host "`nL'utilisateur $user_name n'existe pas.`n`nRedirection vers l'Espace Création Utilisateur..."
                 Log "UserEntryDoesntExist"
                 Log "UserCreationAreaRedirection" 
-                . "$HOME\scripts_windows_server\create_user.ps1"
+                . "$HOME\scripts_windows_server\windows\create_user.ps1"
             }
             continue
         }

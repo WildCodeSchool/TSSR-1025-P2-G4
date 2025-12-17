@@ -28,7 +28,7 @@ while ($true) {
     Write-Host "`nBienvenue dans l'Espace Personnel Utilisateur !`n"
     Log "WelcomeToUserPersonnalArea"
     Write-Host "Que souhaitez-vous faire ?`n"
-    Write-Host "1 - Apporter des modifications à l'utilisateur $user_name.`n2 - Supprimer l'utilisateur $user_name.`n3 - Afficher des Infos sur l'utilisateur $user_name .`n4 - Retourner au Menu Gestion des Utilisateurs.`nX - Sortie.`n"
+    Write-Host "1 - Apporter des modifications à l'utilisateur $user_name.`n2 - Supprimer l'utilisateur $user_name.`n3 - Afficher des Infos sur l'utilisateur $user_name.`n4 - Retourner au Menu Gestion des Utilisateurs.`nX - Sortie.`n"
     $choice_menu_user_exist = Read-Host "Votre choix" 
     switch ($choice_menu_user_exist) {
         "1" {
@@ -42,7 +42,7 @@ while ($true) {
             Write-Host "`nRedirection vers l'Espace Supression Utilisateur...`n"
             Log "UserDeletionAreaRedirection"
             . "$HOME\scripts_windows_server\windows\del_user.ps1"
-            #if ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalUser -Name \"$user_name\" *>\$null"
+            #if ssh cliwin01 "Get-LocalUser -Name \"$user_name\" *>\$null"
             if (Get-LocalUser -Name $user_name -ErrorAction SilentlyContinue) { 
                 continue
             }
@@ -54,7 +54,7 @@ while ($true) {
         }
         
         "3" {
-            Write-Host "\nRedirection vers l'Espace Informations Utilisateur...\n"
+            Write-Host "`nRedirection vers l'Espace Informations Utilisateur...`n"
             Log "UserInformationAreaRedirection"
             . "$HOME\scripts_windows_server\windows\info_user.ps1"
             continue
