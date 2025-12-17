@@ -37,8 +37,7 @@ function Etat {
     
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Get-NetFirewallProfile | Select-Object Name, Enabled"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "powershell.exe -Command \"Get-NetFirewallProfile | Select-Object Name, Enabled | Format-Table -AutoSize\""
         
     }
     catch {
@@ -172,3 +171,4 @@ while ($true) {
         }
     }
 }
+
