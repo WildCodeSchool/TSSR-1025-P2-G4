@@ -38,7 +38,6 @@ function Etat {
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
         ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "netsh advfirewall show allprofiles"
-
         
     }
     catch {
@@ -47,7 +46,7 @@ function Etat {
         Write-Host ""
     }
     
-    Start-Sleep -Seconds 4
+    Read-Host "Tapez sur entrée pour sortir"
 }
 
 # Fonction Activation du pare-feu
@@ -171,3 +170,4 @@ while ($true) {
     }
 
 }
+
