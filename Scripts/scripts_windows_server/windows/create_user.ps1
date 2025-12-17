@@ -148,84 +148,88 @@ while ($true) {
                     }
 
                     "2" {
-                        Clear-Host                        
-                        Write-Host "`nVoici la liste des groupes locaux existants :`n"
-                        Start-Sleep 1
-                        #ssh cliwin01 "Get-LocalGroup | Where-Object { \$_.Name -notmatch '^(Administrators|Users|Guests)$' } | Sort-Object Name"
-                        Get-LocalGroup | Where-Object { $_.SID -notmatch '^S-1-5-32-' } | Select-Object -ExpandProperty Name 
-                        Write-Host ""
-                        
                         while ($true) {
-                            Write-Host  "Dans quel groupe existant ci-dessus souhaitez-vous être ajouté ?"
-                            $local_grp = Read-Host "Votre choix"
-                            #if ssh cliwin01 "Get-LocalGroup -Name \"$local_grp\" *>\$null"
-                            #if ssh cliwin01 "Get-LocalGroup -Name \"$local_grp\" -ErrorAction SilentlyContinue"
-                            if (Get-LocalGroup -Name $local_grp -ErrorAction SilentlyContinue) {
-                                #ssh cliwin01 "Add-LocalGroupMember -Group \"$local_grp\" -Member \"$user_name\""
-                                Add-LocalGroupMember -Group $local_grp -Member $user_name
-                                Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
-                                Log "AddLocalGrpNewUser"
-                                while ($true) {
-                                    Start-Sleep 2
-                                    Clear-Host
-                                    Write-Host "`nVoulez-vous accorder des droits administrateurs à l'utilisateur ?`n`n1 - Oui`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
-                                    $mod_sudo = Read-Host "Votre choix"
-                                    switch ($mod_sudo) {
-                                        "1" {
-                                            #ssh cliwin01 "Add-LocalGroupMember -Group \"Administrators\" -Member \"$user_name\""
-                                            $group_name = if (Get-LocalGroup -Name "Administrators" -ErrorAction SilentlyContinue) {
-                                                "Administrators"
+                            Clear-Host                        
+                            Write-Host "`nVoici la liste des groupes locaux existants :`n"
+                            Start-Sleep 1
+                            #ssh cliwin01 "Get-LocalGroup | Where-Object { \$_.Name -notmatch '^(Administrators|Users|Guests)$' } | Sort-Object Name"
+                            if (Get-LocalGroup | Where-Object { $_.SID -notmatch '^S-1-5-32-' } | Select-Object -ExpandProperty Name) {
+                                Write-Host ""
+                                Write-Host  "Dans quel groupe existant ci-dessus souhaitez-vous être ajouté ?`n"
+                                $local_grp = Read-Host "Votre choix"
+                                #if ssh cliwin01 "Get-LocalGroup -Name \"$local_grp\" *>\$null"
+                                #if ssh cliwin01 "Get-LocalGroup -Name \"$local_grp\" -ErrorAction SilentlyContinue"
+                                if (Get-LocalGroup -Name $local_grp -ErrorAction SilentlyContinue) {
+                                    #ssh cliwin01 "Add-LocalGroupMember -Group \"$local_grp\" -Member \"$user_name\""
+                                    Add-LocalGroupMember -Group $local_grp -Member $user_name
+                                    Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
+                                    Log "AddLocalGrpNewUser"
+                                    while ($true) {
+                                        Start-Sleep 2
+                                        Clear-Host
+                                        Write-Host "`nVoulez-vous accorder des droits administrateurs à l'utilisateur ?`n`n1 - Oui`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
+                                        $mod_sudo = Read-Host "Votre choix"
+                                        switch ($mod_sudo) {
+                                            "1" {
+                                                #ssh cliwin01 "Add-LocalGroupMember -Group \"Administrators\" -Member \"$user_name\""
+                                                $group_name = if (Get-LocalGroup -Name "Administrators" -ErrorAction SilentlyContinue) {
+                                                    "Administrators"
+                                                }
+                                                elseif (Get-LocalGroup -Name "Administrateurs" -ErrorAction SilentlyContinue) {
+                                                    "Administrateurs"
+                                                }
+                                                else {
+                                                    Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
+                                                    break
+                                                }
+                                                Add-LocalGroupMember -Group $group_name -Member $user_name
+                                                Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
+                                                Log "AddSudoGrpNewUser"
+                                                end_user_return
+                                                return                                          
                                             }
-                                            elseif (Get-LocalGroup -Name "Administrateurs" -ErrorAction SilentlyContinue) {
-                                                "Administrateurs"
+
+                                            "2" {
+                                                Write-Host "`nL'utilisateur $user_name du groupe $local_grp n'a pas été ajouté au groupe administrateur."
+                                                Log "NoAddSudoGroupNewUser"
+                                                end_user_return
+                                                return                                         
                                             }
-                                            else {
-                                                Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
-                                                break
+
+                                            "3" {
+                                                Write-Host "`nRetour au Menu Gestion des Utilisateurs..." 
+                                                Log "ReturnUserManagementMenu"                                       
+                                                return
                                             }
-                                            Add-LocalGroupMember -Group $group_name -Member $user_name
-                                            Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
-                                            Log "AddSudoGrpNewUser"
-                                            end_user_return
-                                            return                                          
-                                        }
 
-                                        "2" {
-                                            Write-Host "`nL'utilisateur $user_name du groupe $local_grp n'a pas été ajouté au groupe administrateur."
-                                            Log "NoAddSudoGroupNewUser"
-                                            end_user_return
-                                            return                                         
-                                        }
+                                            {$_ -match '^[xX]$' }{
+                                                Write-Host "`nA bientôt !`n"
+                                                Log "EndScript"
+                                                throw
+                                            }
 
-                                        "3" {
-                                            Write-Host "`nRetour au Menu Gestion des Utilisateurs..." 
-                                            Log "ReturnUserManagementMenu"                                       
-                                            return
-                                        }
-
-                                        {$_ -match '^[xX]$' }{
-                                            Write-Host "`nA bientôt !`n"
-                                            Log "EndScript"
-                                            throw
-                                        }
-
-                                        Default {
-                                            Clear-Host
-                                            Write-Host "`nErreur de saisie.`nVeuillez faire votre choix selon ce qui est proposé."
-                                            Log "InputError"
-                                            continue
-                                        }
-                                    } 
+                                            Default {
+                                                Clear-Host
+                                                Write-Host "`nErreur de saisie.`nVeuillez faire votre choix selon ce qui est proposé."
+                                                Log "InputError"
+                                                continue
+                                            }
+                                        } 
+                                    }
+                                }
+                                else {
+                                    Write-Host "`nLe groupe $local_grp n'existe pas. Veuiller réessayer SVP.`n"
+                                    Log "LocalGroupDoesntExist"
+                                    Start-Sleep 3
+                                    continue
                                 }
                             }
-                            else {
-                                Write-Host "`nLe groupe $local_grp n'existe pas. Veuiller réessayer SVP.`n"
-                                Log "LocalGroupDoesntExist"
-                                continue
+                            else { 
+                                Write-Host "Il n'y a aucun groupe auquel vous pouvez être ajouté."
+                                end_user_return
+                                return
                             }
-                            
-                        }
-                                               
+                        }                         
                     }
 
                     "3" {
@@ -234,7 +238,7 @@ while ($true) {
                         return
                     }
 
-                    {$_ -match '^[xX]$' }{
+                    {$_ -match '^[xX]$' } {
                         Write-Host "`nA bientôt !`n"
                         Log "EndScript"
                         throw
