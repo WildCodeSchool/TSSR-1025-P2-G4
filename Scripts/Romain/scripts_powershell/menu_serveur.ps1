@@ -53,7 +53,7 @@ function Linux {
     Write-Host "Liste des utilisateurs disponible sur la cible..."
     Write-Host ""
     # Connexion ssh sans personalisation pour trouver un compte administrateur
-    ssh -o ConnectTimeout=10 wilder@172.16.40.30 "cat /etc/group" | grep "sudo"
+    ssh -o ConnectTimeout=10 wilder@172.16.40.30 "grep sudo /etc/group"
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
     Write-Host ""
@@ -208,6 +208,7 @@ while ($true) {
         }
     }
 }
+
 
 
 
