@@ -60,8 +60,7 @@ function Activation {
     
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "netsh advfirewall set allprofiles state on"
 
     }
     catch {
@@ -84,8 +83,7 @@ function Desactivation {
     
     try {
         # Cette commande donne l'état du pare feu sur la machine cible
-        $sshCommand = "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
-        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" $sshCommand 2>&1
+        ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "netsh advfirewall set allprofiles state off"
 
     }
     catch {
@@ -171,4 +169,5 @@ while ($true) {
             Log "MauvaisChoix"
         }
     }
+
 }
