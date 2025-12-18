@@ -1,8 +1,8 @@
 # TSSR-1025-P2-G4
 
-![Image_du_groupe](Ressources/Images/equipe_v5.png)
-
 <span id=haut></span>
+
+![Image_du_groupe](Ressources/Images/equipe_v5.png)
 
 ## Sommaire
 
