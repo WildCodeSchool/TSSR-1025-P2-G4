@@ -5,31 +5,6 @@ param(
     [string]$IpMachine
 )
 
-# --- AJOUT : Création de la connexion SSH persistante au démarrage ---
-Clear-Host
-Write-Host "=== INITIALISATION DE LA CONNEXION SSH ===" -ForegroundColor Cyan
-if ([string]::IsNullOrWhiteSpace($IpMachine)) {
-    $IpMachine = Read-Host "Entrez l'adresse IP de la machine Linux"
-}
-
-# On demande l'utilisateur SSH (ex: wilder)
-$UserSSH = Read-Host "Entrez le nom d'utilisateur distant (ex: wilder)"
-
-try {
-    Write-Host "Connexion en cours vers $IpMachine..." -ForegroundColor Yellow
-    # On crée la session et on la stocke dans une variable GLOBALE
-    $Global:SessionLinux = New-PSSession -HostName $IpMachine -UserName $UserSSH -ErrorAction Stop
-    Write-Host "Connexion réussie !" -ForegroundColor Green
-    Start-Sleep -Seconds 1
-}
-catch {
-    Write-Host "ERREUR CRITIQUE : Impossible de se connecter." -ForegroundColor Red
-    Write-Host $_
-    exit
-}
-# ---------------------------------------------------------------------
-
-
 # Initialisation des fonctions 
 
 # Journalisation
