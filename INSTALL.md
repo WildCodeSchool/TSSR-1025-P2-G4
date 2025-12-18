@@ -8,7 +8,13 @@
   - [Installation sur le Serveur Debian SRVLX01](#install-debian)
   - [Installation sur le Client Ubuntu (CLILIN01)](#install-ubuntu)
 * [Installation de nmap sur le serveur Debian](#installation-nmap-)
+  - [Introduction](#intro-nmap-debian)
+  - [Prérequis techniques](#prérequis-nmap)
+  - [Procédure d'installation](#procedure-nmap)
 * [Installation de putty sur le serveur windows ](#installation-putty-)
+  - [Introduction](#intro-putty)
+  - [Prérequis techniques](#prérequis-putty)
+  - [Procédure d'installation](#procedure-putty)
 
 ## Connexions ssh des machines du réseau :
 
@@ -183,7 +189,7 @@ Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exe
 
 ### 1. Introduction :
 
-<span id=intro-nmap-putty></span>
+<span id=intro-putty></span>
 
 Ce document détaille la procédure technique pour installer le client SSH PuTTY sur le serveur Windows de l'infrastructure (SRVWIN01). Cet outil est nécessaire pour permettre l'administration à distance du serveur Debian (SRVLX01) depuis l'environnement Windows, facilitant ainsi les tests de connectivité et la gestion inter-plateforme.
 
