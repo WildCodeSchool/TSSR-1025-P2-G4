@@ -104,9 +104,15 @@ Relevez l'adresse IP du client Ubuntu :
 <span id=installation-nmap-></span>
 
 ### 1. Introduction
+
+<span id=intro-nmap-debian></span>
+
 Ce document détaille la procédure technique pour installer l'outil Nmap (Network Mapper) sur le serveur Debian de l'infrastructure. Nmap est une dépendance requise pour permettre au script d'administration d'effectuer des opérations de découverte réseau et d'audit de sécurité.
 
-### 2. Prérequis techniques
+### 2. Prérequis techniques :
+
+<span id=prerequis-nmap></span>
+
 Avant de procéder à l'installation, assurez-vous que les conditions suivantes sont remplies sur la machine cible:
 
 
@@ -120,19 +126,22 @@ Droits d'accès : Accès au compte root ou à un utilisateur disposant des privi
 
 Réseau : La machine doit disposer d'un accès à Internet pour télécharger les paquets depuis les dépôts officiels.
 
-### 3. Procédure d'installation
+### 3. Procédure d'installation :
+
+<span id=procedure-nmap></span>
+
 Cette section décrit les étapes à suivre ligne par ligne pour installer l'outil.
 
-#### Étape 1 : Mise à jour des dépôts
+#### Étape 1 : Mise à jour des dépôts :
+
 Il est impératif de mettre à jour la liste des paquets locaux pour s'assurer de télécharger la dernière version disponible.
 
 Ouvrez votre terminal sur le serveur Debian.
 
 Exécutez la commande suivante :
 
-
-
 *sudo apt update*
+
 Note : Si vous êtes connecté en root, la commande sudo n'est pas nécessaire.
 
 Résultat attendu : Le système télécharge les listes de paquets. 
@@ -140,14 +149,13 @@ Résultat attendu : Le système télécharge les listes de paquets.
 ![](Ressources/Images/installssh/sshd1.png)
 
 
-#### Étape 2 : Installation du paquet Nmap
+#### Étape 2 : Installation du paquet Nmap :
+
 Une fois les dépôts à jour, lancez l'installation de Nmap.
 
 Exécutez la commande suivante :
 
-
-
-sudo apt install nmap -y  
+sudo apt install nmap -y
 
 L'option -y valide automatiquement la demande de confirmation d'espace disque.
 
@@ -156,27 +164,34 @@ Résultat attendu : Le gestionnaire de paquets apt télécharge et installe Nmap
 ![](Ressources/Images/nmap/nmapd1.png)
 
 
-#### Étape 3 : Vérification de l'installation
+#### Étape 3 : Vérification de l'installation :
+
 Pour valider que l'installation s'est déroulée correctement et que l'outil est fonctionnel.
 
 Vérifiez la version installée avec la commande :
 
-
-
 nmap --version
+
 Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exemple : Nmap version 7.93).
 
 ![](Ressources/Images/nmap/nmapd3.png)
 
 
 ## Installation de putty sur le serveur Windows :
+
 <span id=installation-putty-></span>
 
-### 1. Introduction
+### 1. Introduction :
+
+<span id=intro-nmap-putty></span>
+
 Ce document détaille la procédure technique pour installer le client SSH PuTTY sur le serveur Windows de l'infrastructure (SRVWIN01). Cet outil est nécessaire pour permettre l'administration à distance du serveur Debian (SRVLX01) depuis l'environnement Windows, facilitant ainsi les tests de connectivité et la gestion inter-plateforme.
 
 
-### 2. Prérequis techniques
+### 2. Prérequis techniques :
+
+<span id=prereqis-putty></span>
+
 Avant de procéder à l'installation, assurez-vous que les conditions suivantes sont remplies sur la machine cible :
 
 
@@ -190,10 +205,14 @@ Droits d'accès : Compte Administrator ou utilisateur Wilder (membre du groupe A
 
 Réseau : La machine doit disposer d'un accès à Internet pour télécharger l'installateur.
 
-### 3. Procédure d'installation
+### 3. Procédure d'installation :
+
+<span id=procedure-putty></span>
+
 Cette section décrit les étapes à suivre pas à pas pour installer l'outil.
 
-#### Étape 1 : Téléchargement de l'installateur
+#### Étape 1 : Téléchargement de l'installateur :
+
 Ouvrez le navigateur web (Microsoft Edge) sur le serveur SRVWIN01.
 
 Rendez-vous sur le site officiel de téléchargement : https://www.putty.org/.
@@ -208,9 +227,8 @@ Résultat attendu : Le fichier putty-64bit-x.xx-installer.msi est présent dans 
 
 ![](Ressources/Images/installputty/puttyw1.png)
 
+#### Étape 2 : Exécution de l'assistant d'installation :
 
-
-#### Étape 2 : Exécution de l'assistant d'installation
 Faites un clic droit sur le fichier téléchargé et sélectionnez "Installez" (ou double-cliquez dessus).
 
 L'assistant d'installation (Setup Wizard) s'ouvre. Cliquez sur Next.
@@ -226,7 +244,8 @@ Résultat attendu : Une barre de progression s'affiche, puis l'assistant confirm
 ![](Ressources/Images/installputty/puttyw2.png)
 
 
-#### Étape 3 : Finalisation et Vérification
+#### Étape 3 : Finalisation et Vérification :
+
 À la fin de l'installation, décochez "View README.txt" si vous le souhaitez, puis cliquez sur Finish.
 
 Appuyez sur la touche Windows, tapez "PuTTY" et lancez l'application.
