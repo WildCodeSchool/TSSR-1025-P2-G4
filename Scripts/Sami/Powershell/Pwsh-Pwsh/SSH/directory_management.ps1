@@ -58,7 +58,10 @@ function dir_creation {
             continue
         }
         #Vérification si le répertoire saisi existe déjà
-        elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_name' -PathType Container") {
+        ssh -t "wilder@172.16.40.20" "Test-Path -Path '$rep_name' -PathType Container"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq "True") {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_name existe déjà !"
             Log "DirectoryEntryAlreadyExists"
@@ -67,7 +70,7 @@ function dir_creation {
         }
         else {
             #Création du répertoire saisi
-            ssh -t -o ConnectTimeout=10 cliwin01 "New-Item -Path '$rep_name' -ItemType Directory -Force -ErrorAction SilentlyContinue"
+            ssh -t "wilder@172.16.40.20" "New-Item -Path '$rep_name' -ItemType Directory -Force -ErrorAction SilentlyContinue"
             Write-Host "`nRépertoire $rep_name créé avec succès !`n"
             Log "DirectoryCreated"
             end_rep_return
@@ -94,14 +97,10 @@ function dir_renaming {
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_rename' -PathType Container")) {
-            Clear-Host
-            Write-Host "`nAttention ! Le répertoire $rep_rename n'existe pas !`n"
-            Log "DirectoryEntryDoesntExist"
-            end_rep_return
-            return
-        }
-        else {
+        ssh -t "wilder@172.16.40.20" "Test-Path -Path '$rep_rename' -PathType Container"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq "True") {
             $new_rep_name = Read-Host "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : C:\Users\monUtilisateur\monRépertoire)"
 
             #Vérification si le nouveau répertoire saisi est correcte et non vide
@@ -113,12 +112,19 @@ function dir_renaming {
             }
             else {
                 #Modification du répertoire
-                ssh -t -o ConnectTimeout=10 cliwin01 "Move-Item -Path '$rep_rename' -Destination '$new_rep_name' -Force -ErrorAction SilentlyContinue"
+                ssh -t "wilder@172.16.40.20" "Move-Item -Path '$rep_rename' -Destination '$new_rep_name' -Force -ErrorAction SilentlyContinue"
                 Write-Host "`nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !`n"
                 Log "DirectoryRenamed"
                 end_rep_return
                 return
             } 
+        }
+        else {
+            Clear-Host ""
+            Write-Host "`nAttention ! Le répertoire $rep_rename n'existe pas !`n"
+            Log "DirectoryEntryDoesntExist"
+            end_rep_return
+            return            
         }
     }
 }
@@ -140,17 +146,20 @@ function dir_deletion {
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_del' -PathType Container")) {
+        ssh -t "wilder@172.16.40.20" "Test-Path -Path '$rep_del' -PathType Container"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq "True") {
+            confirm_dir_deletion $rep_del
+            return
+        }
+        else {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_del n'existe pas !`n"
             Log "DirectoryEntryDoesntExist"
             end_rep_return
             return
-        }
-        else {
-            confirm_dir_deletion $rep_del
-            return
-        }
+        }        
     }
 }
 
@@ -168,7 +177,7 @@ function confirm_dir_deletion {
         if ($confirm_rep_del -match '^[Oo]$') {
 
             #Suppression du répertoire saisi et ce qu'il contient
-            ssh -t -o ConnectTimeout=10 cliwin01 "Remove-Item -Path '$rep_del' -Recurse -Force -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Remove-Item -Path '$rep_del' -Recurse -Force -ErrorAction SilentlyContinue"
             Write-Host "`nLe répertoire $rep_del a bien été supprimé !"
             Log "DirectoryDeleted"
             end_rep_return

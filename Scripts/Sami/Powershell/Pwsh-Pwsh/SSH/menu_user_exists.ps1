@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction Log
 function Log {
     param (
@@ -45,7 +52,7 @@ while ($true) {
             #Vers Espace Modification Utilisateur
             Write-Host "`nRedirection vers l'Espace Modification Utilisateur...`n"
             Log "UserModificationAreaRedirection"
-            . "$HOME\scripts_windows_server\windows\modif_user.ps1"
+            & "$PSScriptRoot\modif_user.ps1"
             continue
         }
         
@@ -53,10 +60,10 @@ while ($true) {
             #Vers Espace Suppression Utilisateur
             Write-Host "`nRedirection vers l'Espace Supression Utilisateur...`n"
             Log "UserDeletionAreaRedirection"
-            . "$HOME\scripts_windows_server\windows\del_user.ps1"
+            & "$PSScriptRoot\del_user.ps1"
             
             #Vérification si l'utilisateur existe toujours après passage dans l'Espace Suppression Utilisateur
-            if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalUser -Name '$user_name' -ErrorAction SilentlyContinue") { 
+            if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalUser -Name '$user_name' -ErrorAction SilentlyContinue") { 
                 continue
             }
             else {
@@ -69,7 +76,7 @@ while ($true) {
         "3" {
             Write-Host "`nRedirection vers l'Espace Informations Utilisateur...`n"
             Log "UserInformationAreaRedirection"
-            . "$HOME\scripts_windows_server\windows\info_user.ps1"
+            & "$PSScriptRoot\info_user.ps1"
             continue
         }
         

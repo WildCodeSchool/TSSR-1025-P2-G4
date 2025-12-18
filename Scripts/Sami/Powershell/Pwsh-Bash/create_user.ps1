@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction retour
 function end_user_return {
     while ($true) { 
@@ -45,13 +52,13 @@ function password {
     while ($true) {
         Start-Sleep 2
         Clear-Host
-        Write-Host "`nVoulez-vous créer un mot de passe pour l'utilisateur $user_name ?`n`n1 - Oui`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
+        Write-Host "`nVoulez-vous créer un mot de passe pour l'utilisateur $user_name ?`n`n1 - Oui (En cours)`n2 - Non`n3 - Retour au Menu Gestion des Utilisateurs.`nX - Sortir.`n"
         $choice_password = Read-Host "Votre choix"
         switch ($choice_password) {
             "1" {
                 Write-Host ""
                 #Création de mot de passe
-                ssh -t -o ConnectTimeout=10 clilin01 "sudo -S passwd '$user_name'"
+                ssh -t "wilder@172.16.40.30" "sudo passwd '$user_name'"
                 Write-Host "`nMot de passe défini pour $user_name avec succès !"
                 Log "PasswordCreatedNewUser"
                 return "Continue"
@@ -123,7 +130,7 @@ while ($true) {
     switch ($create_user) {
         "1" {
             # Création utilisateur
-            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S useradd '$user_name'"
+            ssh -t "wilder@172.16.40.30" "sudo useradd '$user_name'"
             Write-Host "L'utilisateur $user_name a été créé avec succès !"
             Log "NewUserCreated"
             #Proposition création mot de passe
@@ -141,17 +148,17 @@ while ($true) {
                 #Proposition ajout à un groupe
                 Start-Sleep 2
                 Clear-Host
-                Write-Host "`nVoulez-vous l'ajouter à un groupe ?`n`n1 - Ajouter $user_name au groupe administrateur.`n2 - Ajouter $user_name à un groupe local.`n3 - Retourner au Menu Gestion des Utilisateurs ?`nX - Sortir.`n"
+                Write-Host "`nVoulez-vous l'ajouter à un groupe ?`n`n1 - Ajouter $user_name au groupe administrateur.`n2 - Ajouter $user_name à un groupe local. (En cours)`n3 - Retourner au Menu Gestion des Utilisateurs ?`nX - Sortir.`n"
                 $choice_grp = Read-Host "Votre choix" 
                 switch ($choice_grp) {
                     "1" {
                         #Vérification si le groupe administrateur existe
-                        if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
+                        if (-not(ssh -T "wilder@172.16.40.30" "getent group sudo ")) {
                             Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                             return
                         }
                         #Ajout au groupe administrateur
-                        ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
+                        ssh -t "wilder@172.16.40.30" "sudo usermod -aG sudo '$user_name'"
                         Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                         Log "AddSudoGrpNewUser"
                         end_user_return
@@ -165,7 +172,7 @@ while ($true) {
                             Start-Sleep 1
 
                             #Redirection vers une variable pour appeler la commande
-                            $group_list = ssh -T -o ConnectTimeout=10 clilin01 'awk -F: '\''$3>=1000 { print $1 }'\'' /etc/group | sort'
+                            $group_list = ssh -T "wilder@172.16.40.30" 'awk -F: '\''$3>=1000 { print $1 }'\'' /etc/group | sort'
 
                             #Vérification s'il y a un groupe local dans lequel l'utilisateur peut être ajouté qui n'est pas un groupe système
                             if (-not([string]::IsNullOrWhiteSpace($group_list))) {
@@ -174,9 +181,9 @@ while ($true) {
                                 $local_grp = Read-Host "Votre choix"
 
                                 #Vérification si le groupe local choisi existe 
-                                if (ssh -T -o ConnectTimeout=10 clilin01 "getent group '$local_grp' >/dev/null 2>&1") {
+                                if (ssh -T "wilder@172.16.40.30" "getent group '$local_grp'") {
                                     #Ajout au groupe local
-                                    ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG '$local_grp' '$user_name'"
+                                    ssh -t "wilder@172.16.40.30" "sudo usermod -aG '$local_grp' '$user_name'"
                                     Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
                                     Log "AddLocalGrpNewUser"
 
@@ -190,12 +197,12 @@ while ($true) {
                                         switch ($mod_sudo) {
                                             "1" {
                                                 #Vérification si le groupe administrateur existe
-                                                if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
+                                                if (-not(ssh -T "wilder@172.16.40.30" "getent group sudo")) {
                                                     Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                                                     return
                                                 }
                                                 #Ajout au groupe administrateur
-                                                ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
+                                                ssh -t "wilder@172.16.40.30" "sudo usermod -aG sudo '$user_name'"
                                                 Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                                                 Log "AddSudoGrpNewUser"
                                                 end_user_return
