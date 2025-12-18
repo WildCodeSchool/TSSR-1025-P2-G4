@@ -16,7 +16,7 @@ function Redemarrage() {
     echo
     Log "RedémarrageMachine"
     # Connexion ssh à la machine pour reboot
-    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "shutdown /r /t 0 /f" 
+    ssh -o ConnectTimeout=10 -t "$NomMachine@$IpMachine" "sudo reboot now" 
 
 }
 
