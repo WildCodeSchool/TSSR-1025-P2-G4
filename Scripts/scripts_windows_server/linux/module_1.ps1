@@ -90,7 +90,7 @@ while ($true) {
     Write-Host "1) Menu prise en main distante"
     Write-Host "2) Menu pare-feu"
     Write-Host "3) Menu redémarrage"
-    Write-Host "4) Retour Menu Serveur"
+    Write-Host "4) Retour menu Linux"
     Write-Host "x) Sortir"
     Write-Host ""
     $module = Read-Host "Votre choix"
@@ -142,3 +142,4 @@ while ($true) {
         }
     }
 }
+
