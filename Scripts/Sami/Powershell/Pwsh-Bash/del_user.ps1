@@ -72,7 +72,7 @@ while ($true) {
     switch ($del_user) {       
         "1" {
             #Suppression utilisateur ainsi que son répertoire personnel
-            ssh -t -o ConnectTimeout=10 cliwin01 "Remove-LocalUser -Name '$user_name'; Remove-Item 'C:\Users\$user_name' -Recurse -Force -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S userdel -r -- '$user_name'"
             Write-Host "`nL'utilisateur $user_name ainsi que son répertoire personnel a été supprimé !`n"
             Log "UserDeletion"
             end_user_return

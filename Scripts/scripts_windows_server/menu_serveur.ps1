@@ -37,6 +37,12 @@ function Linux {
     # Scan simple du réseau
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
+    # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
+    # Je n'arrive pas à afficher comme sur Bash les noms de machine associer aux adresses IP
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+        $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
+    }
+    Write-Host ""
     $AdresseIp = Read-Host "Rentrez une adresse IP"
     Write-Host ""
 
@@ -45,6 +51,9 @@ function Linux {
     # Récuperation des comptes admin
     Log "RecuperationCompteAdmin"
     Write-Host "Liste des utilisateurs disponible sur la cible..."
+    Write-Host ""
+    # Connexion ssh sans personalisation pour trouver un compte administrateur
+    ssh -o ConnectTimeout=10 wilder@172.16.40.30 "grep sudo /etc/group"
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
     Write-Host ""
@@ -90,6 +99,12 @@ function Windows {
     # Scan simple du réseau
     Log "RecuperationIP"
     Write-Host " Scan du réseau en cours..."
+    # Commande pour scanner le réseau et garder juste le nom de machine et l'IP associer
+    # Je n'arrive pas à afficher comme sur Bash les noms de machine associer aux adresses IP
+    nmap -sn 172.16.40.0/24 -oG - | Select-String -Pattern 'Host: ' | ForEach-Object {
+        $_.Line -replace '.*Host: (\S+) \(([^)]*)\).*', '$1 ($2)'
+    }
+    Write-Host ""
     $AdresseIp = Read-Host "Rentrez une adresse IP"
     Write-Host ""
 
@@ -98,6 +113,10 @@ function Windows {
     # Récuperation des comptes admin
     Log "RecuperationCompteAdmin"
     Write-Host "Liste des utilisateurs disponible sur la cible..."
+    Write-Host ""
+    # Connexion ssh sans personalisation pour trouver un compte administrateur
+    # Je n'ai pas pu faire plus propre
+    ssh -o ConnectTimeout=10 wilder@$AdresseIp "net localgroup Administrateurs"
     Write-Host ""
     $NomMachine = Read-Host "Puis rentrez un nom d'utilisateur"
     Write-Host ""
@@ -189,3 +208,10 @@ while ($true) {
         }
     }
 }
+
+
+
+
+
+
+

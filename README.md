@@ -1,5 +1,7 @@
 # TSSR-1025-P2-G4
 
+![Image_du_groupe](Ressources/Images/equipe_v5.png)
+
 ## Sommaire
 
 - [👥 Membres de l'équipe :](#-membres-de-léquipe-)
@@ -39,7 +41,6 @@
 | **Prénoms :** | Georges | Sami | Romain | 
 | --------- | ------- | ---- | ------ |
 | **Rôles :**   | Tech    | SM   | PO     |
-
 
 ## 💻 Matériel :
 <span id=materiel></span>
@@ -86,19 +87,19 @@
 ### 🏃🏼‍♂️ Sprint 1 :
 <span id=sprint_1></span>
 
-* Compréhension du projet
-* Distribution des tâches
-* Création du GitHub
-* Initialisation des connexions SSH entre les machines du réseau
-* Premières lignes de code en Bash
+- Compréhension du projet
+- Distribution des tâches
+- Création du GitHub
+- Initialisation des connexions SSH entre les machines du réseau
+- Premières lignes de code en Bash
 
 ### 🏃🏼‍♂️ Sprint 2 :
 <span id=sprint_2></span>
 
-* Structuration du script en différents modules connectés
-* Compréhension des connexions SSH pour activer les commandes à distance
-* Débogage des scripts
-* Premiers tests sur l'environnement Proxmox
+- Structuration du script en différents modules connectés
+- Compréhension des connexions SSH pour activer les commandes à distance
+- Débogage des scripts
+- Premiers tests sur l'environnement Proxmox
 
 ### 🏃🏼‍♂️ Sprint 3 :
 <span id=sprint_3></span>
@@ -107,7 +108,13 @@
 - Débogage des scripts Bash avec commandes PowerShell
 - Journalisation
 - Initialisation des scripts en PowerShell
-- Documentation GitHub
+- Documentation GitHub (README / INSTALL)
 
 ### 🏃🏼‍♂️ Sprint 4 :
 <span id=sprint_4></span>
+
+- Débogage final du script Bash
+- Finalisation du script PowerShell
+- Débogage final du script PowerShell
+- Rapatriement de l'intégralité des scripts sur nos machines Proxmox (Serveur Debian / Windows)
+- Documentation GitHub (README / INSTALL / USERGUIDE)

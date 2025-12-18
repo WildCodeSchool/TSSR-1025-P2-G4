@@ -84,7 +84,7 @@ while ($true) {
     Write-Host "Choisissez quelle action effectuer."
     Write-Host ""
     Write-Host "1) Redemarrer la machine"
-    Write-Host "2) Retour Menu Module 1"
+    Write-Host "2) Retour menu action machine"
     Write-Host "x) Sortir"
     Write-Host ""
     $choix = Read-Host "Votre choix"
@@ -107,7 +107,7 @@ while ($true) {
         }
         
         "2" {
-            Write-Host "Retour Menu Module 1"
+            Write-Host "Retour Menu action machine"
             Write-Host ""
             Start-Sleep -Seconds 1
             Log "RetourMenuActionMachine"
@@ -129,3 +129,4 @@ while ($true) {
         }
     }
 }
+

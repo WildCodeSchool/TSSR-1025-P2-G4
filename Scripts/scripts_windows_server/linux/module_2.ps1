@@ -58,7 +58,7 @@ while ($true) {
     Write-Host ""
     Log "WelcomeToUserManagementMenu"
     Write-Host "1 - Continuer dans le Menu Gestion des Utilisateurs."
-    Write-Host "2 - Retourner dans le Menu Windows."
+    Write-Host "2 - Retourner dans le Menu Linux."
     Write-Host "X - Sortir."
     Write-Host ""
     $choice_menu_module_2 = Read-Host "Votre choix" 
@@ -67,13 +67,13 @@ while ($true) {
             Write-Host ""
             $user_name = Read-Host "Entrez un Nom d'Utilisateur" 
 
-            if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalUser -Name '$user_name' -ErrorAction SilentlyContinue") {
+            if (ssh -t -o ConnectTimeout=10 clilin01 "id '$user_name' &>/dev/null") {
                 # Si l'utilisateur existe -> Espace Personnel Utilisateur
                 Clear-Host
                 Write-Host "`nBon retour $user_name !`n`nRedirection vers l'Espace Personnel Utilisateur..."
                 Log "UserEntryExists"
                 Log "UserPersonnalAreaRedirection"
-                . "$HOME\scripts_windows_server\windows\menu_user_exists.ps1"
+                . "$HOME\scripts_windows_server\linux\menu_user_exists.ps1"
             }
             else {
                 # S'il n'existe pas --> Espace Création Utilisateur
@@ -81,14 +81,14 @@ while ($true) {
                 Write-Host "`nL'utilisateur $user_name n'existe pas.`n`nRedirection vers l'Espace Création Utilisateur..."
                 Log "UserEntryDoesntExist"
                 Log "UserCreationAreaRedirection" 
-                . "$HOME\scripts_windows_server\windows\create_user.ps1"
+                . "$HOME\scripts_windows_server\linux\create_user.ps1"
             }
             continue
         }
 
         "2" {
-            Write-Host "`nRetour au Menu Windows..."
-            Log "ReturnWindowsMenu"
+            Write-Host "`nRetour au Menu Linux..."
+            Log "ReturnLinuxMenu"
             return
         }
         

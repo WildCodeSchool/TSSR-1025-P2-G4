@@ -1,47 +1,14 @@
 
+param (
+    [Parameter(Mandatory = $true)]
+    [System.Management.Automation.Runspaces.PSSession]$Session
+)
+
+$script:RemoteSession = $Session
 
 # ==============================================================================
-# 0. Gestion du Nettoyage (Equivalent du trap cleanup)
+# 1. Fonction Utilitaire d'Ex√©cution
 # ==============================================================================
-$Global:RemoteSession = $null
-
-function Cleanup-Session {
-    if ($Global:RemoteSession) {
-        Write-Host "`n>>> Fermeture de la connexion distante..." -ForegroundColor Yellow
-        Remove-PSSession $Global:RemoteSession
-        $Global:RemoteSession = $null
-    }
-}
-
-Register-EngineEvent -SourceIdentifier PowerShell.Exiting -SupportEvent -Action {
-    if ($Global:RemoteSession) { Remove-PSSession $Global:RemoteSession }
-}
-
-# ==============================================================================
-# 1. Configuration de la connexion
-# ==============================================================================
-Clear-Host
-Write-Host "=== CONFIGURATION DE LA CONNEXION DISTANTE (WinRM) ===" -ForegroundColor Cyan
-
-$TargetIP = Read-Host "Entrez l'adresse IP ou le nom de la machine cible"
-Write-Host "Veuillez entrer les identifiants administrateur de la cible :" -ForegroundColor Gray
-$Creds = Get-Credential
-
-Write-Host "`n>>> √âtablissement de la connexion persistante..." -ForegroundColor Yellow
-
-try {
-    $Global:RemoteSession = New-PSSession -ComputerName $TargetIP -Credential $Creds -ErrorAction Stop
-    Write-Host ">>> Connexion √©tablie avec succ√®s !" -ForegroundColor Green
-    Start-Sleep -Seconds 1
-}
-catch {
-    Write-Host "ERREUR : Impossible de se connecter √† $TargetIP." -ForegroundColor Red
-    Write-Host "V√©rifiez que :"
-    Write-Host "1. WinRM est activ√© sur la cible (Enable-PSRemoting)"
-    Write-Host "2. L'utilisateur est administrateur"
-    Write-Host "3. Le pare-feu autorise WinRM"
-    exit
-}
 
 function Invoke-RemoteCmd {
     param (
@@ -50,9 +17,11 @@ function Invoke-RemoteCmd {
         [string]$Title = "Ex√©cution"
     )
 
-    Write-Host ">>> $Title sur $TargetIP..." -ForegroundColor Cyan
+    $TargetName = $script:RemoteSession.ComputerName
+
+    Write-Host ">>> $Title sur $TargetName..." -ForegroundColor Cyan
     try {
-        Invoke-Command -Session $Global:RemoteSession -ScriptBlock $Command
+        Invoke-Command -Session $script:RemoteSession -ScriptBlock $Command
     }
     catch {
         Write-Host "Erreur lors de l'ex√©cution : $_" -ForegroundColor Red
@@ -70,7 +39,7 @@ function Invoke-RemoteCmd {
 function Show-MenuReseau {
     do {
         Clear-Host
-        Write-Host "==== Information r√©seau ====" -ForegroundColor Cyan
+        Write-Host "==== Information r√©seau (Windows) ====" -ForegroundColor Cyan
         Write-Host "1. DNS actuels"
         Write-Host "2. Listing interfaces"
         Write-Host "3. Table ARP (Voisins)"
@@ -103,11 +72,10 @@ function Show-MenuReseau {
 }
 
 # --- B. Information Sys et Mat√©riel ---
-
 function Show-MenuSys {
     do {
         Clear-Host
-        Write-Host "==== Information SystËme et matÈriel ====" -ForegroundColor Cyan
+        Write-Host "==== Information Syst√®me et mat√©riel (Windows) ====" -ForegroundColor Cyan
         Write-Host "1. BIOS/UEFI"
         Write-Host "2. Adresse IP, masque"
         Write-Host "3. Version de l'OS"
@@ -118,35 +86,28 @@ function Show-MenuSys {
         $choix = Read-Host "Votre choix"
 
         switch ($choix) {
-            # Utilisation de Format-List | Out-String pour forcer l'affichage textuel propre
             '1' { 
                 Invoke-RemoteCmd -Command { 
                     Get-CimInstance Win32_BIOS | Select-Object Manufacturer, SMBIOSBIOSVersion, SerialNumber | Format-List | Out-String 
                 } -Title "BIOS" 
             }
-            
-            # Utilisation de Format-Table pour les adresses IP (plus lisible en tableau)
             '2' { 
                 Invoke-RemoteCmd -Command { 
                     Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike "*Loopback*" } | Select-Object InterfaceAlias, IPAddress, PrefixLength | Format-Table -AutoSize | Out-String 
                 } -Title "IP Configuration" 
             }
-            
-            # ConcatÈnation explicite pour l'OS
             '3' { 
                 Invoke-RemoteCmd -Command { 
                     $os = Get-CimInstance Win32_OperatingSystem
-                    "SystËme : $($os.Caption)"
+                    "Syst√®me : $($os.Caption)"
                     "Version : $($os.Version)"
                 } -Title "Version OS" 
             }
-            
             '4' { 
                 Invoke-RemoteCmd -Command { 
                     Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion | Format-List | Out-String 
                 } -Title "GPU" 
             }
-            
             '5' { 
                 Invoke-RemoteCmd -Command { 
                     $os = Get-CimInstance Win32_OperatingSystem
@@ -154,7 +115,6 @@ function Show-MenuSys {
                     "Uptime: $($uptime.Days) jours, $($uptime.Hours) heures, $($uptime.Minutes) minutes"
                 } -Title "Uptime"
             }
-            
             '6' {
                 Invoke-RemoteCmd -Command {
                     Write-Host "--- BIOS ---" -ForegroundColor Yellow
@@ -172,23 +132,23 @@ function Show-MenuSys {
                     Write-Host "`n--- Uptime ---" -ForegroundColor Yellow
                     $t = (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
                     "$($t.Days)j $($t.Hours)h $($t.Minutes)m"
-                } -Title "Full Info SystËme"
+                } -Title "Full Info Syst√®me"
             }
-            
             '7' { return }
             Default { Write-Host "Choix invalide." -ForegroundColor Red; Start-Sleep -Seconds 1 }
         }
     } until ($choix -eq '7')
 }
+
 # --- C. Ev√®nements Logs ---
 function Show-MenuLogs {
     do {
         Clear-Host
-        Write-Host "==== Information ÈvËnement logs ====" -ForegroundColor Cyan
+        Write-Host "==== Information logs (Windows) ====" -ForegroundColor Cyan
         Write-Host "1. 10 derniers events critiques/erreurs (System)"
-        Write-Host "2. …vÈnements SÈcuritÈ (Auth - …checs)"
-        Write-Host "3. …vÈnements System rÈcents"
-        Write-Host "4. …vÈnements Application rÈcents"
+        Write-Host "2. √âv√©nements S√©curit√© (Auth - √âchecs)"
+        Write-Host "3. √âv√©nements System r√©cents"
+        Write-Host "4. √âv√©nements Application r√©cents"
         Write-Host "5. Toutes les informations"
         Write-Host "6. Retour au Menu principal"
         $choix = Read-Host "Votre choix"
@@ -196,53 +156,44 @@ function Show-MenuLogs {
         switch ($choix) {
             '1' { 
                 Invoke-RemoteCmd -Command { 
-     
-                 $events = Get-WinEvent -FilterHashtable @{LogName = 'System'; Level = 1, 2 } -MaxEvents 10 -ErrorAction SilentlyContinue
-        
-      
-                 if ($events) {
-                    $events | Select-Object TimeCreated, Id, LevelDisplayName, Message | Format-Table -AutoSize -Wrap | Out-String
-                 } 
-        
-                 else {
-                    Write-Warning "Aucune erreur critique ou grave trouvÈe dans les 10 derniers logs System."
-                     }
-                 } -Title "Erreurs Critiques (System)" 
+                    $events = Get-WinEvent -FilterHashtable @{LogName = 'System'; Level = 1, 2 } -MaxEvents 10 -ErrorAction SilentlyContinue
+                    if ($events) {
+                        $events | Select-Object TimeCreated, Id, LevelDisplayName, Message | Format-Table -AutoSize -Wrap | Out-String
+                    }
+                    else { Write-Warning "Aucune erreur critique trouv√©e." }
+                } -Title "Erreurs Critiques (System)" 
             }
 
             '2' { 
                 Invoke-RemoteCmd -Command { 
                     Get-WinEvent -FilterHashtable @{LogName = 'Security'; Keywords = 'Audit Failure' } -MaxEvents 10 -ErrorAction SilentlyContinue | 
-                    Select-Object TimeCreated, Id, Message | 
-                    Format-Table -AutoSize -Wrap | Out-String 
+                    Select-Object TimeCreated, Id, Message | Format-Table -AutoSize -Wrap | Out-String 
                 } -Title "Echecs Auth (Security)" 
             }
 
             '3' { 
                 Invoke-RemoteCmd -Command { 
                     Get-WinEvent -LogName System -MaxEvents 20 -ErrorAction SilentlyContinue | 
-                    Select-Object TimeCreated, LevelDisplayName, Message | 
-                    Format-Table -AutoSize -Wrap | Out-String 
-                } -Title "Logs SystËme (RÈcents)" 
+                    Select-Object TimeCreated, LevelDisplayName, Message | Format-Table -AutoSize -Wrap | Out-String 
+                } -Title "Logs Syst√®me (R√©cents)" 
             }
 
             '4' { 
                 Invoke-RemoteCmd -Command { 
                     Get-WinEvent -LogName Application -MaxEvents 10 -ErrorAction SilentlyContinue | 
-                    Select-Object TimeCreated, LevelDisplayName, Message | 
-                    Format-Table -AutoSize -Wrap | Out-String 
-                } -Title "Logs Application (RÈcents)" 
+                    Select-Object TimeCreated, LevelDisplayName, Message | Format-Table -AutoSize -Wrap | Out-String 
+                } -Title "Logs Application (R√©cents)" 
             }
 
             '5' {
                 Invoke-RemoteCmd -Command {
                     Write-Host "--- CRITIQUE (System - Max 5) ---" -ForegroundColor Yellow
                     $crit = Get-WinEvent -FilterHashtable @{LogName = 'System'; Level = 1, 2 } -MaxEvents 5 -ErrorAction SilentlyContinue
-                    if ($crit) { $crit | Format-Table TimeCreated, Message -AutoSize -Wrap | Out-String } else { "Aucune erreur critique rÈcente.`n" }
+                    if ($crit) { $crit | Format-Table TimeCreated, Message -AutoSize -Wrap | Out-String } else { "R.A.S.`n" }
                     
                     Write-Host "--- SECURITE (Echecs - Max 5) ---" -ForegroundColor Yellow
                     $sec = Get-WinEvent -FilterHashtable @{LogName = 'Security'; Keywords = 'Audit Failure' } -MaxEvents 5 -ErrorAction SilentlyContinue
-                    if ($sec) { $sec | Format-Table TimeCreated, Message -AutoSize -Wrap | Out-String } else { "Aucun Èchec d'authentification rÈcent.`n" }
+                    if ($sec) { $sec | Format-Table TimeCreated, Message -AutoSize -Wrap | Out-String } else { "R.A.S.`n" }
 
                     Write-Host "--- SYSTEME (Derniers - Max 5) ---" -ForegroundColor Yellow
                     Get-WinEvent -LogName System -MaxEvents 5 -ErrorAction SilentlyContinue | Format-Table TimeCreated, LevelDisplayName, Message -AutoSize | Out-String
@@ -256,17 +207,17 @@ function Show-MenuLogs {
 }
 
 # ==============================================================================
-# 3. Boucle Principale
+# 3. Boucle Principale du Module
 # ==============================================================================
 do {
     Clear-Host
     Write-Host "=======================================" -ForegroundColor Cyan
-    Write-Host "   PRISE D'INFO SUR WINDOWS (WinRM)    "
+    Write-Host "   PRISE D'INFO WINDOWS (SESSION ACTIVE) "
     Write-Host "=======================================" -ForegroundColor Cyan
     Write-Host "1. Information r√©seau"
     Write-Host "2. Informations sys et mat√©riel"
     Write-Host "3. Recherche d'√©v√©nement logs"
-    Write-Host "4. Quitter"
+    Write-Host "4. Retour au script parent"
     Write-Host ""
     $main_choice = Read-Host "Votre choix"
 
@@ -274,7 +225,7 @@ do {
         '1' { Show-MenuReseau }
         '2' { Show-MenuSys }
         '3' { Show-MenuLogs }
-        '4' { Write-Host "Au revoir !"; Cleanup-Session; exit }
+        '4' { Write-Host "Retour au menu principal..."; return }
         Default { Write-Host "Option invalide." -ForegroundColor Red; Start-Sleep -Seconds 1 }
     }
 } until ($main_choice -eq '4')
