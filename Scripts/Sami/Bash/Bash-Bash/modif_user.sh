@@ -199,6 +199,7 @@ do
                         clear
                         echo -e "\nLe groupe $local_grp n'existe pas.\nVeuillez réessayer SVP.\n"
                         Log "LocalGroupDoesntExist"
+                        sleep 3
                         continue
                     fi
                 else 

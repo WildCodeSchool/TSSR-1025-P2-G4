@@ -204,6 +204,7 @@ do
                     else
                         clear
                         echo -e "\nLe groupe $local_grp n'existe pas.\nVeuillez réessayer SVP.\n"
+                        sleep 3
                         Log "LocalGroupDoesntExist"
                         continue
                     fi
