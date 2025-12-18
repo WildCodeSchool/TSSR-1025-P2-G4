@@ -1,47 +1,14 @@
-# ==============================================================================
-# 0. Gestion du Nettoyage
-# ==============================================================================
-$Global:RemoteSession = $null
 
-function Cleanup-Session {
-    if ($Global:RemoteSession) {
-        Write-Host "`n>>> Fermeture de la connexion SSH..." -ForegroundColor Yellow
-        Remove-PSSession $Global:RemoteSession
-        $Global:RemoteSession = $null
-    }
-}
+param (
+    [Parameter(Mandatory = $true)]
+    [System.Management.Automation.Runspaces.PSSession]$Session
+)
 
-Register-EngineEvent -SourceIdentifier PowerShell.Exiting -SupportEvent -Action {
-    if ($Global:RemoteSession) { Remove-PSSession $Global:RemoteSession }
-}
+$script:RemoteSession = $Session
 
 # ==============================================================================
-# 1. Configuration de la connexion (SSH)
+# 1. Fonctions Utilitaires
 # ==============================================================================
-Clear-Host
-Write-Host "=== CONFIGURATION DE LA CONNEXION DISTANTE (SSH vers Linux) ===" -ForegroundColor Cyan
-Write-Host "Note: La machine cible (Ubuntu) doit avoir PowerShell (pwsh) et SSH installés." -ForegroundColor Gray
-
-$TargetIP = Read-Host "Entrez l'adresse IP de la machine Ubuntu"
-$UserName = Read-Host "Entrez le nom d'utilisateur distant (ex: root ou user)"
-
-Write-Host "`n>>> Établissement de la connexion SSH..." -ForegroundColor Yellow
-
-try {
-   
-    $Global:RemoteSession = New-PSSession -HostName $TargetIP -UserName $UserName -ErrorAction Stop
-    Write-Host ">>> Connexion SSH établie avec succès !" -ForegroundColor Green
-    Start-Sleep -Seconds 1
-}
-catch {
-    Write-Host "ERREUR : Impossible de se connecter à $TargetIP via SSH." -ForegroundColor Red
-    Write-Host "Vérifiez que :"
-    Write-Host "1. Le service SSH tourne sur Ubuntu (sudo systemctl status ssh)"
-    Write-Host "2. PowerShell est installé sur Ubuntu (snap install powershell --classic)"
-    Write-Host "3. Le pare-feu (ufw) autorise le port 22"
-    Write-Host "Détail erreur : $_"
-    exit
-}
 
 function Invoke-RemoteCmd {
     param (
@@ -50,9 +17,11 @@ function Invoke-RemoteCmd {
         [string]$Title = "Exécution"
     )
 
-    Write-Host ">>> $Title sur $TargetIP..." -ForegroundColor Cyan
+    $TargetName = $script:RemoteSession.ComputerName
+
+    Write-Host ">>> $Title sur $TargetName..." -ForegroundColor Cyan
     try {
-        Invoke-Command -Session $Global:RemoteSession -ScriptBlock $Command
+        Invoke-Command -Session $script:RemoteSession -ScriptBlock $Command
     }
     catch {
         Write-Host "Erreur lors de l'exécution : $_" -ForegroundColor Red
@@ -124,60 +93,30 @@ function Show-MenuSys {
                     if (Test-Path "/sys/class/dmi/id/bios_version") { cat /sys/class/dmi/id/bios_version } else { "Non accessible (besoin sudo)" }
                 } -Title "CPU/BIOS" 
             }
-            
-            '2' { 
-                Invoke-RemoteCmd -Command { 
-                    hostname -I
-                } -Title "IP Address" 
-            }
-            
-            '3' { 
-                Invoke-RemoteCmd -Command { 
-                    cat /etc/os-release | grep "PRETTY_NAME"
-                    uname -r
-                } -Title "Version OS" 
-            }
-            
+            '2' { Invoke-RemoteCmd -Command { hostname -I } -Title "IP Address" }
+            '3' { Invoke-RemoteCmd -Command { cat /etc/os-release | grep "PRETTY_NAME"; uname -r } -Title "Version OS" }
             '4' { 
                 Invoke-RemoteCmd -Command { 
                     $gpu = lspci | grep -i -E "vga|3d|display"
-                    if ($gpu) { 
-                        $gpu 
-                    }
-                    else { 
-                        Write-Warning "Aucun GPU détecté ou 'lspci' non installé (sudo apt install pciutils)." 
-                    }
+                    if ($gpu) { $gpu } else { Write-Warning "Aucun GPU détecté ou 'lspci' non installé." }
                 } -Title "Carte Graphique" 
             }
-            # ------------------------------
-            
-            '5' { 
-                Invoke-RemoteCmd -Command { 
-                    uptime -p
-                } -Title "Uptime"
-            }
-            
+            '5' { Invoke-RemoteCmd -Command { uptime -p } -Title "Uptime" }
             '6' {
                 Invoke-RemoteCmd -Command {
                     Write-Host "--- CPU ---" -ForegroundColor Yellow
                     lscpu | grep "Model name"
-                    
                     Write-Host "`n--- OS ---" -ForegroundColor Yellow
                     cat /etc/os-release | grep "PRETTY_NAME"
-                    
                     Write-Host "`n--- GPU ---" -ForegroundColor Yellow
                     $gpu = lspci | grep -i -E "vga|3d|display"
                     if ($gpu) { $gpu } else { "N/A" }
-                    # --------------------------------------------------
-
                     Write-Host "`n--- Disque (Espace) ---" -ForegroundColor Yellow
                     df -h / | grep "/"
-
                     Write-Host "`n--- Uptime ---" -ForegroundColor Yellow
                     uptime -p
                 } -Title "Full Info Système"
             }
-            
             '7' { return }
             Default { Write-Host "Choix invalide." -ForegroundColor Red; Start-Sleep -Seconds 1 }
         }
@@ -198,46 +137,22 @@ function Show-MenuLogs {
         $choix = Read-Host "Votre choix"
 
         switch ($choix) {
-            '1' { 
-                Invoke-RemoteCmd -Command { 
-                    journalctl -p 0..3 -n 10 --no-pager
-                } -Title "Erreurs Critiques" 
-            }
-
-            '2' { 
-                Invoke-RemoteCmd -Command { 
-                    grep "Failed password" /var/log/auth.log | tail -n 10
-                } -Title "Echecs Auth" 
-            }
-
-            '3' { 
-                Invoke-RemoteCmd -Command { 
-                    journalctl -n 20 --no-pager
-                } -Title "Logs Système (Récents)" 
-            }
-
-            '4' { 
-                Invoke-RemoteCmd -Command { 
-                    journalctl -k -n 10 --no-pager
-                } -Title "Logs Kernel" 
-            }
-
+            '1' { Invoke-RemoteCmd -Command { journalctl -p 0..3 -n 10 --no-pager } -Title "Erreurs Critiques" }
+            '2' { Invoke-RemoteCmd -Command { grep "Failed password" /var/log/auth.log | tail -n 10 } -Title "Echecs Auth" }
+            '3' { Invoke-RemoteCmd -Command { journalctl -n 20 --no-pager } -Title "Logs Système (Récents)" }
+            '4' { Invoke-RemoteCmd -Command { journalctl -k -n 10 --no-pager } -Title "Logs Kernel" }
             '5' {
                 Invoke-RemoteCmd -Command {
                     Write-Host "--- CRITIQUE (Derniers 5) ---" -ForegroundColor Yellow
                     journalctl -p 0..3 -n 5 --no-pager
-                    
                     Write-Host "`n--- AUTH FAILURES (Derniers 5) ---" -ForegroundColor Yellow
                     grep -i "Failed password" /var/log/auth.log | tail -n 5
-
                     Write-Host "`n--- KERNEL (Derniers 5) ---" -ForegroundColor Yellow
                     journalctl -k -n 5 --no-pager
-
                     Write-Host "`n--- SYSTEME (Derniers 5) ---" -ForegroundColor Yellow
                     journalctl -n 5 --no-pager
                 } -Title "Full Logs"
             }
-
             '6' { return }
             Default { Write-Host "Choix invalide." -ForegroundColor Red; Start-Sleep -Seconds 1 }
         }
@@ -245,17 +160,17 @@ function Show-MenuLogs {
 }
 
 # ==============================================================================
-# 3. Boucle Principale
+# 3. Boucle Principale du Module
 # ==============================================================================
 do {
     Clear-Host
     Write-Host "=======================================" -ForegroundColor Cyan
-    Write-Host "   PRISE D'INFO LINUX VIA SSH (Win->Lin) "
+    Write-Host "   PRISE D'INFO LINUX (SESSION ACTIVE) "
     Write-Host "=======================================" -ForegroundColor Cyan
     Write-Host "1. Information réseau"
     Write-Host "2. Informations sys et matériel"
     Write-Host "3. Recherche logs (Journalctl)"
-    Write-Host "4. Quitter"
+    Write-Host "4. Retour au script parent" 
     Write-Host ""
     $main_choice = Read-Host "Votre choix"
 
@@ -263,7 +178,7 @@ do {
         '1' { Show-MenuReseau }
         '2' { Show-MenuSys }
         '3' { Show-MenuLogs }
-        '4' { Write-Host "Au revoir !"; Cleanup-Session; exit }
+        '4' { Write-Host "Retour au menu principal..."; return } 
         Default { Write-Host "Option invalide." -ForegroundColor Red; Start-Sleep -Seconds 1 }
     }
 } until ($main_choice -eq '4')
