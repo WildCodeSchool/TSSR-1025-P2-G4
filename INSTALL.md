@@ -189,7 +189,7 @@ Ce document détaille la procédure technique pour installer l'outil Nmap (Netwo
 
 ### 2. Prérequis techniques :
 
-<span id=prerequis-nmap-windows></sppan>
+<span id=prerequis-nmap-windows></span>
 
 Avant de procéder à l'installation, assurez-vous que les conditions suivantes sont remplies sur la machine cible :
 * Machine cible : Serveur Windows (SRVWIN01).
@@ -202,6 +202,30 @@ Avant de procéder à l'installation, assurez-vous que les conditions suivantes 
 <span id=procedure-nmap-windows></span>
 
 
+#### Étape 1 : Téléchargement de l'installateur
+
+Pour l'installation de nmap sur Windows Server vous devez :
+
+* Vous rendre sur le site officiel de nmap
+* Choisir de télécharger le logiciel sur Windows
+
+![nmap_install_windows](Ressources/Images/nmap/nmap_install_windows.PNG)
+
+#### Étape 2 : Exécution de l'assistant d'installation
+
+Une fois le logiciel téléchargé vous devez :
+
+* Executer le fichier d'installation
+* Suivre les instructions
+
+![nmap_install_windows_2](Ressources/Images/nmap/nmap_install_windows_2.PNG)
+
+
+#### Étape 3 : Finalisation et Vérification
+
+Une fois le logiciel installé vous pouvez :
+
+* Utilisé nmap pour scanner votre réseau (CLI ou GUI)
 
 ## Installation de putty sur le serveur Windows :
 
