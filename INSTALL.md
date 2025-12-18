@@ -1,5 +1,7 @@
 # TSSR-1025-P2-G4
 
+![bandeau_install](Ressources/Images/presentation/bandeau_install.png)
+
 ## Sommaire
 
 * [Connexions ssh des machines du réseau](#connexion-ssh-)
