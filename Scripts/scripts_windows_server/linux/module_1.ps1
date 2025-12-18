@@ -55,7 +55,7 @@ function PareFeu {
 
 # Menu redémarrage
 function Redemarrage {
-    Write-Host "Connexion au menu rdémarrage..."
+    Write-Host "Connexion au menu redémarrage..."
     Write-Host ""
     Write-Host " ---------------------------------------------- "
     Write-Host ""
@@ -63,6 +63,18 @@ function Redemarrage {
     
     # Appel du script menu_redemarrage.ps1
     & "$PSScriptRoot\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+}
+
+# Menu répértoire
+function Repertoire {
+    Write-Host "Connexion au menu répértoire..."
+    Write-Host ""
+    Write-Host " ---------------------------------------------- "
+    Write-Host ""
+    Start-Sleep -Seconds 1
+    
+    # Appel du script menu_redemarrage.ps1
+    & "$PSScriptRoot\directory_management.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 
@@ -90,7 +102,8 @@ while ($true) {
     Write-Host "1) Menu prise en main distante"
     Write-Host "2) Menu pare-feu"
     Write-Host "3) Menu redémarrage"
-    Write-Host "4) Retour menu Linux"
+    Write-Host "4) Menu gestion de répértoire"
+    Write-Host "5) Retour menu Linux"
     Write-Host "x) Sortir"
     Write-Host ""
     $module = Read-Host "Votre choix"
@@ -115,7 +128,13 @@ while ($true) {
             Redemarrage "$NomMachine" "$IpMachine"
             Log "MenuRedemarrage"
         }
-        "4" {
+         "4" {
+            Write-Host "Menu gestion de répértoire"
+            Write-Host ""
+            Repertoire "$NomMachine" "$IpMachine"
+            Log "MenuRepertoire"
+        }
+        "5" {
             Write-Host "Retour Menu Linux"
             Write-Host ""
             Write-Host "Connexion Menu Linux..."
@@ -142,4 +161,5 @@ while ($true) {
         }
     }
 }
+
 
