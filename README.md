@@ -2,6 +2,8 @@
 
 ![Image_du_groupe](Ressources/Images/equipe_v5.png)
 
+<span id=haut></span>
+
 ## Sommaire
 
 - [👥 Membres de l'équipe :](#-membres-de-léquipe-)
@@ -118,3 +120,5 @@
 - Débogage final du script PowerShell
 - Rapatriement de l'intégralité des scripts sur nos machines Proxmox (Serveur Debian / Windows)
 - Documentation GitHub (README / INSTALL / USERGUIDE)
+
+[⬆⬆⬆ Retour au début de page la page ⬆⬆⬆](#<span id=haut></span>)
