@@ -11,6 +11,10 @@
   - [Introduction](#intro-nmap-debian)
   - [Prérequis techniques](#prérequis-nmap)
   - [Procédure d'installation](#procedure-nmap)
+* [Installation de nmap sur le serveur Windows](#installation-nmap-windows)
+  - [Introduction](#intro-nmap-windows)
+  - [Prérequis techniques](#prérequis-nmap-windows)
+  - [Procédure d'installation](#procedure-nmap-windows)
 * [Installation de putty sur le serveur windows ](#installation-putty-)
   - [Introduction](#intro-putty)
   - [Prérequis techniques](#prérequis-putty)
@@ -181,6 +185,22 @@ nmap --version
 Résultat attendu : Le terminal doit afficher le numéro de version de Nmap (exemple : Nmap version 7.93).
 
 ![](Ressources/Images/nmap/nmapd3.png)
+
+## Installation de nmap sur le serveur Windows
+
+<span id=installation-nmap-windows></span>
+
+### 1. Introduction :
+
+<span id=intro-nmap-windows></span>
+
+### 2. Prérequis techniques :
+
+<span id=prérequis-nmap-windows></sppan>
+
+### 3. Procédure d'installation :
+
+<span id=procedure-nmap-windows></span>
 
 
 ## Installation de putty sur le serveur Windows :
