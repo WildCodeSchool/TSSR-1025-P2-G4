@@ -51,7 +51,7 @@ function password {
             "1" {
                 Write-Host ""
                 #Création de mot de passe
-                ssh -t -o ConnectTimeout=10 cliwin01 "Set-LocalUser -Name '$user_name' -Password (Read-Host -AsSecureString)"
+                ssh -t -o ConnectTimeout=10 clilin01 "sudo -S passwd '$user_name'"
                 Write-Host "`nMot de passe défini pour $user_name avec succès !"
                 Log "PasswordCreatedNewUser"
                 return "Continue"
@@ -123,7 +123,7 @@ while ($true) {
     switch ($create_user) {
         "1" {
             # Création utilisateur
-            ssh -t -o ConnectTimeout=10 cliwin01 "New-LocalUser -Name '$user_name' -NoPassword -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S useradd '$user_name'"
             Write-Host "L'utilisateur $user_name a été créé avec succès !"
             Log "NewUserCreated"
             #Proposition création mot de passe
@@ -145,19 +145,13 @@ while ($true) {
                 $choice_grp = Read-Host "Votre choix" 
                 switch ($choice_grp) {
                     "1" {
-                        #Vérification orthographe du groupe administrateur en fonction de la langue et s'il existe
-                        $group_name = if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
-                            "Administrators"
-                        }
-                        elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
-                            "Administrateurs"
-                        }
-                        else {
+                        #Vérification si le groupe administrateur existe
+                        if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
                             Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                             return
                         }
                         #Ajout au groupe administrateur
-                        ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
+                        ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
                         Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                         Log "AddSudoGrpNewUser"
                         end_user_return
@@ -170,16 +164,19 @@ while ($true) {
                             Write-Host "`nVoici la liste des groupes locaux existants :`n"
                             Start-Sleep 1
 
+                            #Redirection vers une variable pour appeler la commande
+                            $group_list = ssh -T -o ConnectTimeout=10 clilin01 'awk -F: '\''$3>=1000 { print $1 }'\'' /etc/group | sort'
+
                             #Vérification s'il y a un groupe local dans lequel l'utilisateur peut être ajouté qui n'est pas un groupe système
-                            if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup | Where-Object { $_.SID -notmatch '^S-1-5-32-' } | Select-Object -ExpandProperty Name") {
+                            if (-not([string]::IsNullOrWhiteSpace($group_list))) {
                                 Write-Host ""
                                 Write-Host  "Dans quel groupe existant ci-dessus souhaitez-vous être ajouté ?`n"
                                 $local_grp = Read-Host "Votre choix"
 
                                 #Vérification si le groupe local choisi existe 
-                                if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name '$local_grp' -ErrorAction SilentlyContinue") {
+                                if (ssh -T -o ConnectTimeout=10 clilin01 "getent group '$local_grp' >/dev/null 2>&1") {
                                     #Ajout au groupe local
-                                    ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$local_grp' -Member '$user_name'"
+                                    ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG '$local_grp' '$user_name'"
                                     Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
                                     Log "AddLocalGrpNewUser"
 
@@ -192,20 +189,13 @@ while ($true) {
                                         
                                         switch ($mod_sudo) {
                                             "1" {
-                                                #Vérification orthographe du groupe administrateur en fonction de la langue et s'il existe
-                                                $group_name = if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
-                                                    "Administrators"
-                                                }
-                                                elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
-                                                    "Administrateurs"
-                                                }
-                                                else {
+                                                #Vérification si le groupe administrateur existe
+                                                if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
                                                     Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                                                     return
                                                 }
-
-                                                #Ajout au groupe adminisitrateur
-                                                ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
+                                                #Ajout au groupe administrateur
+                                                ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
                                                 Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                                                 Log "AddSudoGrpNewUser"
                                                 end_user_return

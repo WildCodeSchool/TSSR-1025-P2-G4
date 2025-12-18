@@ -48,17 +48,17 @@ function dir_creation {
         Start-Sleep 2
         Clear-Host
         Write-Host ""
-        $rep_name = Read-Host "Entrez le chemin complet du répertoire à créer (Exemple : C:\Users\monUtilisateur\monRépertoire)"
+        $rep_name = Read-Host "Entrez le chemin complet du répertoire à créer (Exemple : /home/user/monRépertoire)"
         
         #Vérification si le répertoire saisi est correcte et non vide
-        if ([string]::IsNullOrEmpty($rep_name) -or $rep_name -notlike 'C:\*') {
+        if ([string]::IsNullOrEmpty($rep_name) -or $rep_name -notlike '/*') {
             Clear-Host
             Write-Host "`nAttention !`nVous n'avez rien saisi ou la saisie est incorrecte !`n`nVeuillez recommencer SVP."
             Log "InputError"
             continue
         }
         #Vérification si le répertoire saisi existe déjà
-        elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_name' -PathType Container") {
+        elseif (ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_name' ]") {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_name existe déjà !"
             Log "DirectoryEntryAlreadyExists"
@@ -67,7 +67,7 @@ function dir_creation {
         }
         else {
             #Création du répertoire saisi
-            ssh -t -o ConnectTimeout=10 cliwin01 "New-Item -Path '$rep_name' -ItemType Directory -Force -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 clilin01 "mkdir -p '$rep_name'"
             Write-Host "`nRépertoire $rep_name créé avec succès !`n"
             Log "DirectoryCreated"
             end_rep_return
@@ -83,18 +83,18 @@ function dir_renaming {
         Start-Sleep 2
         Clear-Host
         Write-Host ""
-        $rep_rename = Read-Host "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : C:\Users\monUtilisateur\monRépertoire)" 
+        $rep_rename = Read-Host "Entrez le chemin complet du répertoire à renommer/modifier (Exemple : /home/user/monRépertoire)" 
         Write-Host ""
 
         #Vérification si le répertoire saisi est correcte et non vide
-        if ([string]::IsNullOrEmpty($rep_rename) -or $rep_rename -notlike 'C:\*') {
+        if ([string]::IsNullOrEmpty($rep_rename) -or $rep_rename -notlike '/*') {
             Clear-Host
             Write-Host "`nAttention !`nVous n'avez rien saisi ou la saisie est incorrecte !`n`nVeuillez recommencer SVP."
             Log "InputError"
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_rename' -PathType Container")) {
+        elseif (-not(ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_rename' ]")) {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_rename n'existe pas !`n"
             Log "DirectoryEntryDoesntExist"
@@ -102,10 +102,10 @@ function dir_renaming {
             return
         }
         else {
-            $new_rep_name = Read-Host "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : C:\Users\monUtilisateur\monRépertoire)"
+            $new_rep_name = Read-Host "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/user/monRépertoire)"
 
             #Vérification si le nouveau répertoire saisi est correcte et non vide
-            if ([string]::IsNullOrEmpty($new_rep_name) -or $new_rep_name -notlike 'C:\*') {
+            if ([string]::IsNullOrEmpty($new_rep_name) -or $new_rep_name -notlike '/*') {
                 Clear-Host
                 Write-Host "`nAttention !`nVous n'avez rien saisi ou la saisie est incorrecte !`n`nVeuillez recommencer SVP."
                 Log "InputError"
@@ -113,7 +113,7 @@ function dir_renaming {
             }
             else {
                 #Modification du répertoire
-                ssh -t -o ConnectTimeout=10 cliwin01 "Move-Item -Path '$rep_rename' -Destination '$new_rep_name' -Force -ErrorAction SilentlyContinue"
+                ssh -t -o ConnectTimeout=10 clilin01 "mv '$rep_rename' '$new_rep_name'"
                 Write-Host "`nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !`n"
                 Log "DirectoryRenamed"
                 end_rep_return
@@ -130,17 +130,17 @@ function dir_deletion {
         Start-Sleep 2
         Clear-Host          
         Write-Host ""
-        $rep_del = Read-Host "Entrez le chemin complet du répertoire à supprimer (Exemple : C:\Users\monUtilisateur\monRépertoire)"
+        $rep_del = Read-Host "Entrez le chemin complet du répertoire à supprimer (Exemple : /home/user/monRépertoire)"
         
         #Vérification si le répertoire saisi est correcte et non vide
-        if ([string]::IsNullOrEmpty($rep_del) -or $rep_del -notlike 'C:\*') {
+        if ([string]::IsNullOrEmpty($rep_del) -or $rep_del -notlike '/*') {
             Clear-Host
             Write-Host "`nAttention !`nVous n'avez rien saisi ou la saisie est incorrecte !`n`nVeuillez recommencer SVP."
             Log "InputError"
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 cliwin01 "Test-Path -Path '$rep_del' -PathType Container")) {
+        elseif (-not(ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_del' ]")) {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_del n'existe pas !`n"
             Log "DirectoryEntryDoesntExist"
@@ -168,7 +168,7 @@ function confirm_dir_deletion {
         if ($confirm_rep_del -match '^[Oo]$') {
 
             #Suppression du répertoire saisi et ce qu'il contient
-            ssh -t -o ConnectTimeout=10 cliwin01 "Remove-Item -Path '$rep_del' -Recurse -Force -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 clilin01 "rm -r '$rep_del'"
             Write-Host "`nLe répertoire $rep_del a bien été supprimé !"
             Log "DirectoryDeleted"
             end_rep_return
