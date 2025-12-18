@@ -5,7 +5,8 @@
 * [Connexions ssh des machines du réseau](#connexion-ssh-)
   - [Introduction](#ssh-intro)
   - [Prérequis techniques](#prérequis-techniques)
-  - [Installation sur le Serveur Debian (SRVLX01)
+  - [Installation sur le Serveur Debian SRVLX01](#install-debian)
+  - [Installation sur le Client Ubuntu (CLILIN01)](#install-ubuntu)
 * [Installation de nmap sur le serveur Debian](#installation-nmap-)
 * [Installation de putty sur le serveur windows ](#installation-putty-)
 
@@ -32,7 +33,7 @@ Réseau : Les machines doivent avoir une adresse IP configurée dans le sous-ré
 
 ### 3. Installation sur le Serveur Debian (SRVLX01)
 
-
+<span id=install-debian></span>
 
 #### Étape 1 : Mise à jour du système
 Connectez-vous avec l'utilisateur wilder (ou root) et mettez à jour les dépôts.
@@ -68,12 +69,13 @@ Résultat attendu : Le statut doit indiquer active (running) en vert.
 
 
 ### 4. Installation sur le Client Ubuntu (CLILIN01)
+
+<span id=install-ubuntu></span>
+
 Le client Ubuntu doit également disposer du service SSH pour être piloté par le script d'administration.
 
 #### Étape 1 : Installation
 Sur la machine CLILIN01, ouvrez un terminal et exécutez :
-
-
 
 *sudo apt update && sudo apt install openssh-server -y*
 
@@ -81,8 +83,6 @@ Sur la machine CLILIN01, ouvrez un terminal et exécutez :
 
 #### Étape 2 : Configuration du Pare-feu (UFW)
 Ubuntu active souvent le pare-feu par défaut. Il faut autoriser le port SSH (22).
-
-
 
 *sudo ufw allow ssh / sudo ufw enable /sudo ufw status*
 
@@ -93,19 +93,14 @@ Résultat attendu : La règle 22/tcp ALLOW doit apparaître.
 #### Étape 3 : Validation de la connectivité
 Relevez l'adresse IP du client Ubuntu :
 
-
-
 *ip a*
 
 (L'IP doit correspondre à 172.16.xx.30 selon votre groupe )
 
 ![](Ressources/Images/installssh/sshl3.png)
 
-
-
-
-
 ## Installation de nmap sur le serveur Debian :
+
 <span id=installation-nmap-></span>
 
 ### 1. Introduction
@@ -152,7 +147,8 @@ Exécutez la commande suivante :
 
 
 
-sudo apt install nmap -y
+sudo apt install nmap -y  
+
 L'option -y valide automatiquement la demande de confirmation d'espace disque.
 
 Résultat attendu : Le gestionnaire de paquets apt télécharge et installe Nmap ainsi que ses dépendances. 
