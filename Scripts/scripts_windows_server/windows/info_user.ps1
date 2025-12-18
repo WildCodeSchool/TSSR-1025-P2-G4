@@ -3,6 +3,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction retour
 function end_user_return() {
     while ($true) {
@@ -83,7 +90,7 @@ while ($true) {
             Write-Host "`nDernière connexion de $user_name :`n"
 
             #Redirection vers une variable pour appeler la commande
-            $last_connexion = ssh -t -o ConnectTimeout=10 cliwin01 "quser 2>'$null' | Where-Object { $_ -match '$user_name' }"
+            $last_connexion = ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "quser 2>'$null' | Where-Object { $_ -match '$user_name' }"
 
             #Vérification s'il y a déjà eu une connexion de la part de l'utilisateur
             if ([string]::IsNullOrWhiteSpace($last_connexion) -or $null -eq $last_connexion) {
@@ -101,7 +108,7 @@ while ($true) {
             Write-Host "`nDate de dernière modification du mot de passe :"
 
             #Redirection vers une variable pour appeler la commande 
-            $password_date = ssh -t -o ConnectTimeout=10 cliwin01 "(Get-LocalUser -Name '$user_name').PasswordLastSet"
+            $password_date = ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "(Get-LocalUser -Name '$user_name').PasswordLastSet"
 
             #Vérification s'il y a déjà eu une modification de mot de passe de la part de l'utilisateur
             if ([string]::IsNullOrWhiteSpace($password_date) -or $null -eq $password_date) {
@@ -119,7 +126,7 @@ while ($true) {
             Write-Host "`nSessions ouvertes par $user_name :"
 
             #Redirection vers une variable pour appeler la commande            
-            $session = ssh -t -o ConnectTimeout=10 cliwin01 "Get-WinEvent -FilterHashtable @{LogName = 'Security'; Id = 4624 } | Where-Object { $_.Properties[5].Value -eq '$user_name' } | Select-Object -First 1 TimeCreated"
+            $session = ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-WinEvent -FilterHashtable @{LogName = 'Security'; Id = 4624 } | Where-Object { $_.Properties[5].Value -eq '$user_name' } | Select-Object -First 1 TimeCreated"
             
             #Vérification si l'utilisateur a une session ouverte actuellement
             if ([string]::IsNullOrWhiteSpace($session) -or $null -eq $session) {

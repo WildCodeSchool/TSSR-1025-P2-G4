@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction retour
 function end_user_return() {
     while ($true) {
@@ -72,7 +79,7 @@ while ($true) {
     switch ($del_user) {       
         "1" {
             #Suppression utilisateur ainsi que son répertoire personnel
-            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S userdel -r -- '$user_name'"
+            ssh -t "wilder@172.16.40.30" "sudo userdel -r -- '$user_name'"
             Write-Host "`nL'utilisateur $user_name ainsi que son répertoire personnel a été supprimé !`n"
             Log "UserDeletion"
             end_user_return

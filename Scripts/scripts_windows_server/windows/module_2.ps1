@@ -67,13 +67,15 @@ while ($true) {
             Write-Host ""
             $user_name = Read-Host "Entrez un Nom d'Utilisateur" 
 
-            if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalUser -Name '$user_name' -ErrorAction SilentlyContinue") {
+            ssh -t "wilder@172.16.40.20" "Get-LocalUser -Name '$user_name' -ErrorAction SilentlyContinue"
+            
+            if($LASTEXITCODE -eq "True") {
                 # Si l'utilisateur existe -> Espace Personnel Utilisateur
                 Clear-Host
                 Write-Host "`nBon retour $user_name !`n`nRedirection vers l'Espace Personnel Utilisateur..."
                 Log "UserEntryExists"
                 Log "UserPersonnalAreaRedirection"
-                . "$HOME\scripts_windows_server\windows\menu_user_exists.ps1"
+                & "$PSScriptRoot\menu_user_exists.ps1"
             }
             else {
                 # S'il n'existe pas --> Espace Création Utilisateur
@@ -81,7 +83,7 @@ while ($true) {
                 Write-Host "`nL'utilisateur $user_name n'existe pas.`n`nRedirection vers l'Espace Création Utilisateur..."
                 Log "UserEntryDoesntExist"
                 Log "UserCreationAreaRedirection" 
-                . "$HOME\scripts_windows_server\windows\create_user.ps1"
+                & "$PSScriptRoot\create_user.ps1"
             }
             continue
         }
