@@ -1,5 +1,7 @@
 # TSSR-1025-P2-G4
 
+<span id=haut></span>
+
 ![bandeau_install](Ressources/Images/presentation/bandeau_install.png)
 
 ## Sommaire
@@ -291,3 +293,5 @@ Résultat attendu : L'interface de configuration de PuTTY s'ouvre sans erreur.
 
 ![](Ressources/Images/installputty/puttyw3.png)
 
+
+[⬆⬆⬆ Retour au début de page la page ⬆⬆⬆](#haut)

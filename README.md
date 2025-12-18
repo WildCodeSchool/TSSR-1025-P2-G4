@@ -1,5 +1,7 @@
 # TSSR-1025-P2-G4
 
+<span id=haut></span>
+
 ![Image_du_groupe](Ressources/Images/equipe_v5.png)
 
 ## Sommaire
@@ -118,3 +120,5 @@
 - Débogage final du script PowerShell
 - Rapatriement de l'intégralité des scripts sur nos machines Proxmox (Serveur Debian / Windows)
 - Documentation GitHub (README / INSTALL / USERGUIDE)
+
+[⬆⬆⬆ Retour au début de page la page ⬆⬆⬆](#haut)
