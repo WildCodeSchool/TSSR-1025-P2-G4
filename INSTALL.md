@@ -3,6 +3,7 @@
 ## Sommaire
 
 * [Connexions ssh des machines du réseau](#connexion-ssh-)
+  - [Introduction](#ssh-intro)
 * [Installation de nmap sur le serveur Debian](#installation-nmap-)
 * [Installation de putty sur le serveur windows ](#installation-putty-)
 
@@ -11,6 +12,9 @@
 <span id=connexion-ssh-></span>
 
 ### 1. Introduction
+
+<span id=ssh-intro></span>
+
 Le protocole SSH (Secure Shell) est la brique fondamentale de ce projet d'administration centralisée. Il permet :
 L'accès distant sécurisé au poste Client Ubuntu .
 L'exécution de commandes à distance par le script Bash sur le serveur d'administration Debian.
@@ -21,7 +25,7 @@ Serveur : Debian 12/13 (SRVLX01) avec accès root ou sudo
 Client : Ubuntu 24 LTS (CLILIN01) avec accès sudo.
 Réseau : Les machines doivent avoir une adresse IP configurée dans le sous-réseau 172.16.xx.0/24 et un accès Internet pour télécharger les paquets.
 
-### 4. Installation sur le Serveur Debian (SRVLX01)
+### 3. Installation sur le Serveur Debian (SRVLX01)
 #### Étape 1 : Mise à jour du système
 Connectez-vous avec l'utilisateur wilder (ou root) et mettez à jour les dépôts.
 
