@@ -1,149 +1,102 @@
 # Menu Linux (PowerShell)
 
-# Initialisation des arguments
-
 param(
     [string]$NomMachine,
     [string]$IpMachine
 )
 
+# --- AJOUT : Création de la connexion SSH persistante au démarrage ---
+Clear-Host
+Write-Host "=== INITIALISATION DE LA CONNEXION SSH ===" -ForegroundColor Cyan
+if ([string]::IsNullOrWhiteSpace($IpMachine)) {
+    $IpMachine = Read-Host "Entrez l'adresse IP de la machine Linux"
+}
+
+# On demande l'utilisateur SSH (ex: wilder)
+$UserSSH = Read-Host "Entrez le nom d'utilisateur distant (ex: wilder)"
+
+try {
+    Write-Host "Connexion en cours vers $IpMachine..." -ForegroundColor Yellow
+    # On crée la session et on la stocke dans une variable GLOBALE
+    $Global:SessionLinux = New-PSSession -HostName $IpMachine -UserName $UserSSH -ErrorAction Stop
+    Write-Host "Connexion réussie !" -ForegroundColor Green
+    Start-Sleep -Seconds 1
+}
+catch {
+    Write-Host "ERREUR CRITIQUE : Impossible de se connecter." -ForegroundColor Red
+    Write-Host $_
+    exit
+}
+# ---------------------------------------------------------------------
+
+
 # Initialisation des fonctions 
 
 # Journalisation
 function Log {
-    param (
-        [string]$evenement
-    )
-
-    #Créer le dossier si nécessaire
+    param ([string]$evenement)
     if (-not (Test-Path "C:\Windows\System32\LogFiles")) {
         New-Item -ItemType Directory -Path "C:\Windows\System32\LogFiles" -Force | Out-Null
     }
-
     $fichier_log = "C:\Windows\System32\LogFiles\log_evt.log"
     $date_actuelle = Get-Date -Format "yyyyMMdd"
     $heure_actuelle = Get-Date -Format "HHmmss"
     $utilisateur = $env:USERNAME
-
-    $ligne_log = "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
-
-    Add-Content -Path $fichier_log -Value $ligne_log  
+    Add-Content -Path $fichier_log -Value "${date_actuelle}_${heure_actuelle}_${utilisateur}_${evenement}"
 }
 
 # Module 1 : Actions Machine
 function Module_1 {
     Write-Host "Connexion au module 1..."
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
-    Start-Sleep -Seconds 1
-    Log "MenuActionMachine"
-    
-    # Appel du script module_1.ps1
     & "$PSScriptRoot\module_1.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 2 : Gestion des Utilisateurs
 function Module_2 {
     Write-Host "Connexion au module 2..."
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
-    Start-Sleep -Seconds 1
-    Log "MenuGestionDesUtilisateurs"
-    
-    # Appel du script module_2.ps1
     & "$PSScriptRoot\module_2.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
 # Module 3 : Informations Machine
 function Module_3 {
     Write-Host "Connexion au module 3..."
-    Write-Host ""
-    Write-Host " ---------------------------------------------- "
-    Write-Host ""
+    Write-Host "Utilisation de la session héritée..." -ForegroundColor DarkGray
     Start-Sleep -Seconds 1
     Log "MenuInformationsMachine"
     
-    # Appel du script module_3.ps1
-    & "$PSScriptRoot\module_3.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+    # --- CORRECTION ICI ---
+    # On appelle le fichier (vérifie bien que le nom du fichier est correct !)
+    # Si ton fichier s'appelle Module3WindowsToBash.ps1, change le nom ci-dessous :
+    & "$PSScriptRoot\Module3WindowsToBash.ps1" -Session $Global:SessionLinux
 }
 
-# Log au démarrage du script
+# Log au démarrage
 Log "NewScript"
 
-# Boucle principale du menu
+# Boucle principale
 while ($true) {
     Clear-Host
-    Write-Host ""
     Write-Host "###############################################"
-    Write-Host "###############################################"
-    Write-Host "####                                       ####"
-    Write-Host "####                                       ####"
     Write-Host "####               Menu Linux              ####"
-    Write-Host ("####  {0,-35}  ####" -f "$NomMachine")
-    Write-Host ("####  {0,-35}  ####" -f "$IpMachine")
-    Write-Host "####                                       ####"
+    Write-Host ("####  Cible : {0} ({1})  ####" -f $IpMachine, $UserSSH)
     Write-Host "###############################################"
-    Write-Host "###############################################"
-    Write-Host ""
-
-    # Choix du module
-    Write-Host "Choisissez dans quel module vous voulez aller."
-    Write-Host ""
     Write-Host "1) Menu action machine"
     Write-Host "2) Menu gestion des utilisateurs"
-    Write-Host "3) Menu information machine"
-    Write-Host "4) Retour Menu Serveur"
-    Write-Host "x) Sortir"
+    Write-Host "3) Menu information machine (SSH Hérité)"
+    Write-Host "x) Sortir et fermer la connexion"
     Write-Host ""
     $module = Read-Host "Votre choix"
-    Write-Host ""
 
     switch ($module) {
-        "1" {
-            Write-Host "Menu action machine"
-            Write-Host ""
-            Module_1
-            Log "MenuActionMachine"
-        }
-        "2" {
-            Write-Host "Menu Gestion des Utilisateurs"
-            Write-Host ""
-            Module_2
-            Log "MenuGestionDesUtilisateurs"
-        }
-        "3" {
-            Write-Host "Menu information machine"
-            Write-Host ""
-            Module_3
-            Log "MenuInformationsMachine"
-        }
-        "4" {
-            Write-Host "Retour Menu Serveur"
-            Write-Host ""
-            Write-Host "Connexion Menu Serveur..."
-            Write-Host ""
-            Write-Host " ---------------------------------------------- "
-            Write-Host ""
-            Start-Sleep -Seconds 1
-            Log "RetourMenuServeur"
-            return
-        }
+        "1" { Module_1; Log "MenuActionMachine" }
+        "2" { Module_2; Log "MenuGestionDesUtilisateurs" }
+        "3" { Module_3; Log "MenuInformationsMachine" } # L'appel corrigé est dans la fonction
         { $_ -ieq "x" } {
-            Write-Host "Au revoir"
-            Write-Host ""
+            Write-Host "Fermeture de la session SSH et sortie..."
+            if ($Global:SessionLinux) { Remove-PSSession $Global:SessionLinux }
             Log "EndScript"
-            throw
+            return # Ou exit
         }
-        default {
-            Write-Host "Choix invalide !"
-            Write-Host ""
-            Write-Host " ---------------------------------------------- "
-            Write-Host ""
-            Start-Sleep -Seconds 1
-            Log "MauvaisChoix"
-        }
+        default { Write-Host "Choix invalide !"; Start-Sleep -Seconds 1 }
     }
-
 }
