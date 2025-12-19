@@ -76,12 +76,6 @@ function Windows() {
     ssh -o ConnectTimeout=10 -T cliwin01 "net localgroup Administrateurs"
     echo
 
-    if [$? -ne 0 ]
-    then    
-        ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalGroupMember -Group Administrators | Select-Object Name"
-    fi
-    echo
-
     #commande machine test
     #ssh -o ConnectTimeout=10 -T romain@192.10.10.10 "(Get-LocalGroupMenber -Name "Administrateurs")"
 
