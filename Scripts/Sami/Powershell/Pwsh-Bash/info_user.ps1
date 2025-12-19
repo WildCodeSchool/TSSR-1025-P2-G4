@@ -3,6 +3,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction retour
 function end_user_return() {
     while ($true) {
@@ -72,7 +79,7 @@ while ($true) {
     Log "WelcomeToUserInformationArea"
     Write-Host "Quelles informations désirez-vous connaître sur l'utilisateur $user_name ?`n"
     Write-Host "1 - Date de la dernière connexion."
-    Write-Host "2 - Date de dernière modification du mot de passe."
+    Write-Host "2 - Date de dernière modification du mot de passe (En cours)."
     Write-Host "3 - Liste des sessions ouvertes par l’utilisateur."
     Write-Host "4 - Retour à l'Espace Personnel de l'Utilisateur."
     Write-Host "X - Quitter le script.`n"
@@ -83,8 +90,8 @@ while ($true) {
             Write-Host "`nDernière connexion de $user_name :`n"
 
             #Vérification s'il y a déjà eu une connexion de la part de l'utilisateur
-            if (ssh -t -o ConnectTimeout=10 clilin01 "last '$user_name' | grep -qv '^wtmp'") {
-                ssh -t -o ConnectTimeout=10 clilin01 "last -n 1 '$user_name'"
+            if (ssh -t "wilder@172.16.40.30" "last '$user_name' | grep -qv '^wtmp'") {
+                ssh -t "wilder@172.16.40.30" "last -n 1 '$user_name'"
             }
             else {
                 Write-Host "Il n'y a eu aucune connexion de l'utilisateur $user_name.`n"
@@ -98,10 +105,10 @@ while ($true) {
             Write-Host "`nDate de dernière modification du mot de passe :"
 
             #Redirection vers une variable pour appeler la commande 
-            $password_date = ssh -t -o ConnectTimeout=10 clilin01 "chage -l '$user_name' | grep -iE 'last password change|dernière modification du mot de passe'"
+            $password_date = ssh -t "wilder@172.16.40.30" "sudo chage -l '$user_name' | grep -iE 'last password change|dernière modification du mot de passe'"
 
             #Vérification s'il y a déjà eu une modification de mot de passe de la part de l'utilisateur
-            if ([string]::IsNullOrWhiteSpace($password_date) -or $null -eq $password_date) {
+            if ([string]::IsNullOrWhiteSpace($password_date)) {
                 Write-Host "`nIl n'y a pas eu de changement de mot de passe pour l'utilisateur $user_name`n"
             }
             else {
@@ -116,7 +123,7 @@ while ($true) {
             Write-Host "`nSessions ouvertes par $user_name :"
 
             #Redirection vers une variable pour appeler la commande            
-            $session = ssh -t -o ConnectTimeout=10 clilin01 "who | awk '\$1==\"$user_name\"'"
+            $session = ssh -t "wilder@172.16.40.30" "who | grep -E '^$user_name[[:space:]]'"
             
             #Vérification si l'utilisateur a une session ouverte actuellement
             if ([string]::IsNullOrWhiteSpace($session) -or $null -eq $session) {

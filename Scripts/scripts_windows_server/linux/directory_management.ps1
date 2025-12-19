@@ -58,7 +58,10 @@ function dir_creation {
             continue
         }
         #Vérification si le répertoire saisi existe déjà
-        elseif (ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_name' ]") {
+        ssh -t "wilder@172.16.40.30" "[ -d '$rep_name' ]"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq 0) {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_name existe déjà !"
             Log "DirectoryEntryAlreadyExists"
@@ -67,7 +70,7 @@ function dir_creation {
         }
         else {
             #Création du répertoire saisi
-            ssh -t -o ConnectTimeout=10 clilin01 "mkdir -p '$rep_name'"
+            ssh -t "wilder@172.16.40.30" "mkdir -p '$rep_name'"
             Write-Host "`nRépertoire $rep_name créé avec succès !`n"
             Log "DirectoryCreated"
             end_rep_return
@@ -94,14 +97,10 @@ function dir_renaming {
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_rename' ]")) {
-            Clear-Host
-            Write-Host "`nAttention ! Le répertoire $rep_rename n'existe pas !`n"
-            Log "DirectoryEntryDoesntExist"
-            end_rep_return
-            return
-        }
-        else {
+        ssh -t "wilder@172.16.40.30" "[ -d '$rep_rename' ]"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq 0) {
             $new_rep_name = Read-Host "Entrez le nouveau chemin complet du répertoire à renommer (Exemple : /home/user/monRépertoire)"
 
             #Vérification si le nouveau répertoire saisi est correcte et non vide
@@ -113,12 +112,19 @@ function dir_renaming {
             }
             else {
                 #Modification du répertoire
-                ssh -t -o ConnectTimeout=10 clilin01 "mv '$rep_rename' '$new_rep_name'"
+                ssh -t "wilder@172.16.40.30" "mv '$rep_rename' '$new_rep_name'"
                 Write-Host "`nLe répertoire $rep_rename a été déplacé et/ou renommé en $new_rep_name !`n"
                 Log "DirectoryRenamed"
                 end_rep_return
                 return
             } 
+        }
+        else {
+            Clear-Host
+            Write-Host "`nAttention ! Le répertoire $rep_rename n'existe pas !`n"
+            Log "DirectoryEntryDoesntExist"
+            end_rep_return
+            return
         }
     }
 }
@@ -140,15 +146,18 @@ function dir_deletion {
             continue
         }
         #Vérification si le répertoire saisi existe
-        elseif (-not(ssh -t -o ConnectTimeout=10 clilin01 "[ -d '$rep_del' ]")) {
+        ssh -t "wilder@172.16.40.30" "[ -d '$rep_del' ]"
+        $exit_code = $LASTEXITCODE
+
+        if ($exit_code -eq 0) {
+            confirm_dir_deletion $rep_del
+            return
+        }
+        else {
             Clear-Host
             Write-Host "`nAttention ! Le répertoire $rep_del n'existe pas !`n"
             Log "DirectoryEntryDoesntExist"
             end_rep_return
-            return
-        }
-        else {
-            confirm_dir_deletion $rep_del
             return
         }
     }
@@ -168,7 +177,7 @@ function confirm_dir_deletion {
         if ($confirm_rep_del -match '^[Oo]$') {
 
             #Suppression du répertoire saisi et ce qu'il contient
-            ssh -t -o ConnectTimeout=10 clilin01 "rm -r '$rep_del'"
+            ssh -t "wilder@172.16.40.30" "rm -r '$rep_del'"
             Write-Host "`nLe répertoire $rep_del a bien été supprimé !"
             Log "DirectoryDeleted"
             end_rep_return

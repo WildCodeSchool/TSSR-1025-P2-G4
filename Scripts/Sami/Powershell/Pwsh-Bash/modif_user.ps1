@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction Retour
 function end_user_return {
     while ($true) { 
@@ -50,18 +57,18 @@ function add_user_admin_grp {
         switch ($mod_sudo) {
             "1" {
                 #Vérification si le groupe administrateur existe
-                if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
+                if (-not(ssh -T "wilder@172.16.40.30" "getent group sudo")) {
                     Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                     return
                 }
                 
                 #Vérification si l'utilisateur est déjà dans le groupe administrateur
-                if (ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo | grep -qw '$user_name'") {
+                if (ssh -T "wilder@172.16.40.30" "getent group sudo | grep -qw '$user_name'") {
                     Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe sudo."
                 }
                 else {
                     #Ajout au groupe administrateur
-                    ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
+                    ssh -t "wilder@172.16.40.30" "sudo usermod -aG sudo '$user_name'"
                     Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                     Log "AddSudoGrpUser"
                 }
@@ -133,13 +140,13 @@ while ($true) {
     Clear-Host
     Write-Host "`nBienvenue dans l'Espace Modification de l'Utilisateur !"
     Log "WelcomeToUserModificationArea"
-    Write-Host "`nQuelles modifications voulez-vous apporter à l'utilisateur $user_name ?`n`n1 - Modifier le mot de passe.`n2 - Ajouter $user_name au groupe administrateur.`n3 - Ajouter $user_name à un groupe local.`n4 - Retourner dans l'Espace Personnel Utilisateur ?`nX - Sortir.`n"
+    Write-Host "`nQuelles modifications voulez-vous apporter à l'utilisateur $user_name ?`n`n1 - Modifier le mot de passe (En cours).`n2 - Ajouter $user_name au groupe administrateur.`n3 - Ajouter $user_name à un groupe local (En cours).`n4 - Retourner dans l'Espace Personnel Utilisateur ?`nX - Sortir.`n"
     $choice_modif_user = Read-Host "Votre choix"
     switch ($choice_modif_user) {
         "1" {
             #Modification mot de passe
             Write-Host ""
-            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S passwd '$user_name'"
+            ssh -t "wilder@172.16.40.30" "sudo passwd '$user_name'"
             Write-Host "`nMot de passe modifié pour $user_name avec succès !`n"
             Log "PasswordChangedUser"
             end_user_return
@@ -148,18 +155,18 @@ while ($true) {
         
         "2" {
             #Vérification si le groupe administrateur existe
-            if (-not(ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo >/dev/null 2>&1")) {
+            if (-not(ssh -T "wilder@172.16.40.30" "getent group sudo")) {
                 Write-Host "Le groupe Administrateurs n'existe pas sur cette machine."
                 return
             }
             
             #Vérification si l'utilisateur est déjà dans le groupe administrateur
-            if (ssh -T -o ConnectTimeout=10 clilin01 "getent group sudo | grep -qw '$user_name'") {
+            if (ssh -T "wilder@172.16.40.30" "getent group sudo | grep -qw '$user_name'") {
                 Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe sudo."
             }
             else {
                 #Ajout au groupe administrateur
-                ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG sudo '$user_name'"
+                ssh -t "wilder@172.16.40.30" "sudo usermod -aG sudo '$user_name'"
                 Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                 Log "AddSudoGrpUser"
             }
@@ -174,7 +181,7 @@ while ($true) {
                 Start-Sleep 1
 
                 #Redirection vers une variable pour appeler la commande
-                $group_list = ssh -T -o ConnectTimeout=10 clilin01 'awk -F: '\''$3>=1000 { print $1 }'\'' /etc/group | sort'
+                $group_list = ssh -T "wilder@172.16.40.30" "awk -F: '\$3>=1000 { print \$1 }' /etc/group | sort"
                 
                 #Vérification s'il y a un groupe local dans lequel l'utilisateur peut être ajouté qui n'est pas un groupe système
                 if (-not([string]::IsNullOrWhiteSpace($group_list))) {
@@ -183,15 +190,15 @@ while ($true) {
                     $local_grp = Read-Host "Votre choix"
 
                     #Vérification si le groupe local choisi existe 
-                    if (ssh -T -o ConnectTimeout=10 clilin01 "getent group '$local_grp' >/dev/null 2>&1") {
+                    if (ssh -T "wilder@172.16.40.30" "getent group '$local_grp'") {
                         
                         #Vérification si l'utilisateur est déjà dans le groupe local choisi
-                        if (ssh -T -o ConnectTimeout=10 clilin01 "getent group '$local_grp' | grep -qw '$user_name'") {
+                        if (ssh -T "wilder@172.16.40.30" "getent group '$local_grp' | grep -qw '$user_name'") {
                             Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe $local_grp."
                         }
                         else {
                             #Ajout de l'utilisateur dans le groupe local choisi
-                            ssh -t -o ConnectTimeout=10 clilin01 "sudo -S usermod -aG '$local_grp' '$user_name'"
+                            ssh -t "wilder@172.16.40.30" "sudo usermod -aG '$local_grp' '$user_name'"
                             Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
                             Log "AddLocalGrpUser"
                         }
@@ -208,7 +215,7 @@ while ($true) {
                 else { 
                     Write-Host "`nIl n'y a aucun groupe dans lequel vous pouvez être ajouté."
                     end_user_return
-                    continue
+                    break
                 }
             }            
         }

@@ -129,9 +129,9 @@ echo
             ;;
 
         4)
-            echo "Retour Menu Module 1"
+           echo "Retour menu action machine"
             echo
-            echo "Connexion Module 1... "
+            echo "Connexion menu action machine... "
             echo
             echo " ---------------------------------------------- "
             echo

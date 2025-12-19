@@ -65,7 +65,7 @@ function Redemarrage {
     & "$PSScriptRoot\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
-# Menu répértoire
+# Menu répertoire
 function Repertoire {
     Write-Host "Connexion au menu répértoire..."
     Write-Host ""
@@ -102,7 +102,7 @@ while ($true) {
     Write-Host "1) Menu prise en main distante"
     Write-Host "2) Menu pare-feu"
     Write-Host "3) Menu redémarrage"
-    Write-Host "4) Menu gestion de répértoire"
+    Write-Host "4) Menu gestion de répertoire"
     Write-Host "5) Retour menu Linux"
     Write-Host "x) Sortir"
     Write-Host ""

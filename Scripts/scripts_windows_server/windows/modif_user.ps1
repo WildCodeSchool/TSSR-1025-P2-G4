@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction Retour
 function end_user_return {
     while ($true) { 
@@ -50,10 +57,10 @@ function add_user_admin_grp {
         switch ($mod_sudo) {
             "1" {
                 #Vérification orthographe du groupe administrateur en fonction de la langue et s'il existe
-                $group_name = if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
+                $group_name = if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
                     "Administrators"
                 }
-                elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
+                elseif (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
                     "Administrateurs"
                 }
                 else {
@@ -62,12 +69,12 @@ function add_user_admin_grp {
                 }
 
                 #Vérification si l'utilisateur est déjà dans le groupe administrateur
-                if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroupMember -Group '$group_name' -Member '$user_name' -ErrorAction SilentlyContinue") {
+                if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroupMember -Group '$group_name' -Member '$user_name' -ErrorAction SilentlyContinue") {
                     Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe $group_name."
                 }
                 else {
                     #Ajout au groupe administrateur
-                    ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
+                    ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
                     Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                     Log "AddSudoGrpUser"
                 }
@@ -145,7 +152,7 @@ while ($true) {
         "1" {
             #Modification mot de passe
             Write-Host ""
-            ssh -t -o ConnectTimeout=10 cliwin01 "Set-LocalUser -Name '$user_name' -Password (Read-Host -AsSecureString)"
+            ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Set-LocalUser -Name '$user_name' -Password (Read-Host -AsSecureString)"
             Write-Host "`nMot de passe modifié pour $user_name avec succès !`n"
             Log "PasswordChangedUser"
             end_user_return
@@ -154,10 +161,10 @@ while ($true) {
         
         "2" {
             #Vérification orthographe du groupe administrateur en fonction de la langue et s'il existe
-            $group_name = if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
+            $group_name = if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup -Name 'Administrators' -ErrorAction SilentlyContinue") {
                 "Administrators"
             }
-            elseif (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
+            elseif (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup -Name 'Administrateurs' -ErrorAction SilentlyContinue") {
                 "Administrateurs"
             }
             else {
@@ -166,12 +173,12 @@ while ($true) {
             }
 
             #Vérification si l'utilisateur est déjà dans le groupe administrateur
-            if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroupMember -Group '$group_name' -Member '$user_name' -ErrorAction SilentlyContinue") {
+            if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroupMember -Group '$group_name' -Member '$user_name' -ErrorAction SilentlyContinue") {
                 Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe $group_name."
             }
             else {
                 #Ajout au groupe administrateur
-                ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
+                ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Add-LocalGroupMember -Group '$group_name' -Member '$user_name'"
                 Write-Host "`nL'utilisateur $user_name a été ajouté au groupe administrateur avec succès !"
                 Log "AddSudoGrpUser"
             }
@@ -186,21 +193,21 @@ while ($true) {
                 Start-Sleep 1
 
                 #Vérification s'il y a un groupe local dans lequel l'utilisateur peut être ajouté qui n'est pas un groupe système
-                if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup | Where-Object { $_.SID -notmatch '^S-1-5-32-' } | Select-Object -ExpandProperty Name") {
+                if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup | Where-Object { $_.SID -notmatch '^S-1-5-32-' } | Select-Object -ExpandProperty Name") {
                     Write-Host ""
                     Write-Host  "Dans quel groupe existant ci-dessus souhaitez-vous être ajouté ?`n"
                     $local_grp = Read-Host "Votre choix"
 
                     #Vérification si le groupe local choisi existe
-                    if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroup -Name '$local_grp' -ErrorAction SilentlyContinue") {
+                    if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroup -Name '$local_grp' -ErrorAction SilentlyContinue") {
                         
                         #Vérification si l'utilisateur est déjà dans le groupe local choisi
-                        if (ssh -t -o ConnectTimeout=10 cliwin01 "Get-LocalGroupMember -Group '$local_grp' -Member '$user_name' -ErrorAction SilentlyContinue") {
+                        if (ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Get-LocalGroupMember -Group '$local_grp' -Member '$user_name' -ErrorAction SilentlyContinue") {
                             Write-Host "`nL'utilisateur $user_name fait déjà partie du groupe $local_grp."
                         }
                         else {
                             #Ajout de l'utilisateur dans le groupe local choisi
-                            ssh -t -o ConnectTimeout=10 cliwin01 "Add-LocalGroupMember -Group '$local_grp' -Member '$user_name'"
+                            ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Add-LocalGroupMember -Group '$local_grp' -Member '$user_name'"
                             Write-Host "`nL'utilisateur $user_name a été ajouté au groupe $local_grp avec succès !"
                             Log "AddLocalGrpUser"
                         }
@@ -217,7 +224,7 @@ while ($true) {
                 else { 
                     Write-Host "`nIl n'y a aucun groupe dans lequel vous pouvez être ajouté."
                     end_user_return
-                    continue
+                    break
                 }
             }            
         }

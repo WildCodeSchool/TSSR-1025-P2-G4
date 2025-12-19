@@ -4,6 +4,13 @@
 #######################################################################################################
 
 
+#Affichage de la machine distante et de son adresse IP
+param (
+    [string]$NomMachine,
+    [string]$IpMachine
+)
+
+
 #Fonction retour
 function end_user_return() {
     while ($true) {
@@ -72,7 +79,7 @@ while ($true) {
     switch ($del_user) {       
         "1" {
             #Suppression utilisateur ainsi que son répertoire personnel
-            ssh -t -o ConnectTimeout=10 cliwin01 "Remove-LocalUser -Name '$user_name'; Remove-Item 'C:\Users\$user_name' -Recurse -Force -ErrorAction SilentlyContinue"
+            ssh -t -o ConnectTimeout=10 "wilder@172.16.40.20" "Remove-LocalUser -Name '$user_name'; Remove-Item 'C:\Users\$user_name' -Recurse -Force -ErrorAction SilentlyContinue"
             Write-Host "`nL'utilisateur $user_name ainsi que son répertoire personnel a été supprimé !`n"
             Log "UserDeletion"
             end_user_return

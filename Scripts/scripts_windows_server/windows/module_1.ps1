@@ -65,6 +65,19 @@ function Redemarrage {
     & "$PSScriptRoot\menu_redemarrage.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
 }
 
+# Menu répertoire
+function Repertoire {
+    Write-Host "Connexion au menu répértoire..."
+    Write-Host ""
+    Write-Host " ---------------------------------------------- "
+    Write-Host ""
+    Start-Sleep -Seconds 1
+    
+    # Appel du script menu_redemarrage.ps1
+    & "$PSScriptRoot\directory_management.ps1" -NomMachine $NomMachine -IpMachine $IpMachine
+}
+
+
 # Log au démarrage du script
 Log "NewScript"
 
@@ -90,7 +103,8 @@ while ($true) {
     Write-Host "1) Menu prise en main distante"
     Write-Host "2) Menu pare-feu"
     Write-Host "3) Menu redémarrage"
-    Write-Host "4) Retour menu Linux"
+    Write-Host "4) Menu gestion de répertoire (En cours)"
+    Write-Host "5) Retour menu Linux"
     Write-Host "x) Sortir"
     Write-Host ""
     $module = Read-Host "Votre choix"
@@ -116,6 +130,12 @@ while ($true) {
             Log "MenuRedemarrage"
         }
         "4" {
+            Write-Host "Menu gestion de répértoire"
+            Write-Host ""
+            Repertoire "$NomMachine" "$IpMachine"
+            Log "MenuRepertoire"
+        }
+        "5" {
             Write-Host "Retour Menu Linux"
             Write-Host ""
             Write-Host "Connexion Menu Linux..."
