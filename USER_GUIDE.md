@@ -25,9 +25,9 @@ Ce document détaille l'installation et l'utilisation des outils d'administratio
 
 Le projet met à disposition deux scripts principaux permettant d'effectuer des tâches d'administration courantes de manière automatisée et sécurisée à travers le réseau :
 
-- **Script Bash** : Exécuté depuis un serveur Debian, il administre les clients via SSH.
+- **Scripts Bash** : Exécuté depuis un serveur Debian, il administre les clients via SSH.
     
-- **Script PowerShell** : Exécuté depuis un serveur Windows 2022, il administre les clients via WinRM/PowerShell Remoting.
+- **Scripts PowerShell** : Exécuté depuis un serveur Windows 2022, il administre les clients via WinRM/PowerShell Remoting.
     
 
 **Objectifs principaux :**
@@ -77,37 +77,62 @@ L'environnement doit comporter les machines suivantes (ou équivalentes) :
 
 ### 1. Récupération du projet
 
-Clonez le dépôt GitHub sur vos serveurs d'administration (SRVLX01 et SRVWIN01) :
-
-Bash
+- Clonez le dépôt GitHub sur vos serveurs d'administration (SRVLX01 et SRVWIN01) :
 
 ```
 git clone https://github.com/WildCodeSchool/TSSR-1025-P2-G4.git
-cd TSSR-1025-P2-G4
 ```
 
-### 2. Préparation sur Debian (Script Bash)
 
-Rendez le script exécutable :
+### 2. Préparation sur Debian CLI (Script Bash)
 
-Bash
+
+- Vous rendre dans le répertoire Scripts.  
 
 ```
-cd Scripts/Bash
-chmod +x main_script.sh
-# (Remplacez main_script.sh par le nom réel du fichier .sh s'il diffère)
+cd Répertoire_choisi_pour_récupérer_le_dépôt/TSSR-1025-P2-G4/Scripts
 ```
 
-### 3. Préparation sur Windows Server (Script PowerShell)
+- Copier ensuite le répertoire scripts_debian dans votre répertoire personnel pour qu'il puisse être fonctionnel.   
 
-Ouvrez une invite PowerShell en tant qu'Administrateur et autorisez l'exécution de scripts :
+```
+cp -r scripts_debian ~/scripts_debian
+```
 
-PowerShell
+- Rendez le tout le répertoire exécutable.
+
+```
+sudo chmod +x scripts_debian
+```
+
+- Et enfin rendez-vous dans le répertoire pour accéder au script parent.
+
+```
+cd scripts_debian
+```
+
+Voilà, vous êtes prêt à lancer le script bash !
+
+### 3. Préparation sur Windows Server GUI (Script PowerShell)
+
+
+- Récupérer le répertoire scripts_windows_server qui est lui-même situé dans le répertoire Scripts.   
+
+- Copier ensuite le répertoire scripts_windows_server dans votre répertoire personnel pour qu'il puisse être fonctionnel.  
+
+- Ouvrir une invite de commande PowerShell en tant qu'Administrateur et autorisez l'exécution de scripts .
 
 ```
 Set-ExecutionPolicy RemoteSigned
-cd .\Scripts\PowerShell
 ```
+
+- Vous rendre enfin dans le répertoire  C:\Users\Votre_Nom_Utilisateur\scripts_windows_server par le biais de l'invite de commande.
+
+```
+Set-Location C:\Users\Votre_Nom_Utilisateur\scripts_windows_server
+```
+
+Voilà, vous êtes prêt à lancer le script powershell !
 
 ---
 
@@ -115,12 +140,14 @@ cd .\Scripts\PowerShell
 
 Ce script est conçu pour être lancé depuis le serveur **SRVLX01**.
 
+
+
 ### Lancement
 
 Bash
 
 ```
-./main_script.sh
+./menu_serveur.sh
 ```
 
 ### Navigation
