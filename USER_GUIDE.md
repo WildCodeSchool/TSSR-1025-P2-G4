@@ -27,16 +27,16 @@ Ce document détaille l'installation et l'utilisation des outils d'administratio
 
 Le projet met à disposition deux scripts principaux permettant d'effectuer des tâches d'administration courantes de manière automatisée et sécurisée à travers le réseau :
 
-- **Scripts Bash** : Exécuté depuis un serveur Debian, il administre les clients via SSH.
+- **Scripts Bash** : Exécuté depuis un serveur Debian 12, il administre les clients via SSH.
     
 - **Scripts PowerShell** : Exécuté depuis un serveur Windows 2022, il administre les clients via WinRM/PowerShell Remoting.
     
 
 **Objectifs principaux :**
 
-- Gestion des utilisateurs (création, suppression, modification).
-    
 - Gestion de l'alimentation des postes (arrêt, redémarrage).
+    
+- Gestion des utilisateurs (création, suppression, modification).
     
 - Récupération d'informations système.
     
@@ -146,12 +146,12 @@ Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sou
 ### Lancement
 
 - Taper et valider.
+	- **Attention de ne surtout pas lancer le script comme ceci : `sudo ./menu_serveur.sh` ; en tant super utilisateur et donc en mode sudo !
 
 ```
 ./menu_serveur.sh
 ```
 
-- Attention de ne surtout pas lancer le script comme ceci `sudo ./menu_serveur.sh` en tant super utilisateur et donc en mode sudo !
 
 ### Navigation
 
@@ -167,7 +167,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sou
 - Taper ensuite l'un des utilisateurs affichés pour vous connecter à son compte.
 	
 - Chaque sous-menu dispose d'une option "Retour" ou "Quitter/Sortir".
-
+	
 
 ### Options disponibles
 
@@ -176,7 +176,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sou
 2. **Gestion des Utilisateurs** : Créer, supprimer ou modifier un utilisateur ainsi que la récupération de certains infos à propos de ce dernier sur la machine distante. (N'est malheureusement pas encore aboutie pour le client Windows.)
     
 3. **Informations Système** : Récupérer les informations réseaux, système et matériel ou encore la recherche de logs sur l'OS.
-
+	
 -  Si vous souhaitez voir le fichier log à propos de l'utilisation de la machine, il faut vous rendre dans le fichier situé log dans /var/log/log_evt.log.
 
 
@@ -188,27 +188,40 @@ Ce script est conçu pour être lancé depuis le serveur **SRVWIN01**.
 
 ### Lancement
 
-PowerShell
+- Lancer l'invite de commande PowerShell 7
+	#### **Attention ! Pour ce script, il faut exécuter PowerShell 7 en tant qu'Administrateur !
+- Taper et valider.
 
 ```
-.\main_script.ps1
+./menu_serveur.ps1
 ```
 
-_(Assurez-vous d'être dans le bon répertoire contenant le script)_
 
 ### Navigation
 
-L'interface est similaire à la version Bash, utilisant un menu textuel clair.
+- Le script affiche un **Menu Principal** interactif. Vous avez le choix entre 2 menus : Se connecter pour réaliser des actions sur la machine Client Linux ou la machine Client Windows.
+    
+- Utilisez les touches du clavier (numéros) pour sélectionner une option.
+    
+- Taper ensuite l'adresse correspondant à la machine à laquelle vous voulez vous connecter :
+	 172.16.40.30 pour le Client Linux.
+	 172.16.40.20 pour le Client Windows.
+	 - Attention ! Avant toute manipulation vous devrez connaître le mot de passe du compte sur la Machine Client en question ainsi que le vôtre sur la Machine Serveur. Vous serez amené à le saisir pour plusieurs manipulations.
+	
+- Taper ensuite l'un des utilisateurs affichés pour vous connecter à son compte.
+	
+- Chaque sous-menu dispose d'une option "Retour" ou "Quitter/Sortir".
+	
 
 ### Options disponibles
 
-1. **Administration Utilisateurs** : Gestion des comptes locaux et Active Directory (si configuré).
+1. **Gestion des Actions de la Machine** : Redémarrer, prise à distance, activer ou désactiver le pare-feu ainsi que son état ou encore une gestion de répertoires sur la machine distante.
     
-2. **Gestion Postes** : Actions de redémarrage et d'arrêt à distance via WinRM.
+2. **Gestion des Utilisateurs** : Créer, supprimer ou modifier un utilisateur ainsi que la récupération de certains infos à propos de ce dernier sur la machine distante. (N'est malheureusement pas encore aboutie ni pour le client Linux ni le client Windows.)
     
-3. **Audit & Infos** : Collecte d'informations WMI/CIM sur les clients.
-    
-4. **Journalisation** : Les actions sont automatiquement enregistrées dans un fichier de log (par défaut dans un dossier `Logs` ou `C:\Logs`).
+3. **Informations Système** : Récupérer les informations réseaux, système et matériel ou encore la recherche de logs sur l'OS.
+	
+-  Si vous souhaitez voir le fichier log à propos de l'utilisation de la machine, il faut vous rendre dans le fichier situé log dans C:\Windows\System32\LogFiles\log_evt.log.
     
 
 ---
@@ -217,29 +230,43 @@ L'interface est similaire à la version Bash, utilisant un menu textuel clair.
 
 ### Gestion des Utilisateurs
 
-- **Création** : Vous serez invité à saisir le nom du nouveau compte et son mot de passe.
+Il vous faudra entrer tout d'abord un utilisateur :
+	- S'il existe, vous serez redirigé vers l'Espace Personnel Utilisateur qui amènera vers des fonctionnalités comme la Modification, Suppression ou encore une prise d'Informations sur l'utilisateur.
+	- S'il n'existe pas, vous serez redirigé vers l'Espace Création Utilisateur.
+	
+- **Création** : Vous serez invité à saisir le nom du nouveau compte et son mot de passe si vous le souhaitez vous trouverez aussi une proposition d'ajout à un groupe local et/ou au groupe Administrateur.
+	
+- Modification : Ajout ou modification de mot de passe, ajout au groupe Administrateur et ajout à un groupe local.
+	
+- **Suppression** : Permet de supprimer l'utilisateur saisi dans la gestion des utilisateurs.
     
-- **Suppression** : Nécessite le nom exact de l'utilisateur à supprimer.
-    
-- **Sécurité** : Les mots de passe saisis sont masqués ou traités de manière sécurisée lors de l'envoi.
+- **Informations** : Permet de connaître certaines infos à propos de l'utilisateur saisi :
+	 - Date de dernière de connexion de l'utilisateur.
+	 - Date de dernière modification du mot de passe de l'utilisateur.
+	 - Prise d'informations si l'utilisateur a une session ouverte.
     
 
 ### Ciblage des Machines
 
 Les scripts permettent de choisir la cible :
 
-- Par **Adresse IP** (ex: 192.168.1.50).
+- Par **Adresse IP** :   
+	- 172.16.40.30 pour le Client Linux.
+	- 172.16.40.20 pour le Client Windows.
     
-- Par **Nom d'hôte** (ex: CLIWIN01), si la résolution DNS est active.
+- Par **Nom d'hôte** :
+	- CLIWIN01
+	- CLILIN01 
+	Si la résolution DNS est active. (Ne fonctionne pas pour le Serveur Windows)
     
 
 ### Journaux (Logs)
 
-Chaque action critique (suppression d'un utilisateur, arrêt d'une machine) est horodatée et enregistrée.
+Chaque action critique est horodatée et enregistrée.
 
-- **Bash** : Vérifiez le fichier `activity.log` (ou similaire) dans le dossier du script.
+- **Bash** : Vérifiez le fichier /var/log/log_evt.log.
     
-- **PowerShell** : Vérifiez le fichier `.log` généré dans le répertoire d'exécution.
+- **PowerShell** : Vérifiez le fichier C:\Windows\System32\LogFiles\log_evt.log généré dans le répertoire d'exécution.
     
 
 ---
@@ -258,9 +285,9 @@ Chaque action critique (suppression d'un utilisateur, arrêt d'une machine) est 
 - Vérifiez la politique d'exécution : `Get-ExecutionPolicy`. Elle ne doit pas être sur `Restricted`.
     
 
-**Problème : Caractères bizarres dans le menu (Linux)**
+**Problème : Caractères bizarres dans les menus Linux et Windows**
 
-- Vérifiez l'encodage de votre terminal (UTF-8 recommandé).
+- Vérifiez l'encodage de votre terminal UTF-8 et LF recommandés.
     
 
 ---
