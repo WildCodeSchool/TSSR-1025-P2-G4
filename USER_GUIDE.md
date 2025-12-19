@@ -4,26 +4,26 @@
 
 Ce document détaille l'installation et l'utilisation des outils d'administration système développés dans le cadre du projet P2. Ces scripts permettent d'administrer à distance des postes clients (Windows et Linux) depuis des serveurs de gestion centralisés.
 
-## 📋 Table des matières
+## Table des matières
 
-1. [Présentation](#-présentation-)
+[1.Présentation](#-1-présentation-)
     
-2. [Prérequis](#-prérequis-)
+[2.Prérequis](#2.-prérequis-)
     
-3. [Installation](#-installation-)
+[3.Installation](#-3-installation-)
     
-4. [Utilisation du Script Bash sur le Serveur Debian](#-utilisation-du-script-bash-sur-le-serveur-debian)
+[4.Utilisation du Script Bash sur le Serveur Debian](#-4-utilisation-du-script-bash-sur-le-serveur-debian)
     
-5. [Utilisation du Script PowerShell sur le Serveur Windows](#-utilisation-du-script-powershell-sur-le-serveur-windows-)
+[5.Utilisation du Script PowerShell sur le Serveur Windows](#-5-utilisation-du-script-powershell-sur-le-serveur-windows-)
     
-6. [Fonctionnalités Détaillées](#-fonctionnalités-détaillées-)
+[6.Fonctionnalités Détaillées](#-6-fonctionnalités-détaillées-)
     
-7. [Dépannage](#-dépannage-)
+[7.Dépannage](#-7-dépannage-)
     
 
 ---
 
-## 🎯 Présentation
+## 🎯 1.Présentation
 
 Le projet met à disposition deux scripts principaux permettant d'effectuer des tâches d'administration courantes de manière automatisée et sécurisée à travers le réseau :
 
@@ -45,7 +45,7 @@ Le projet met à disposition deux scripts principaux permettant d'effectuer des 
 
 ---
 
-## 💻 Prérequis
+## 💻 2.Prérequis
 
 ### Architecture Réseau
 
@@ -75,7 +75,7 @@ L'environnement doit comporter les machines suivantes (ou équivalentes) :
 
 ---
 
-## 🚀 Installation
+## 🚀 3.Installation
 
 ### 1. Récupération du projet
 
@@ -115,6 +115,7 @@ cd scripts_debian
 
 Voilà, vous êtes prêt à lancer le script bash !
 
+
 ### 3. Préparation sur Windows Server GUI (Script PowerShell)
 
 
@@ -138,7 +139,7 @@ Voilà, vous êtes prêt à lancer le script powershell !
 
 ---
 
-## 🐧 Utilisation du Script Bash
+## 🐧 4.Utilisation du Script Bash
 
 Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sous l'OS Debian.
 
@@ -182,7 +183,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sou
 
 ---
 
-## 🪟 Utilisation du Script PowerShell
+## 🪟 5.Utilisation du Script PowerShell
 
 Ce script est conçu pour être lancé depuis le serveur **SRVWIN01**.
 
@@ -226,7 +227,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVWIN01**.
 
 ---
 
-## 🛠 Fonctionnalités Détaillées
+## 🛠 6.Fonctionnalités Détaillées
 
 ### Gestion des Utilisateurs
 
@@ -271,7 +272,7 @@ Chaque action critique est horodatée et enregistrée.
 
 ---
 
-## ❓ Dépannage
+## ❓ 7.Dépannage
 
 **Problème : "Connexion refusée" ou "Access Denied"**
 
