@@ -6,24 +6,20 @@ Ce document détaille l'installation et l'utilisation des outils d'administratio
 
 ## Table des matières
 
-[1.Présentation](#-1-présentation-)
-    
-[2.Prérequis](#2.-prérequis-)
-    
-[3.Installation](#-3-installation-)
-    
-[4.Utilisation du Script Bash sur le Serveur Debian](#-4-utilisation-du-script-bash-sur-le-serveur-debian)
-    
-[5.Utilisation du Script PowerShell sur le Serveur Windows](#-5-utilisation-du-script-powershell-sur-le-serveur-windows-)
-    
-[6.Fonctionnalités Détaillées](#-6-fonctionnalités-détaillées-)
-    
-[7.Dépannage](#-7-dépannage-)
-    
+- [1. Présentation](#-1-présentation-)
+- [2. Prérequis](#2.-prérequis-)
+- [3. Installation](#-3-installation-)
+	- [3.1. Récupération du projet](#-31-récupération-du-projet-)
+	- [3.2. Préparation sur Debian CLI (Script Bash)](#-32-préparation-sur-debian-cli-(-script-bash-)-)
+	- [3.3. Préparation sur Windows Server GUI (Script PowerShell)](#-33-préparation-sur-windows-server-gui-(-script-powershell-)-)
+- [4. Utilisation du Script Bash sur le Serveur Debian](#-4-utilisation-du-script-bash-sur-le-serveur-debian)
+- [5. Utilisation du Script PowerShell sur le Serveur Windows](#-5-utilisation-du-script-powershell-sur-le-serveur-windows-)
+- [6. Fonctionnalités Détaillées](#-6-fonctionnalités-détaillées-)
+- [7. Dépannage](#-7-dépannage-)
 
 ---
 
-## 🎯 1.Présentation
+## 🎯 1. Présentation
 
 Le projet met à disposition deux scripts principaux permettant d'effectuer des tâches d'administration courantes de manière automatisée et sécurisée à travers le réseau :
 
@@ -45,7 +41,7 @@ Le projet met à disposition deux scripts principaux permettant d'effectuer des 
 
 ---
 
-## 💻 2.Prérequis
+## 💻 2. Prérequis
 
 ### Architecture Réseau
 
@@ -75,9 +71,11 @@ L'environnement doit comporter les machines suivantes (ou équivalentes) :
 
 ---
 
-## 🚀 3.Installation
+## 🚀 3. Installation
 
-### 1. Récupération du projet
+
+#### 1. Récupération du projet
+
 
 - Clonez le dépôt GitHub sur vos serveurs d'administration (SRVLX01 et SRVWIN01) :
 
@@ -85,8 +83,8 @@ L'environnement doit comporter les machines suivantes (ou équivalentes) :
 git clone https://github.com/WildCodeSchool/TSSR-1025-P2-G4.git
 ```
 
-
-### 2. Préparation sur Debian CLI (Script Bash)
+---
+#### 2. Préparation sur Debian CLI (Script Bash)
 
 
 - Vous rendre dans le répertoire Scripts.  
@@ -115,8 +113,8 @@ cd scripts_debian
 
 Voilà, vous êtes prêt à lancer le script bash !
 
-
-### 3. Préparation sur Windows Server GUI (Script PowerShell)
+---
+#### 3. Préparation sur Windows Server GUI (Script PowerShell)
 
 
 - Récupérer le répertoire scripts_windows_server qui est lui-même situé dans le répertoire Scripts.   
@@ -139,7 +137,7 @@ Voilà, vous êtes prêt à lancer le script powershell !
 
 ---
 
-## 🐧 4.Utilisation du Script Bash
+## 🐧 4. Utilisation du Script Bash
 
 Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sous l'OS Debian.
 
@@ -183,7 +181,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sou
 
 ---
 
-## 🪟 5.Utilisation du Script PowerShell
+## 🪟 5. Utilisation du Script PowerShell
 
 Ce script est conçu pour être lancé depuis le serveur **SRVWIN01**.
 
@@ -227,7 +225,7 @@ Ce script est conçu pour être lancé depuis le serveur **SRVWIN01**.
 
 ---
 
-## 🛠 6.Fonctionnalités Détaillées
+## 🛠 6. Fonctionnalités Détaillées
 
 ### Gestion des Utilisateurs
 
@@ -272,7 +270,7 @@ Chaque action critique est horodatée et enregistrée.
 
 ---
 
-## ❓ 7.Dépannage
+## ❓ 7. Dépannage
 
 **Problème : "Connexion refusée" ou "Access Denied"**
 
