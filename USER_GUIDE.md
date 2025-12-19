@@ -1,22 +1,24 @@
 # 📘 Guide Utilisateur - Projet TSSR-1025-P2-G4
 
+![bandeau_guide](Ressources/Images/presentation/bandeau_guide.png)
+
 Ce document détaille l'installation et l'utilisation des outils d'administration système développés dans le cadre du projet P2. Ces scripts permettent d'administrer à distance des postes clients (Windows et Linux) depuis des serveurs de gestion centralisés.
 
 ## 📋 Table des matières
 
-1. [Présentation](https://www.google.com/search?q=%23pr%C3%A9sentation)
+1. [Présentation](#-présentation-)
     
-2. [Prérequis](https://www.google.com/search?q=%23pr%C3%A9requis)
+2. [Prérequis](#-prérequis-)
     
-3. [Installation](https://www.google.com/search?q=%23installation)
+3. [Installation](#-installation-)
     
-4. [Utilisation du Script Bash (Serveur Debian)](https://www.google.com/search?q=%23utilisation-du-script-bash)
+4. [Utilisation du Script Bash sur le Serveur Debian](#-utilisation-du-script-bash-sur-le-serveur-debian)
     
-5. [Utilisation du Script PowerShell (Serveur Windows)](https://www.google.com/search?q=%23utilisation-du-script-powershell)
+5. [Utilisation du Script PowerShell sur le Serveur Windows](#-utilisation-du-script-powershell-sur-le-serveur-windows-)
     
-6. [Fonctionnalités Détaillées](https://www.google.com/search?q=%23fonctionnalit%C3%A9s-d%C3%A9taill%C3%A9es)
+6. [Fonctionnalités Détaillées](#-fonctionnalités-détaillées-)
     
-7. [Dépannage](https://www.google.com/search?q=%23d%C3%A9pannage)
+7. [Dépannage](#-dépannage-)
     
 
 ---
@@ -138,37 +140,45 @@ Voilà, vous êtes prêt à lancer le script powershell !
 
 ## 🐧 Utilisation du Script Bash
 
-Ce script est conçu pour être lancé depuis le serveur **SRVLX01**.
-
+Ce script est conçu pour être lancé depuis le serveur **SRVLX01** qui est sous l'OS Debian.
 
 
 ### Lancement
 
-Bash
+- Taper et valider.
 
 ```
 ./menu_serveur.sh
 ```
 
+- Attention de ne surtout pas lancer le script comme ceci `sudo ./menu_serveur.sh` en tant super utilisateur et donc en mode sudo !
+
 ### Navigation
 
-- Le script affiche un **Menu Principal** interactif.
+- Le script affiche un **Menu Principal** interactif. Vous avez le choix entre 2 menus : Se connecter pour réaliser des actions sur la machine Client Linux ou la machine Client Windows.
     
-- Utilisez les touches du clavier (numéros ou flèches selon la configuration) pour sélectionner une option.
+- Utilisez les touches du clavier (numéros) pour sélectionner une option.
     
-- Chaque sous-menu dispose d'une option "Retour" ou "Quitter".
-    
+- Taper ensuite l'adresse correspondant à la machine à laquelle vous voulez vous connecter :
+	 172.16.40.30 pour le Client Linux.
+	 172.16.40.20 pour le Client Windows.
+	 - Attention ! Avant toute manipulation vous devrez connaître le mot de passe du compte sur la Machine Client en question ainsi que le vôtre sur la Machine Serveur. Vous serez amené à le saisir pour plusieurs manipulations.
+	
+- Taper ensuite l'un des utilisateurs affichés pour vous connecter à son compte.
+	
+- Chaque sous-menu dispose d'une option "Retour" ou "Quitter/Sortir".
+
 
 ### Options disponibles
 
-1. **Gestion des Utilisateurs** : Créer, supprimer ou modifier le mot de passe d'un utilisateur sur une machine distante.
+1. **Gestion des Actions de la Machine** : Redémarrer, prise à distance, activer ou désactiver le pare-feu ainsi que son état ou encore une gestion de répertoires sur la machine distante.
     
-2. **Gestion de l'Alimentation** : Redémarrer ou éteindre un client distant.
+2. **Gestion des Utilisateurs** : Créer, supprimer ou modifier un utilisateur ainsi que la récupération de certains infos à propos de ce dernier sur la machine distante. (N'est malheureusement pas encore aboutie pour le client Windows.)
     
-3. **Informations Système** : Récupérer l'espace disque, l'OS, ou la liste des utilisateurs connectés.
-    
-4. **Logs** : Consulter l'historique des actions effectuées par le script.
-    
+3. **Informations Système** : Récupérer les informations réseaux, système et matériel ou encore la recherche de logs sur l'OS.
+
+-  Si vous souhaitez voir le fichier log à propos de l'utilisation de la machine, il faut vous rendre dans le fichier situé log dans /var/log/log_evt.log.
+
 
 ---
 
