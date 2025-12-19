@@ -73,7 +73,7 @@ function Windows() {
     echo
     # On recupere le nom des utilisateurs sur la machine cible
     Log "RecuperationCompteAdmin"
-    ssh -o ConnectTimeout=10 -T cliwin01 "Get-LocalGroupMember -Group Administrateurs | Select-Object Name"
+    ssh -o ConnectTimeout=10 -T cliwin01 "net localgroup Administrateurs"
     echo
 
     if [$? -ne 0 ]
